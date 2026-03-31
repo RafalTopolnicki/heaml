@@ -22,20 +22,24 @@ KKR_PARAMS_FINALSCF = {
     'ew': 0.7,
     'xc': 'pbe',
     'rel': 'nrl',
-    'bzqlty': 20,
+    'bzqlty': 10,
     'mxl': 3,
     'delta': 0.005,
     'subdir': 'finalscf',
     'output': 'finalscf',
 }
+# RMT: 0.42723 for delta=0.020
+# RMT: 0.43012 for delta=0.010
+# RMT: 0.43157 for delta=0.005
+# RMT: 0.43272 for delta=0.001
 KKR_PARAMS_DEBYE = {
     'ew': 0.7,
     'xc': 'pbe',
     'rel': 'nrl',
     'bzqlty': 10,
     'mxl': 3,
-    'delta': 0.01,
-    'rmt': 0.43088, # CHECK THIS LATER
+    'delta': 0.43157,
+    'rmt': 0.0, # CHECK THIS LATER
     'pmix': 0.01,
     'edelt': 0.001,
     'subdir': 'debye',
