@@ -130,16 +130,19 @@ def run_kkr_elastic_debye(**kwargs):
         volsi = dist_to_si(kwargs["a0"]) ** 3
         B0si = kwargs["B0"] * 1e9
 
-        # reference (delta = 0)
-        energy0, conv0, gz0 = run_scf_tetragonal(0.0, kwargs, logger)
-
         # tetragonal distortion
-        energy_tetra, conv_tetra, gz_tetra = run_scf_tetragonal(delta, kwargs, logger)
-        Cp = (energy_tetra - energy0) / (6.0 * vol * delta ** 2)
+        # reference (delta = 0)
+        kwargs_no_rmt = kwargs.copy()
+        kwargs_no_rmt['rmt'] = 0
+        energy0_tetra, conv0_tetra, gz0_tetra = run_scf_tetragonal(0.0, kwargs_no_rmt, logger)
+        energy_tetra, conv_tetra, gz_tetra = run_scf_tetragonal(delta, kwargs_no_rmt, logger)
+        Cp = (energy_tetra - energy0_tetra) / (6.0 * vol * delta ** 2)
 
         # monoclinic distortion
+        # reference (delta = 0)
+        energy0_mono, conv0_mono, gz0_mono = run_scf_monoclinic(0.0, kwargs, logger)
         energy_mono, conv_mono, gz_mono = run_scf_monoclinic(delta, kwargs, logger)
-        C44 = (energy_mono - energy0) / (2.0 * vol * delta ** 2)
+        C44 = (energy_mono - energy0_mono) / (2.0 * vol * delta ** 2)
 
         # shear moduli
         Gv = (2.0 * Cp + 3.0 * C44) / 5.0
@@ -157,7 +160,7 @@ def run_kkr_elastic_debye(**kwargs):
 
         # save results table (single row + reference)
         df = pd.DataFrame([
-            [kwargs["a0"], 0.0, energy0, conv0, gz0 if gz0 else ""],
+            [kwargs["a0"], 0.0, energy_mono, conv_mono, gz_mono if gz0_mono else ""],
             [kwargs["a0"], delta, energy_tetra, conv_tetra, gz_tetra if gz_tetra else ""],
         ], columns=["lattice", "delta", "energy", "converged", "out_gz"])
 
@@ -167,7 +170,8 @@ def run_kkr_elastic_debye(**kwargs):
         summary = {
             "a0_bohr": kwargs["a0"],
             "delta": delta,
-            "energy0_ev": float(energy0),
+            "energy0_mono_ev": float(energy0_mono),
+            "energy0_tetra_ev": float(energy0_tetra),
             "energy_tetra": float(energy_tetra),
             "energy_mono": float(energy_mono),
             "Cp": float(Cp),

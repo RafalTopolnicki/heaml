@@ -24,19 +24,22 @@ KKR_PARAMS_FINALSCF = {
     'rel': 'nrl',
     'bzqlty': 10,
     'mxl': 3,
-    'delta': 0.005,
+    'delta': 0.005, # IS THIS NEEDED HERE?
     'subdir': 'finalscf',
     'output': 'finalscf',
 }
+# MONOCLINIC
 # RMT: 0.42723 for delta=0.020
 # RMT: 0.43012 for delta=0.010
 # RMT: 0.43157 for delta=0.005
 # RMT: 0.43272 for delta=0.001
+# TETRAGONAL
+# RMT: 0.43088 for all delta
 KKR_PARAMS_DEBYE = {
     'ew': 0.7,
     'xc': 'pbe',
     'rel': 'nrl',
-    'bzqlty': 15,
+    'bzqlty': 10,
     'mxl': 3,
     'delta': 0.005,
     'rmt': 0.43157, # CHECK THIS LATER
