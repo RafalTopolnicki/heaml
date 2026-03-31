@@ -1,5 +1,6 @@
 
 AKAIMODBIN="/home/rafal/WORK/HEA/RKKY/cpa2002v010.potential2026/specx"
+#AKAIMODBIN="/home/amber/HEAML/AkaiKKR/cpa2002v010.potential2026/specx"
 AKAIBIN=AKAIMODBIN
 
 ATOMS_PER_CELL = 2
