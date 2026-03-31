@@ -36,7 +36,7 @@ KKR_PARAMS_DEBYE = {
     'ew': 0.7,
     'xc': 'pbe',
     'rel': 'nrl',
-    'bzqlty': 10,
+    'bzqlty': 15,
     'mxl': 3,
     'delta': 0.005,
     'rmt': 0.43157, # CHECK THIS LATER
