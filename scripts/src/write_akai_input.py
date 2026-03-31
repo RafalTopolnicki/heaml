@@ -1,37 +1,4 @@
 
-# def scf_input(filename, elements, concentrations, symmetry, lattice_constant, ew, xc, rel,
-#               bzqlty, pmix, edelt, mxl):
-#     comment_line = 'c-------------------------\n'
-#     rmt = 0
-#     with open(filename+'.inp', 'w') as file:
-#         file.write(f'c--- elements {elements}\n')
-#         file.write(f'{comment_line}')
-#         file.write(f'go {filename}.pot\n')
-#         file.write(f'{comment_line}')
-#         file.write(f'c   brvtyp     a        c/a   b/a   alpha   beta   gamma\n')
-#         file.write(f'   {symmetry}  {lattice_constant:.3f} ,    ,   ,   ,   ,   ,\n')
-#         file.write(f'{comment_line}')
-#         file.write(f'c   edelt    ewidth    reltyp   sdftyp   magtyp   record\n')
-#         file.write(f'    {edelt}    {ew}    {rel}   {xc}      nmag      init\n')
-#         file.write(f'{comment_line}')
-#         file.write(f'c   outtyp    bzqlty   maxitr   pmix\n')
-#         file.write(f'    update     {int(bzqlty)}    500 {pmix}\n')
-#         file.write(f'{comment_line}')
-#         file.write(f'c  ntyp\n')
-#         file.write(f'   1\n')
-#         file.write(f'{comment_line}')
-#         file.write(f'c   type    ncmp    rmt    field   mxl  anclr   conc\n')
-#         file.write(f'   X   {len(elements)}  {rmt}  {0.0}   {mxl}\n')
-#         for element, concentration in zip(elements, concentrations):
-#             file.write(f'       {element}   {concentration}\n')
-#         file.write(f'{comment_line}')
-#         file.write(f'c natm\n')
-#         file.write(f'   1\n')
-#         file.write(f'{comment_line}')
-#         file.write(f'c   atmicx                        atmtyp\n')
-#         file.write(f'0a         0b         0c       X\n')
-#         file.write(f'{comment_line}')
-#         file.close()
 def get_lattice_line_from_params(lattice_params):
     line = f'{lattice_params["symmetry"]} {lattice_params["lattice_constant"]} '
     if "c/a" in lattice_params:
@@ -40,7 +7,7 @@ def get_lattice_line_from_params(lattice_params):
         line += ", , , , , ,"
     return line
 
-def scf_input(filename, lattice_params, elements, concentrations, ew, xc, rel, bzqlty, pmix, edelt, mxl, rmt=0):
+def scf_input(filename, lattice_params, elements, concentrations, ew, xc, rel, bzqlty, pmix, edelt, mxl, rmt=0, dos=False):
     comment_line = 'c-------------------------\n'
     lattice_line = get_lattice_line_from_params(lattice_params)
     with open(filename, 'w') as file:
@@ -72,9 +39,38 @@ def scf_input(filename, lattice_params, elements, concentrations, ew, xc, rel, b
         file.write(f'0a         0b         0c       X\n')
         file.write(f'1/2a     1/2b       1/2c       X\n')
         file.write(f'{comment_line}')
+        if dos:
+            file.write(f'c--- elements {elements}\n')
+            file.write(f'{comment_line}')
+            file.write(f'dos {filename}.pot\n')
+            file.write(f'{comment_line}')
+            file.write(f'c   brvtyp     a        c/a   b/a   alpha   beta   gamma\n')
+            file.write(f'{lattice_line}\n')
+            file.write(f'{comment_line}')
+            file.write(f'c   edelt    ewidth    reltyp   sdftyp   magtyp   record\n')
+            file.write(f'    {edelt}    {ew}    {rel}   {xc}      nmag      2nd\n')
+            file.write(f'{comment_line}')
+            file.write(f'c   outtyp    bzqlty   maxitr   pmix\n')
+            file.write(f'    update     {int(bzqlty)}    500 {pmix}\n')
+            file.write(f'{comment_line}')
+            file.write(f'c  ntyp\n')
+            file.write(f'   1\n')
+            file.write(f'{comment_line}')
+            file.write(f'c   type    ncmp    rmt    field   mxl  anclr   conc\n')
+            file.write(f'   X   {len(elements)}  {rmt}  {0.0}   {mxl}\n')
+            for element, concentration in zip(elements, concentrations):
+                file.write(f'       {element}   {concentration}\n')
+            file.write(f'{comment_line}')
+            file.write(f'c natm\n')
+            file.write(f'   2\n')
+            file.write(f'{comment_line}')
+            file.write(f'c   atmicx                        atmtyp\n')
+            file.write(f'0a         0b         0c       X\n')
+            file.write(f'1/2a     1/2b       1/2c       X\n')
+            file.write(f'{comment_line}')
         file.close()
 
-def scf_input_bcc(filename, lattice_params, elements, concentrations, ew, xc, rel, bzqlty, pmix, edelt, mxl, rmt=0):
+def scf_input_bcc(filename, lattice_params, elements, concentrations, ew, xc, rel, bzqlty, pmix, edelt, mxl, rmt=0, dos=False):
     comment_line = 'c-------------------------\n'
     a0 = lattice_params['lattice_constant']
     print(filename)
@@ -106,39 +102,32 @@ def scf_input_bcc(filename, lattice_params, elements, concentrations, ew, xc, re
         file.write(f'c   atmicx                        atmtyp\n')
         file.write(f'0a         0b         0c       X\n')
         file.write(f'{comment_line}')
-        file.close()
-
-
-def dos_input(filename, elements, concentrations, symmetry, lattice_constant, ew, xc, rel,
-              bzqlty, pmix, edelt, mxl):
-    comment_line = 'c-------------------------\n'
-    rmt = 0
-    with open(filename+'.inp', 'a') as file:
-        file.write(f'c--- elements {elements}\n')
-        file.write(f'{comment_line}')
-        file.write(f'dos {filename}.pot\n')
-        file.write(f'{comment_line}')
-        file.write(f'c   brvtyp     a        c/a   b/a   alpha   beta   gamma\n')
-        file.write(f'   {symmetry}  {lattice_constant:.3f} ,    ,   ,   ,   ,   ,\n')
-        file.write(f'{comment_line}')
-        file.write(f'c   edelt    ewidth    reltyp   sdftyp   magtyp   record\n')
-        file.write(f'    {edelt}    {ew}    {rel}   {xc}      nmag      2nd\n')
-        file.write(f'{comment_line}')
-        file.write(f'c   outtyp    bzqlty   maxitr   pmix\n')
-        file.write(f'    update     {int(bzqlty)}    500 {pmix}\n')
-        file.write(f'{comment_line}')
-        file.write(f'c  ntyp\n')
-        file.write(f'   1\n')
-        file.write(f'{comment_line}')
-        file.write(f'c   type    ncmp    rmt    field   mxl  anclr   conc\n')
-        file.write(f'   X   {len(elements)}  {rmt}  {0.0}   {mxl}\n')
-        for element, concentration in zip(elements, concentrations):
-            file.write(f'       {element}   {concentration}\n')
-        file.write(f'{comment_line}')
-        file.write(f'c natm\n')
-        file.write(f'   1\n')
-        file.write(f'{comment_line}')
-        file.write(f'c   atmicx                        atmtyp\n')
-        file.write(f'0a         0b         0c       X\n')
-        file.write(f'{comment_line}')
+        if dos:
+            file.write(f'c--- elements {elements}\n')
+            file.write(f'{comment_line}')
+            file.write(f'dos {filename}.pot\n')
+            file.write(f'{comment_line}')
+            file.write(f'c   brvtyp     a        c/a   b/a   alpha   beta   gamma\n')
+            file.write(f'    bcc    {a0}  , , , , , , \n')
+            file.write(f'{comment_line}')
+            file.write(f'c   edelt    ewidth    reltyp   sdftyp   magtyp   record\n')
+            file.write(f'    {edelt}    {ew}    {rel}   {xc}      nmag      2nd\n')
+            file.write(f'{comment_line}')
+            file.write(f'c   outtyp    bzqlty   maxitr   pmix\n')
+            file.write(f'    update     {int(bzqlty)}    500 {pmix}\n')
+            file.write(f'{comment_line}')
+            file.write(f'c  ntyp\n')
+            file.write(f'   1\n')
+            file.write(f'{comment_line}')
+            file.write(f'c   type    ncmp    rmt    field   mxl  anclr   conc\n')
+            file.write(f'   X   {len(elements)}  {rmt}  {0.0}   {mxl}\n')
+            for element, concentration in zip(elements, concentrations):
+                file.write(f'       {element}   {concentration}\n')
+            file.write(f'{comment_line}')
+            file.write(f'c natm\n')
+            file.write(f'   1\n')
+            file.write(f'{comment_line}')
+            file.write(f'c   atmicx                        atmtyp\n')
+            file.write(f'0a         0b         0c       X\n')
+            file.write(f'{comment_line}')
         file.close()

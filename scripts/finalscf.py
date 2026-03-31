@@ -28,6 +28,7 @@ def run_scf(lattice, args):
         pmix=args.get("pmix", 0.01),
         edelt=args.get("edelt", 0.001),
         mxl=args.get("mxl", 3),
+        dos=True,
     )
 
     with open(inp, "r") as fin, open(out, "w") as fout:

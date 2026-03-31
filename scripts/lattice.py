@@ -33,7 +33,7 @@ def run_scf(lattice, args):
     )
 
     with open(inputpath, "r") as fin, open(outputpath, "w") as fout:
-        subprocess.run([AKAIBIN], stdin=fin, stdout=fout)
+        subprocess.run(["mpirun", "-np", "12", AKAIBIN], stdin=fin, stdout=fout)
 
     text = open(outputpath).read()
 
