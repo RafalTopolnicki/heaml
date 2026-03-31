@@ -43,7 +43,7 @@ def get_lattice_line_from_params(lattice_params):
 def scf_input(filename, lattice_params, elements, concentrations, ew, xc, rel, bzqlty, pmix, edelt, mxl, rmt=0):
     comment_line = 'c-------------------------\n'
     lattice_line = get_lattice_line_from_params(lattice_params)
-    with open(filename+'.inp', 'w') as file:
+    with open(filename, 'w') as file:
         file.write(f'c--- elements {elements}\n')
         file.write(f'{comment_line}')
         file.write(f'go {filename}.pot\n')
@@ -77,7 +77,8 @@ def scf_input(filename, lattice_params, elements, concentrations, ew, xc, rel, b
 def scf_input_bcc(filename, lattice_params, elements, concentrations, ew, xc, rel, bzqlty, pmix, edelt, mxl, rmt=0):
     comment_line = 'c-------------------------\n'
     a0 = lattice_params['lattice_constant']
-    with open(filename+'.inp', 'w') as file:
+    print(filename)
+    with open(filename, 'w') as file:
         file.write(f'c--- elements {elements}\n')
         file.write(f'{comment_line}')
         file.write(f'go {filename}.pot\n')

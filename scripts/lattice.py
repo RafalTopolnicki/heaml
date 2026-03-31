@@ -14,10 +14,13 @@ def run_scf(lattice, args):
     base = f"{args['output']}_{lattice:.6f}"
     inp = base + ".inp"
     out = base + ".out"
+    filepath = os.path.join(args['workdir'], inp)
+    inputpath = os.path.join(args['workdir'], inp)
+    outputpath = os.path.join(args['workdir'], out)
 
     scf_input_bcc(
-        filename=base,
-        lattice_params={"symmetry": args['sym'], "lattice_constant": lattice},
+        filename=filepath,
+        lattice_params={"lattice_constant": lattice},
         elements=args['elements'],
         concentrations=args['concentrations'],
         ew=args.get("ew", 0.7),
@@ -29,10 +32,10 @@ def run_scf(lattice, args):
         mxl=args.get("mxl", 3),
     )
 
-    with open(inp, "r") as fin, open(out, "w") as fout:
+    with open(inputpath, "r") as fin, open(outputpath, "w") as fout:
         subprocess.run([AKAIBIN], stdin=fin, stdout=fout)
 
-    text = open(out).read()
+    text = open(outputpath).read()
 
     energy = parse_energy(text)
     conv = converged_info_in_string(text)
@@ -40,7 +43,7 @@ def run_scf(lattice, args):
     cleanup_potential_files(base)
 
     if args.get("compress", True):
-        gzip_file(out)
+        gzip_file(outputpath)
 
 
     return lattice, energy, conv
@@ -89,8 +92,8 @@ def fit_eos(df):
 # ⭐ MASTER FUNCTION
 # =========================
 def run_kkr_eos(**kwargs):
-    os.makedirs(kwargs.get("workdir", "."), exist_ok=True)
-    os.chdir(kwargs.get("workdir", "."))
+    workdir = kwargs.get("workdir", ".")
+    os.makedirs(workdir, exist_ok=True)
 
     lattices = np.arange(kwargs["min_lattice"],
                          kwargs["max_lattice"] + kwargs["step"],
@@ -102,11 +105,11 @@ def run_kkr_eos(**kwargs):
         results.append(res)
 
     df = pd.DataFrame(results, columns=["lattice", "energy", "converged"])
-    df.to_csv(f"{kwargs['output']}_results.csv", index=False)
+    df.to_csv(os.path.join(workdir, f"{kwargs['output']}_results.csv"), index=False)
 
     a0, E0, B0 = fit_eos(df)
 
-    with open(f"{kwargs['output']}_summary.txt", "w") as f:
+    with open(os.path.join(workdir, f"{kwargs['output']}_summary.txt"), "w") as f:
         f.write(f"a0 = {a0}\nE0 = {E0}\nB0 = {B0}\n")
 
     return {

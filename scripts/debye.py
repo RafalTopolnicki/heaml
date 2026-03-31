@@ -47,8 +47,10 @@ def get_monoclinic_distortion(delta, a0):
 
 
 def run_scf(filename, lattice_params, args, logger):
+    inp = filename + ".inp"
+    out = filename + ".out"
     scf_input(
-        filename=filename,
+        filename=inp,
         lattice_params=lattice_params,
         elements=args["elements"],
         concentrations=args["concentrations"],
@@ -56,14 +58,11 @@ def run_scf(filename, lattice_params, args, logger):
         xc=args["xc"],
         rel=args["rel"],
         bzqlty=args["bzqlty"],
-        pmix=args["pmix"],
-        edelt=args["edelt"],
-        mxl=args["mxl"],
         rmt=args["rmt"],
+        pmix=args.get("pmix", 0.01),
+        edelt=args.get("edelt", 0.001),
+        mxl=args.get("mxl", 3),
     )
-
-    inp = filename + ".inp"
-    out = filename + ".out"
 
     logger.info("Running SCF: %s", filename)
     with open(inp, "r") as fin, open(out, "w") as fout:
@@ -78,7 +77,7 @@ def run_scf(filename, lattice_params, args, logger):
     logger.info("Finished SCF: %s | energy=%s | converged=%s", filename, energy, conv)
 
     gz_out = None
-    if args["compress"]:
+    if args.get("compress", True):
         gz_out = gzip_file(out)
 
     cleanup_potential_files(filename)
@@ -149,8 +148,8 @@ def run_kkr_elastic_debye(**kwargs):
         Ghsi = Gh * energy_to_si(1.0) / dist_to_si(1.0) ** 3
 
         # sound velocities
-        vt = np.sqrt(Ghsi / kwargs["rho"])
-        vl = np.sqrt((B0si + 4.0 / 3.0 * Ghsi) / kwargs["rho"])
+        vt = np.sqrt(Ghsi / kwargs["density"])
+        vl = np.sqrt((B0si + 4.0 / 3.0 * Ghsi) / kwargs["density"])
         vm = (3.0 / (2.0 / vt ** 3 + 1.0 / vl ** 3)) ** (1.0 / 3.0)
 
         # Debye temperature
@@ -169,6 +168,8 @@ def run_kkr_elastic_debye(**kwargs):
             "a0_bohr": kwargs["a0"],
             "delta": delta,
             "energy0_ev": float(energy0),
+            "energy_tetra": float(energy_tetra),
+            "energy_mono": float(energy_mono),
             "Cp": float(Cp),
             "C44": float(C44),
             "Gv": float(Gv),
@@ -202,7 +203,7 @@ if __name__ == "__main__":
     parser.add_argument("--concentrations", nargs="+", required=True)
     parser.add_argument("--a0", type=float, required=True)
     parser.add_argument("--B0", type=float, required=True)
-    parser.add_argument("--rho", type=float, required=True)
+    parser.add_argument("--density", type=float, required=True)
     parser.add_argument("--delta", type=float, required=True, help="single distortion value")
 
     # SCF params

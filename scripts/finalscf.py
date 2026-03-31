@@ -13,8 +13,11 @@ def run_scf(lattice, args):
     inp = base + ".inp"
     out = base + ".out"
 
+    cwd = os.getcwd()
+    os.chdir(args['workdir']) # change dir to write fort.51
+
     scf_input_bcc(
-        filename=base,
+        filename=inp,
         lattice_params={"symmetry": args['sym'], "lattice_constant": lattice},
         elements=args['elements'],
         concentrations=args['concentrations'],
@@ -38,8 +41,9 @@ def run_scf(lattice, args):
     cleanup_potential_files(base)
 
     if args.get("compress", True):
-        gzip_file(out)
+        gzip_file(inp)
 
+    os.chdir(cwd)
     return lattice, energy, conv
 
 # =========================
@@ -47,7 +51,6 @@ def run_scf(lattice, args):
 # =========================
 def run_kkr_finalscf(**kwargs):
     os.makedirs(kwargs.get("workdir", "."), exist_ok=True)
-    os.chdir(kwargs.get("workdir", "."))
 
     lattice = kwargs["a0"]
     results = run_scf(lattice, kwargs)

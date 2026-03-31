@@ -4,7 +4,7 @@ class Element:
     def __init__(self, lattice, bulk_modulus, debye_temperature, atomic_nuber, density):
         self.lattice = lattice
         self.bulk_modulus = bulk_modulus
-        self.debye = debye_temperature
+        self.debye_temperature = debye_temperature
         self.atomic_number = atomic_nuber
         self.density = density
 
@@ -23,24 +23,30 @@ ELEMENTS = {
 
 class HEAClass:
     def __init__(self, labels, concentrations):
+        assert len(labels) == len(concentrations)
         self.labels = labels
         cs = np.sum(concentrations, axis=0)
         self.concentrations = [c/cs for c in concentrations]
         self.elements = []
-        for lab, conc in zip(self.labels):
+        for lab in self.labels:
             self.elements.append(ELEMENTS[lab])
-        self.mixture_lattice = [c*e.lattice for c, e in zip(self.concentrations, self.elements)]
-        self.mixture_bulk_modulus = [c * e.bulk_modulus for c, e in zip(self.concentrations, self.elements)]
-        self.mixture_debye = [c * e.bulk_modulus for c, e in zip(self.concentrations, self.elements)]
+        self.mixture_lattice = np.sum([c*e.lattice for c, e in zip(self.concentrations, self.elements)])
+        self.mixture_bulk_modulus = np.sum([c * e.bulk_modulus for c, e in zip(self.concentrations, self.elements)])
+        self.mixture_debye_temperature = np.sum([c * e.debye_temperature for c, e in zip(self.concentrations, self.elements)])
+        self.density = np.sum(
+            [c * e.density for c, e in zip(self.concentrations, self.elements)])
         self.lattice = None
         self.bulk_modulus = None
         self.debye_temperature = None
     def return_labels(self):
         return ' '.join(self.labels)
+    def return_atomic_numbers(self):
+        #return ' '.join([str(ELEMENTS[lab].atomic_number) for lab in self.labels])
+        return [e.atomic_number for e in self.elements]
     def return_concentrations(self):
         txt = ''
         for c in self.concentrations:
-            txt += f' {c}:.4f'
+            txt += f'{c}:.4f'
         return txt
 
 
