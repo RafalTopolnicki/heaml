@@ -50,13 +50,14 @@ def run_scf(lattice, args):
 # ⭐ MASTER FUNCTION
 # =========================
 def run_kkr_finalscf(**kwargs):
-    os.makedirs(kwargs.get("workdir", "."), exist_ok=True)
+    workdir = kwargs.get("workdir", ".")
+    os.makedirs(workdir, exist_ok=True)
 
     lattice = kwargs["a0"]
     results = run_scf(lattice, kwargs)
     print(results)
     df = pd.DataFrame([results], columns=["lattice", "energy", "converged"])
-    df.to_csv(f"{kwargs['output']}_results.csv", index=False)
+    df.to_csv(os.path.join(workdir, f"{kwargs['output']}_results.csv"), index=False)
 
 
 # =========================
