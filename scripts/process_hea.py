@@ -10,7 +10,7 @@ from debye import run_kkr_elastic_debye
 # =========================
 # ⭐ MASTER FUNCTION
 # =========================
-def run_hea(**kwargs):
+def run_one_hea(**kwargs):
     workdir = kwargs.get("workdir", ".")
     os.makedirs(workdir, exist_ok=True)
     cwd = os.getcwd()
@@ -73,5 +73,5 @@ if __name__ == "__main__":
     # normalize flags
     args["compress"] = not args.pop("no_gzip")
 
-    result = run_hea(**args)
+    result = run_one_hea(**args)
     print(result)
