@@ -1,8 +1,6 @@
 import numpy as np
 import os
 import argparse
-import string
-import random
 import subprocess
 import pandas as pd
 from write_akai_input import scf_input

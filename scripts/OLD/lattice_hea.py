@@ -1,14 +1,11 @@
 import numpy as np
-import sys
 import os
 import argparse
-import string
-import random
 import subprocess
 import pandas as pd
 import matplotlib.pyplot as plt
 from write_akai_input import scf_input
-from src.cons import AKAIBIN, ATOMS_PER_CELL
+from src.consts import AKAIBIN
 
 def run_scf(lattice, args):
     tmpfilename = f'{args.output}_{lattice:.3f}'

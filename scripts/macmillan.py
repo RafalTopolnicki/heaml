@@ -607,7 +607,6 @@ def sweep_combinations(
                     ef_header=ef_header,
                 )
                 rows.append(row)
-
     return pd.DataFrame(rows)
 
 
