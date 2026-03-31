@@ -38,8 +38,8 @@ KKR_PARAMS_DEBYE = {
     'rel': 'nrl',
     'bzqlty': 10,
     'mxl': 3,
-    'delta': 0.43157,
-    'rmt': 0.0, # CHECK THIS LATER
+    'delta': 0.005,
+    'rmt': 0.43157, # CHECK THIS LATER
     'pmix': 0.01,
     'edelt': 0.001,
     'subdir': 'debye',
