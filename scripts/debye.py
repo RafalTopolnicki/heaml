@@ -7,7 +7,7 @@ import subprocess
 import numpy as np
 import pandas as pd
 
-from write_akai_input import scf_input
+from src.write_akai_input import scf_input
 from src.utils import dist_to_si, energy_to_si, parse_energy, converged_info_in_string, gzip_file, cleanup_potential_files
 from src.consts import AKAIBIN, ATOMS_PER_CELL
 

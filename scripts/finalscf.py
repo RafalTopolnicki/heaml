@@ -3,7 +3,7 @@ import os
 import subprocess
 import pandas as pd
 
-from write_akai_input import scf_input_bcc
+from src.write_akai_input import scf_input_bcc
 from src.consts import AKAIBIN
 from src.utils import gzip_file, parse_energy, converged_info_in_string, cleanup_potential_files
 

@@ -5,7 +5,7 @@ import numpy as np
 import pandas as pd
 from scipy.optimize import curve_fit
 
-from write_akai_input import scf_input, scf_input_bcc
+from src.write_akai_input import scf_input, scf_input_bcc
 from src.consts import AKAIBIN
 from src.utils import dist_from_si, dist_to_si, energy_from_si, energy_to_si, parse_energy, converged_info_in_string, gzip_file, cleanup_potential_files
 
