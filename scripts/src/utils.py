@@ -3,6 +3,7 @@ import numpy as np
 import gzip
 import shutil
 import os
+import json
 
 TOTAL_ENERGY_RE = re.compile(r"total energy\s*=\s*([-+0-9.Ee]+)")
 
@@ -31,6 +32,24 @@ def cleanup_potential_files(base):
                 os.remove(f)
             except Exception:
                 pass
+
+def cleanup_fortran_files(base):
+    for suffix in [".50", ".51"]:
+        f = base + suffix
+        if os.path.exists(f):
+            try:
+                os.remove(f)
+            except Exception:
+                pass
+
+def save_dict_to_json(data: dict, filepath: str):
+    # ensure directory exists
+    dirname = os.path.dirname(filepath)
+    if dirname:
+        os.makedirs(dirname, exist_ok=True)
+
+    with open(filepath, "w", encoding="utf-8") as f:
+        json.dump(data, f, indent=2)
 
 def dist_to_si(x):
 	return x*5.29177e-11

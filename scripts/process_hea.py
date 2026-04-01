@@ -1,10 +1,12 @@
 import argparse
 import os
 from src.elements import HEAClass
+from src.utils import save_dict_to_json
 from src.consts import KKR_PARAMS_LATTICE, KKR_PARAMS_DEBYE, KKR_PARAMS_FINALSCF
 from lattice import run_kkr_eos
 from finalscf import run_kkr_finalscf
 from debye import run_kkr_elastic_debye
+from macmillan import run_mcmillan_sweep
 
 
 # =========================
@@ -20,6 +22,15 @@ def run_one_hea(**kwargs):
     hea_configuration = {'elements': hea.return_atomic_numbers(),
                          'concentrations': hea.concentrations,
                          'density': hea.density}
+    run_params = {
+        'element_labels': kwargs['element_labels'],
+        'concentrations': kwargs['concentrations'],
+        'density': hea.density,
+        'mixture_lattice': hea.mixture_lattice,
+        'mixture_bulk_modulus': hea.mixture_bulk_modulus,
+        'mixture_debye_temperature': hea.mixture_debye_temperature,
+                }
+    save_dict_to_json(run_params, os.path.join(workdir, 'run_params.json'))
     # optimize lattice
     lattice_params = KKR_PARAMS_LATTICE
     lattice_params.update(hea_configuration)
@@ -44,6 +55,9 @@ def run_one_hea(**kwargs):
     print(scf_output)
     os.chdir(cwd)
 
+    # run MacMillan
+    run_mcmillan_sweep(workdir=scf_params['workdir'])
+
     # run debye
     debye_params = KKR_PARAMS_DEBYE
     debye_params.update(hea_configuration)
@@ -54,6 +68,8 @@ def run_one_hea(**kwargs):
     print('Debye computations DONE')
     print(debye_output)
     os.chdir(cwd)
+
+
 
 # =========================
 # CLI

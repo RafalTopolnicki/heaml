@@ -7,7 +7,8 @@ from scipy.optimize import curve_fit
 
 from src.write_akai_input import scf_input, scf_input_bcc
 from src.consts import AKAIBIN
-from src.utils import dist_from_si, dist_to_si, energy_from_si, energy_to_si, parse_energy, converged_info_in_string, gzip_file, cleanup_potential_files
+from src.utils import dist_from_si, dist_to_si, energy_from_si, energy_to_si, parse_energy, converged_info_in_string, \
+    gzip_file, cleanup_potential_files, cleanup_fortran_files
 
 
 def run_scf(lattice, args):
@@ -41,6 +42,7 @@ def run_scf(lattice, args):
     conv = converged_info_in_string(text)
 
     cleanup_potential_files(base)
+    cleanup_fortran_files(base)
 
     if args.get("compress", True):
         gzip_file(outputpath)

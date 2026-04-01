@@ -8,7 +8,7 @@ import numpy as np
 import pandas as pd
 
 from src.write_akai_input import scf_input
-from src.utils import dist_to_si, energy_to_si, parse_energy, converged_info_in_string, gzip_file, cleanup_potential_files
+from src.utils import dist_to_si, energy_to_si, parse_energy, converged_info_in_string, gzip_file, cleanup_potential_files, cleanup_fortran_files
 from src.consts import AKAIBIN, ATOMS_PER_CELL
 
 
@@ -81,6 +81,8 @@ def run_scf(filename, lattice_params, args, logger):
         gz_out = gzip_file(out)
 
     cleanup_potential_files(filename)
+    cleanup_fortran_files(filename)
+
 
     return energy, conv, gz_out
 

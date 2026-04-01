@@ -1,7 +1,7 @@
 import argparse
 import os
 from concurrent.futures import ProcessPoolExecutor, as_completed
-
+from datetime import datetime
 import numpy as np
 
 from process_hea import run_one_hea
@@ -27,9 +27,9 @@ def append_errorlog(errorlog_path, workdirname):
     errorlog_dir = os.path.dirname(errorlog_path)
     if errorlog_dir:
         os.makedirs(errorlog_dir, exist_ok=True)
-
+    timestamp = datetime.now().isoformat(timespec="seconds")
     with open(errorlog_path, "a", encoding="utf-8") as f:
-        f.write(workdirname + "\n")
+        f.write(f"{timestamp} {workdirname}\n")
 
 
 def compute_one_random_composition(task):
