@@ -32,8 +32,16 @@ def append_errorlog(errorlog_path, workdirname):
         f.write(f"{timestamp} {workdirname}\n")
 
 
+import os
+
 def compute_one_random_composition(task):
     args, sample_id = task
+
+    # global stop condition
+    exit_file = os.path.join(args["workdir"], "EXIT")
+    if os.path.exists(exit_file):
+        print("EXIT file detected — stopping worker")
+        return {"ok": False, "stopped": True}
 
     # independent RNG per task
     composition_ratio = generate_random_composition(
@@ -53,6 +61,7 @@ def compute_one_random_composition(task):
     try:
         run_one_hea(**run_params)
         return {"ok": True, "workdirname": workdirname}
+
     except Exception as exc:
         append_errorlog(args["errorlog"], workdirname)
         print(f"!!!! Error in {workdirname}: {exc}")

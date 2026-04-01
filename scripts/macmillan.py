@@ -10,7 +10,10 @@ from typing import Dict, List, Any
 
 import numpy as np
 import pandas as pd
-from scipy.integrate import simpson
+try:
+    from scipy.integrate import simpson
+except:
+    from scipy.integrate import simps as simpson
 
 
 SPECIAL_LABELS = {"rstr_real_ef", "rstr_at_ef"}
