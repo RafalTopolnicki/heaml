@@ -30,7 +30,7 @@ def scf_input(filename, lattice_params, elements, concentrations, ew, xc, rel, b
         file.write(f'c   type    ncmp    rmt    field   mxl  anclr   conc\n')
         file.write(f'   X   {len(elements)}  {rmt}  {0.0}   {mxl}\n')
         for element, concentration in zip(elements, concentrations):
-            file.write(f'       {element}   {concentration}\n')
+            file.write(f'       {element}   {concentration:.6f}\n')
         file.write(f'{comment_line}')
         file.write(f'c natm\n')
         file.write(f'   2\n')
@@ -59,7 +59,7 @@ def scf_input(filename, lattice_params, elements, concentrations, ew, xc, rel, b
             file.write(f'c   type    ncmp    rmt    field   mxl  anclr   conc\n')
             file.write(f'   X   {len(elements)}  {rmt}  {0.0}   {mxl}\n')
             for element, concentration in zip(elements, concentrations):
-                file.write(f'       {element}   {concentration}\n')
+                file.write(f'       {element}   {concentration:.6f}\n')
             file.write(f'{comment_line}')
             file.write(f'c natm\n')
             file.write(f'   2\n')
@@ -94,7 +94,7 @@ def scf_input_bcc(filename, lattice_params, elements, concentrations, ew, xc, re
         file.write(f'c   type    ncmp    rmt    field   mxl  anclr   conc\n')
         file.write(f'   X   {len(elements)}  {rmt}  {0.0}   {mxl}\n')
         for element, concentration in zip(elements, concentrations):
-            file.write(f'       {element}   {concentration}\n')
+            file.write(f'       {element}   {concentration:.6f}\n')
         file.write(f'{comment_line}')
         file.write(f'c natm\n')
         file.write(f'   1\n')
@@ -122,7 +122,7 @@ def scf_input_bcc(filename, lattice_params, elements, concentrations, ew, xc, re
             file.write(f'c   type    ncmp    rmt    field   mxl  anclr   conc\n')
             file.write(f'   X   {len(elements)}  {rmt}  {0.0}   {mxl}\n')
             for element, concentration in zip(elements, concentrations):
-                file.write(f'       {element}   {concentration}\n')
+                file.write(f'       {element}   {concentration:.6f}\n')
             file.write(f'{comment_line}')
             file.write(f'c natm\n')
             file.write(f'   1\n')

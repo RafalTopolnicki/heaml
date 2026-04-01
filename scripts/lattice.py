@@ -134,7 +134,6 @@ if __name__ == "__main__":
     parser.add_argument("--max_lattice", type=float, required=True)
     parser.add_argument("--step", type=float, required=True)
 
-    # SCF parameters (previously hidden)
     parser.add_argument("--ew", type=float, default=0.7)
     parser.add_argument("--xc", type=str, default="pbe")
     parser.add_argument("--rel", type=str, default="nrl", choices=["nrl", "sra", "srals"])

@@ -65,6 +65,15 @@ if __name__ == "__main__":
     parser.add_argument("--workdir", type=str, default=".")
     parser.add_argument("--no-gzip", action="store_true")
 
+
+    parser.add_argument("--ew", type=float, default=0.7)
+    parser.add_argument("--xc", type=str, default="pbe")
+    parser.add_argument("--rel", type=str, default="nrl", choices=["nrl", "sra", "srals"])
+    parser.add_argument("--bzqlty", type=float, default=10)
+    parser.add_argument("--pmix", type=float, default=0.01)
+    parser.add_argument("--edelt", type=float, default=0.001)
+    parser.add_argument("--mxl", type=int, default=3)
+
     args = vars(parser.parse_args())
 
     # type fixes
