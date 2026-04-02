@@ -35,7 +35,7 @@ def append_errorlog(errorlog_path, workdirname):
 import os
 
 def compute_one_random_composition(task):
-    args, sample_id = task
+    args, sample_id, seed = task
 
     # global stop condition
     exit_file = os.path.join(args["workdir"], "EXIT")
@@ -46,7 +46,7 @@ def compute_one_random_composition(task):
     # independent RNG per task
     composition_ratio = generate_random_composition(
         n_elements=len(composition_labels),
-        seed=100 + sample_id,
+        seed=seed,
     )
 
     workdirname = generate_dirname(composition_labels, composition_ratio)
@@ -74,11 +74,12 @@ if __name__ == "__main__":
     parser.add_argument("--errorlog", type=str, required=True)
     parser.add_argument("--number_of_samples", type=int, default=2)
     parser.add_argument("--workers", type=int, default=1)
+    parser.add_argument("--seed", type=int, default=0)
     args = vars(parser.parse_args())
 
     os.makedirs(args["workdir"], exist_ok=True)
 
-    tasks = [(args, i) for i in range(args["number_of_samples"])]
+    tasks = [(args, i, i+args["seed"]) for i in range(args["number_of_samples"])]
 
     if args["workers"] == 1:
         for task in tasks:
