@@ -10,7 +10,7 @@ KKR_PARAMS_LATTICE = {
     'ew': 0.7,
     'xc': 'pbe',
     'rel': 'nrl',
-    'bzqlty': 5,
+    'bzqlty': 10,
     'mxl': 3,
     'lattice_steps': 5,
     'min_lattice_prop': 0.95,
@@ -22,7 +22,7 @@ KKR_PARAMS_FINALSCF = {
     'ew': 0.7,
     'xc': 'pbe',
     'rel': 'nrl',
-    'bzqlty': 5,
+    'bzqlty': 20,
     'mxl': 3,
     'delta': 0.005, # IS THIS NEEDED HERE?
     'subdir': 'finalscf',
@@ -39,7 +39,7 @@ KKR_PARAMS_DEBYE = {
     'ew': 0.7,
     'xc': 'pbe',
     'rel': 'nrl',
-    'bzqlty': 5,
+    'bzqlty': 10,
     'mxl': 3,
     'delta': 0.005,
     'rmt': 0.43157, # CHECK THIS LATER

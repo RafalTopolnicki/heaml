@@ -1,12 +1,13 @@
 import numpy as np
 
 class Element:
-    def __init__(self, lattice, bulk_modulus, debye_temperature, atomic_nuber, density):
+    def __init__(self, lattice, bulk_modulus, debye_temperature, atomic_nuber, density, mass):
         self.lattice = lattice
         self.bulk_modulus = bulk_modulus
         self.debye_temperature = debye_temperature
         self.atomic_number = atomic_nuber
         self.density = density
+        self.mass = mass
 
 # hcp:bcc lattice constant
 # a_bcc = 1.12*a_hcp
@@ -14,12 +15,12 @@ class Element:
 # lattice constants here are not experimental values but come from KKR claulcations
 # NRL EW=0.7 BZ=10 PBE
 ELEMENTS = {
-    'Ti': Element(atomic_nuber=22, lattice=6.15, bulk_modulus=110, debye_temperature=420, density=4510), # beta-ti
-    'Nb': Element(atomic_nuber=41, lattice=6.25, bulk_modulus=170, debye_temperature=275, density=8570), #
-    'Zr': Element(atomic_nuber=40, lattice=6.73, bulk_modulus=95, debye_temperature=270, density=6150), # beta-Zr
-    'Hf': Element(atomic_nuber=72, lattice=6.83, bulk_modulus=110, debye_temperature=250, density=13310), # 1.12*3.2A # hcp
-    'Ta': Element(atomic_nuber=73, lattice=6.37, bulk_modulus=200, debye_temperature=240, density=15578), # alpha-Ta
-    'Sc': Element(atomic_nuber=21, lattice=6.93, bulk_modulus=57, debye_temperature=355, density=2990), # 1.12*3.3A # hcp
+    'Ti': Element(atomic_nuber=22, lattice=6.15, bulk_modulus=110, debye_temperature=420, density=4510, mass=47.87), # beta-ti
+    'Nb': Element(atomic_nuber=41, lattice=6.25, bulk_modulus=170, debye_temperature=275, density=8570, mass=92.9), #
+    'Zr': Element(atomic_nuber=40, lattice=6.73, bulk_modulus=95, debye_temperature=270, density=6150, mass=91.2), # beta-Zr
+    'Hf': Element(atomic_nuber=72, lattice=6.83, bulk_modulus=110, debye_temperature=250, density=13310, mass=178.5), # 1.12*3.2A # hcp
+    'Ta': Element(atomic_nuber=73, lattice=6.37, bulk_modulus=200, debye_temperature=240, density=15578, mass=180.9), # alpha-Ta
+    'Sc': Element(atomic_nuber=21, lattice=6.93, bulk_modulus=57, debye_temperature=355, density=2990, mass=44.95), # 1.12*3.3A # hcp
     # 'Y': Element(atomic_nuber=39, lattice=6.889, bulk_modulus=41, debye_temperature=210, density=6973), # ????
     # 'La': Element(atomic_nuber=57, lattice=7.97, bulk_modulus=28, debye_temperature=135, density=6160), # 1.12*3.77A
     # 'Mo': Element(atomic_nuber=42, lattice=5.947, bulk_modulus=250, debye_temperature=423, density=10250),
@@ -53,6 +54,8 @@ class HEAClass:
         self.mixture_debye_temperature = np.sum([c * e.debye_temperature for c, e in zip(self.concentrations, self.elements)])
         self.density = np.sum(
             [c * e.density for c, e in zip(self.concentrations, self.elements)])
+        self.mass = np.sum(
+            [c * e.mass for c, e in zip(self.concentrations, self.elements)])
         self.lattice = None
         self.bulk_modulus = None
         self.debye_temperature = None

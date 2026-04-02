@@ -171,6 +171,7 @@ def run_kkr_elastic_debye(**kwargs):
 
         summary = {
             "a0_bohr": kwargs["a0"],
+            "B0": kwargs["B0"],
             "delta": delta,
             "energy0_mono_ev": float(energy0_mono),
             "energy0_tetra_ev": float(energy0_tetra),

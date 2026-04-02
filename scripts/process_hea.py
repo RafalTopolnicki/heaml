@@ -24,7 +24,7 @@ def run_one_hea(**kwargs):
                          'density': hea.density}
     run_params = {
         'element_labels': kwargs['element_labels'],
-        'concentrations': kwargs['concentrations'].tolist(),
+        'concentrations': list(kwargs['concentrations']),
         'density': hea.density,
         'mixture_lattice': hea.mixture_lattice,
         'mixture_bulk_modulus': hea.mixture_bulk_modulus,
