@@ -29,6 +29,7 @@ def run_one_hea(**kwargs):
         'mixture_lattice': hea.mixture_lattice,
         'mixture_bulk_modulus': hea.mixture_bulk_modulus,
         'mixture_debye_temperature': hea.mixture_debye_temperature,
+        'mixture_mass': hea.mass,
                 }
     save_dict_to_json(run_params, os.path.join(workdir, 'run_params.json'))
     # optimize lattice

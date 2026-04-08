@@ -29,6 +29,8 @@ def run_scf(lattice, args):
         edelt=args.get("edelt", 0.001),
         mxl=args.get("mxl", 3),
         dos=True,
+        magtype=args.get("magtype", "nmag"),
+        sym=args.get("sym", "bcc"),
     )
 
     with open(inp, "r") as fin, open(out, "w") as fout:

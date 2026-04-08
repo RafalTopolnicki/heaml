@@ -65,7 +65,7 @@ def compute_one_random_composition(task):
     except Exception as exc:
         append_errorlog(args["errorlog"], workdirname)
         print(f"!!!! Error in {workdirname}: {exc}")
-        return {"ok": False, "workdirname": workdirname, "error": str(exc)}
+        return {"ok": False, "workdirname": workdirname, "mixtureerror": str(exc)}
 
 
 if __name__ == "__main__":

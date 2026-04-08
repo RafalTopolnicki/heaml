@@ -7,7 +7,7 @@ def get_lattice_line_from_params(lattice_params):
         line += ", , , , , ,"
     return line
 
-def scf_input(filename, lattice_params, elements, concentrations, ew, xc, rel, bzqlty, pmix, edelt, mxl, rmt=0, dos=False):
+def scf_input(filename, lattice_params, elements, concentrations, ew, xc, rel, bzqlty, pmix, edelt, mxl, rmt=0, magtype='nmag', dos=False):
     comment_line = 'c-------------------------\n'
     lattice_line = get_lattice_line_from_params(lattice_params)
     with open(filename, 'w') as file:
@@ -19,7 +19,7 @@ def scf_input(filename, lattice_params, elements, concentrations, ew, xc, rel, b
         file.write(f'{lattice_line}\n')
         file.write(f'{comment_line}')
         file.write(f'c   edelt    ewidth    reltyp   sdftyp   magtyp   record\n')
-        file.write(f'    {edelt}    {ew}    {rel}   {xc}      nmag      init\n')
+        file.write(f'    {edelt}    {ew}    {rel}   {xc}      {magtype}      init\n')
         file.write(f'{comment_line}')
         file.write(f'c   outtyp    bzqlty   maxitr   pmix\n')
         file.write(f'    update     {int(bzqlty)}    500 {pmix}\n')
@@ -48,7 +48,7 @@ def scf_input(filename, lattice_params, elements, concentrations, ew, xc, rel, b
             file.write(f'{lattice_line}\n')
             file.write(f'{comment_line}')
             file.write(f'c   edelt    ewidth    reltyp   sdftyp   magtyp   record\n')
-            file.write(f'    {edelt}    {ew}    {rel}   {xc}      nmag      2nd\n')
+            file.write(f'    {edelt}    {ew}    {rel}   {xc}      {magtype}      2nd\n')
             file.write(f'{comment_line}')
             file.write(f'c   outtyp    bzqlty   maxitr   pmix\n')
             file.write(f'    update     {int(bzqlty)}    500 {pmix}\n')
@@ -70,7 +70,7 @@ def scf_input(filename, lattice_params, elements, concentrations, ew, xc, rel, b
             file.write(f'{comment_line}')
         file.close()
 
-def scf_input_bcc(filename, lattice_params, elements, concentrations, ew, xc, rel, bzqlty, pmix, edelt, mxl, rmt=0, dos=False):
+def scf_input_bcc(filename, lattice_params, elements, concentrations, ew, xc, rel, bzqlty, pmix, edelt, mxl, rmt=0, magtype='nmag', sym='bcc', dos=False):
     comment_line = 'c-------------------------\n'
     a0 = lattice_params['lattice_constant']
     print(filename)
@@ -80,10 +80,10 @@ def scf_input_bcc(filename, lattice_params, elements, concentrations, ew, xc, re
         file.write(f'go {filename}.pot\n')
         file.write(f'{comment_line}')
         file.write(f'c   brvtyp     a        c/a   b/a   alpha   beta   gamma\n')
-        file.write(f'    bcc    {a0}  , , , , , , \n')
+        file.write(f'    {sym}    {a0}  , , , , , , \n')
         file.write(f'{comment_line}')
         file.write(f'c   edelt    ewidth    reltyp   sdftyp   magtyp   record\n')
-        file.write(f'    {edelt}    {ew}    {rel}   {xc}      nmag      init\n')
+        file.write(f'    {edelt}    {ew}    {rel}   {xc}      {magtype}      init\n')
         file.write(f'{comment_line}')
         file.write(f'c   outtyp    bzqlty   maxitr   pmix\n')
         file.write(f'    update     {int(bzqlty)}    500 {pmix}\n')
@@ -108,10 +108,10 @@ def scf_input_bcc(filename, lattice_params, elements, concentrations, ew, xc, re
             file.write(f'dos {filename}.pot\n')
             file.write(f'{comment_line}')
             file.write(f'c   brvtyp     a        c/a   b/a   alpha   beta   gamma\n')
-            file.write(f'    bcc    {a0}  , , , , , , \n')
+            file.write(f'    {sym}    {a0}  , , , , , , \n')
             file.write(f'{comment_line}')
             file.write(f'c   edelt    ewidth    reltyp   sdftyp   magtyp   record\n')
-            file.write(f'    {edelt}    {ew}    {rel}   {xc}      nmag      2nd\n')
+            file.write(f'    {edelt}    {ew}    {rel}   {xc}      {magtype}      2nd\n')
             file.write(f'{comment_line}')
             file.write(f'c   outtyp    bzqlty   maxitr   pmix\n')
             file.write(f'    update     {int(bzqlty)}    500 {pmix}\n')

@@ -31,6 +31,8 @@ def run_scf(lattice, args):
         pmix=args.get("pmix", 0.01),
         edelt=args.get("edelt", 0.001),
         mxl=args.get("mxl", 3),
+        magtype=args.get("magtype", "nmag"),
+        sym=args.get("sym", "bcc"),
     )
 
     with open(inputpath, "r") as fin, open(outputpath, "w") as fout:
@@ -143,6 +145,7 @@ if __name__ == "__main__":
     parser.add_argument("--pmix", type=float, default=0.01)
     parser.add_argument("--edelt", type=float, default=0.001)
     parser.add_argument("--mxl", type=int, default=3)
+    parser.add_argument("--magtype", default="nmag", choices=["nmag", "mag"])
 
     # workflow / IO
     parser.add_argument("--workdir", type=str, default=".")
