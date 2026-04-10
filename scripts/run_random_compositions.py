@@ -7,13 +7,19 @@ import numpy as np
 from process_hea import run_one_hea
 
 
-# Ti, Nb, Zr, Hf, Ta, Sc
-composition_labels = ["Ti", "Nb", "Zr", "Hf", "Ta", "Sc"]
-minimal_composition = 0.05
+composition_labels = ["Ti", "Nb", "Zr", "Hf", "Ta", "Sc", "Mo", "W", "Y", "La"]
+minimal_compositions = {'Ti': 0, 'Nb': 0, 'Zr': 0, 'Hf': 0, 'Ta': 0, 'Sc': 0, 'Mo': 0, 'W': 0, 'Y': 0, 'La': 0}
+maximal_compositions = {'Ti': 1, 'Nb': 1, 'Zr': 1, 'Hf': 1, 'Ta': 1, 'Sc': 1, 'Mo': 1, 'W': 1, 'Y': 1, 'La': 1}
+assert len(composition_labels) <= len(minimal_compositions) # check actual labels
+assert len(composition_labels) <= len(maximal_compositions)
 
 def generate_random_composition(n_elements=5, seed=None):
     rng = np.random.default_rng(seed)
-    return rng.dirichlet(np.ones(n_elements))
+    while True:
+        compostion = rng.dirichlet(np.ones(n_elements))
+        for element, c in zip(composition_labels, compostion):
+            if c >= minimal_compositions[element] and c <= maximal_compositions[element]:
+                return compostion
 
 
 def generate_dirname(composition_labels, composition_ratio):
@@ -38,7 +44,7 @@ def compute_one_random_composition(task):
     args, sample_id, seed = task
 
     # global stop condition
-    exit_file = os.path.join(args["workdir"], "EXIT")
+    exit_file = "EXIT"
     if os.path.exists(exit_file):
         print("EXIT file detected — stopping worker")
         return {"ok": False, "stopped": True}

@@ -9,9 +9,10 @@ ATOMS_PER_CELL = 2
 KKR_PARAMS_LATTICE = {
     'ew': 0.7,
     'xc': 'pbe',
-    'rel': 'nrl',
+    'rel': 'sra',
     'bzqlty': 10,
     'mxl': 3,
+    'magtype': 'nmag',
     'lattice_steps': 5,
     'min_lattice_prop': 0.95,
     'max_lattice_prop': 1.05,
@@ -21,9 +22,10 @@ KKR_PARAMS_LATTICE = {
 KKR_PARAMS_FINALSCF = {
     'ew': 0.7,
     'xc': 'pbe',
-    'rel': 'nrl',
+    'rel': 'sra',
     'bzqlty': 20,
     'mxl': 3,
+    'magtype': 'nmag',
     'delta': 0.005, # IS THIS NEEDED HERE?
     'subdir': 'finalscf',
     'output': 'finalscf',
@@ -38,12 +40,14 @@ KKR_PARAMS_FINALSCF = {
 KKR_PARAMS_DEBYE = {
     'ew': 0.7,
     'xc': 'pbe',
-    'rel': 'nrl',
+    'rel': 'sra',
     'bzqlty': 10,
     'mxl': 3,
+    'magtype': 'nmag',
     'delta': 0.005,
     'rmt': 0.43157, # CHECK THIS LATER
     'pmix': 0.01,
+
     'edelt': 0.001,
     'subdir': 'debye',
     'output': 'debye',

@@ -30,6 +30,9 @@ def run_one_hea(**kwargs):
         'mixture_bulk_modulus': hea.mixture_bulk_modulus,
         'mixture_debye_temperature': hea.mixture_debye_temperature,
         'mixture_mass': hea.mass,
+        'KKR_PARAMS_LATTICE': KKR_PARAMS_LATTICE,
+        'KKR_PARAMS_DEBYE': KKR_PARAMS_DEBYE,
+        'KKR_PARAMS_FINALSCF': KKR_PARAMS_FINALSCF
                 }
     save_dict_to_json(run_params, os.path.join(workdir, 'run_params.json'))
     # optimize lattice
@@ -90,6 +93,7 @@ if __name__ == "__main__":
     parser.add_argument("--pmix", type=float, default=0.01)
     parser.add_argument("--edelt", type=float, default=0.001)
     parser.add_argument("--mxl", type=int, default=3)
+    parser.add_argument("--magtype", default="nmag", choices=["nmag", "mag"])
 
     args = vars(parser.parse_args())
 
