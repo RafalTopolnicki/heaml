@@ -62,7 +62,7 @@ def compute_one_random_composition(task):
         "workdir": full_workdir,
         "element_labels": composition_labels,
         "concentrations": composition_ratio,
-        "task": args.task,
+        "task": args['task'],
     }
 
     try:

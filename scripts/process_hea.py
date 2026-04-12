@@ -22,6 +22,17 @@ def run_one_hea(**kwargs):
     hea_configuration = {'elements': hea.return_atomic_numbers(),
                          'concentrations': hea.concentrations,
                          'density': hea.density}
+    # overwrite def params
+    # for lattcie optimization only
+    KKR_PARAMS_LATTICE_PARAMS = KKR_PARAMS_LATTICE.copy()
+    KKR_PARAMS_LATTICE_PARAMS['ew'] = kwargs.get('ew', KKR_PARAMS_LATTICE['ew'])
+    KKR_PARAMS_LATTICE_PARAMS['xc'] = kwargs.get('xc', KKR_PARAMS_LATTICE['xc'])
+    KKR_PARAMS_LATTICE_PARAMS['rel'] = kwargs.get('rel', KKR_PARAMS_LATTICE['rel'])
+    KKR_PARAMS_LATTICE_PARAMS['bzqlty'] = kwargs.get('bzqlty', KKR_PARAMS_LATTICE['bzqlty'])
+    KKR_PARAMS_LATTICE_PARAMS['pmix'] = kwargs.get('pmix', KKR_PARAMS_LATTICE['pmix'])
+    KKR_PARAMS_LATTICE_PARAMS['edelt'] = kwargs.get('edelt', KKR_PARAMS_LATTICE['edelt'])
+    KKR_PARAMS_LATTICE_PARAMS['mxl'] = kwargs.get('mxl', KKR_PARAMS_LATTICE['mxl'])
+    KKR_PARAMS_LATTICE_PARAMS['magtype'] = kwargs.get('magtype', KKR_PARAMS_LATTICE['magtype'])
     run_params = {
         'element_labels': kwargs['element_labels'],
         'concentrations': list(kwargs['concentrations']),
@@ -30,13 +41,13 @@ def run_one_hea(**kwargs):
         'mixture_bulk_modulus': hea.mixture_bulk_modulus,
         'mixture_debye_temperature': hea.mixture_debye_temperature,
         'mixture_mass': hea.mass,
-        'KKR_PARAMS_LATTICE': KKR_PARAMS_LATTICE,
+        'KKR_PARAMS_LATTICE': KKR_PARAMS_LATTICE_PARAMS,
         'KKR_PARAMS_DEBYE': KKR_PARAMS_DEBYE,
         'KKR_PARAMS_FINALSCF': KKR_PARAMS_FINALSCF
                 }
     save_dict_to_json(run_params, os.path.join(workdir, 'run_params.json'))
     # optimize lattice
-    lattice_params = KKR_PARAMS_LATTICE
+    lattice_params = KKR_PARAMS_LATTICE_PARAMS
     lattice_params.update(hea_configuration)
     lattice_params['min_lattice'] = hea.mixture_lattice * lattice_params['min_lattice_prop']
     lattice_params['max_lattice'] = hea.mixture_lattice * lattice_params['max_lattice_prop']
@@ -87,14 +98,14 @@ if __name__ == "__main__":
     parser.add_argument("--no-gzip", action="store_true")
 
 
-    parser.add_argument("--ew", type=float, default=0.7)
-    parser.add_argument("--xc", type=str, default="pbe")
-    parser.add_argument("--rel", type=str, default="nrl", choices=["nrl", "sra", "srals"])
-    parser.add_argument("--bzqlty", type=float, default=10)
-    parser.add_argument("--pmix", type=float, default=0.01)
-    parser.add_argument("--edelt", type=float, default=0.001)
-    parser.add_argument("--mxl", type=int, default=3)
-    parser.add_argument("--magtype", default="nmag", choices=["nmag", "mag"])
+    parser.add_argument("--ew", type=float, default=KKR_PARAMS_LATTICE['ew'])
+    parser.add_argument("--xc", type=str, default=KKR_PARAMS_LATTICE['xc'])
+    parser.add_argument("--rel", type=str, choices=["nrl", "sra", "srals"], default=KKR_PARAMS_LATTICE['rel'])
+    parser.add_argument("--bzqlty", type=float, default=KKR_PARAMS_LATTICE['bzqlty'])
+    parser.add_argument("--pmix", type=float, default=KKR_PARAMS_LATTICE['pmix'])
+    parser.add_argument("--edelt", type=float, default=KKR_PARAMS_LATTICE['edelt'])
+    parser.add_argument("--mxl", type=int, default=KKR_PARAMS_LATTICE['mxl'])
+    parser.add_argument("--magtype", choices=["nmag", "mag"], default=KKR_PARAMS_LATTICE['magtype'])
     parser.add_argument("--task", type=str, default="all", choices=["lattice", "all"])
 
     args = vars(parser.parse_args())

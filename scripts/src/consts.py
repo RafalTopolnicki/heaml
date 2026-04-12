@@ -7,7 +7,7 @@ ATOMS_PER_CELL = 2
 
 ## KKR-PARAMS
 KKR_PARAMS_LATTICE = {
-    'ew': 0.7,
+    'ew': 0.6,
     'xc': 'pbe',
     'rel': 'sra',
     'bzqlty': 10,
@@ -16,17 +16,21 @@ KKR_PARAMS_LATTICE = {
     'lattice_steps': 5,
     'min_lattice_prop': 0.95,
     'max_lattice_prop': 1.05,
+    'pmix': 0.01,
+    'edelt': 0.001,
     'subdir': 'lattice',
     'output': 'lattice'
 }
 KKR_PARAMS_FINALSCF = {
-    'ew': 0.7,
+    'ew': 0.6,
     'xc': 'pbe',
     'rel': 'sra',
     'bzqlty': 20,
     'mxl': 3,
     'magtype': 'nmag',
     'delta': 0.005, # IS THIS NEEDED HERE?
+    'pmix': 0.01,
+    'edelt': 0.001,
     'subdir': 'finalscf',
     'output': 'finalscf',
 }
@@ -38,7 +42,7 @@ KKR_PARAMS_FINALSCF = {
 # TETRAGONAL
 # RMT: 0.43088 for all delta
 KKR_PARAMS_DEBYE = {
-    'ew': 0.7,
+    'ew': 0.6,
     'xc': 'pbe',
     'rel': 'sra',
     'bzqlty': 10,
