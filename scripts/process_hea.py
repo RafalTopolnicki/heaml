@@ -47,7 +47,8 @@ def run_one_hea(**kwargs):
     print('Lattice computations DONE')
     print(eof_output)
     os.chdir(cwd)
-
+    if kwargs['task'] == 'lattice':
+        return
     # run final scf
     scf_params = KKR_PARAMS_FINALSCF
     scf_params.update(hea_configuration)
@@ -94,6 +95,7 @@ if __name__ == "__main__":
     parser.add_argument("--edelt", type=float, default=0.001)
     parser.add_argument("--mxl", type=int, default=3)
     parser.add_argument("--magtype", default="nmag", choices=["nmag", "mag"])
+    parser.add_argument("--task", type=str, default="all", choices=["lattice", "all"])
 
     args = vars(parser.parse_args())
 

@@ -62,6 +62,7 @@ def compute_one_random_composition(task):
         "workdir": full_workdir,
         "element_labels": composition_labels,
         "concentrations": composition_ratio,
+        "task": args.task,
     }
 
     try:
@@ -81,6 +82,7 @@ if __name__ == "__main__":
     parser.add_argument("--number_of_samples", type=int, default=2)
     parser.add_argument("--workers", type=int, default=1)
     parser.add_argument("--seed", type=int, default=0)
+    parser.add_argument("--task", type=str, default="all", choices=["lattice", "all"])
     args = vars(parser.parse_args())
 
     os.makedirs(args["workdir"], exist_ok=True)
