@@ -3,11 +3,11 @@ import os
 import sys
 from concurrent.futures import ProcessPoolExecutor, as_completed
 import pandas as pd
-
+import math
 from src.process_kkr import process_kkr
 from src.utils import generate_dirname, append_errorlog, save_dict_to_json, log_iteration_summary
 from src.ml import train_cb_model
-from src.consts import composition_labels, ACQUISITION_ALPHA, ACQUISITION_METRIC, TARGET
+from src.consts import composition_labels, ACQUISITION_ALPHA, ACQUISITION_METRIC, TARGET, CANDIDATE_COMPOSITIONS_N
 from src.sampling import generate_candidates_data
 from process_hea import run_one_hea
 import numpy as np
@@ -170,6 +170,12 @@ if __name__ == "__main__":
     os.makedirs(workdir, exist_ok=True)
     save_dict_to_json(args, os.path.join(workdir, "parameters.json"))
     iteration_log_path = os.path.join(workdir, "optimization_log.txt")
+
+    expected_composition_distance = np.power(math.factorial(len(composition_labels)), 1.0/len(composition_labels)) * np.power(CANDIDATE_COMPOSITIONS_N, 1.0/len(composition_labels))
+    expected_composition_distance = 1.0/expected_composition_distance
+    print(f'Expected axis distance: {expected_composition_distance}')
+
+
     # generate candidates
     all_candidates = generate_candidates_data()
 
