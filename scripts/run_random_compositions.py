@@ -56,6 +56,7 @@ def compute_one_random_composition(task):
         return {"ok": False, "workdirname": workdirname, "mixtureerror": str(exc)}
 
 
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--workdir", type=str, required=True)

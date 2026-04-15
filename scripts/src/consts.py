@@ -5,6 +5,12 @@ AKAIBIN=AKAIMODBIN
 
 ATOMS_PER_CELL = 2
 
+composition_labels = ["Ti", "Nb", "Zr", "Hf", "Ta", "Sc", "Mo", "W", "Y", "La"]
+
+CANDIDATE_COMPOSITIONS_N = 1000
+ACQUISITION_ALPHA = 1.0
+ACQUISITION_METRIC = 'cosine'
+
 ## KKR-PARAMS
 KKR_PARAMS_LATTICE = {
     'ew': 0.6,

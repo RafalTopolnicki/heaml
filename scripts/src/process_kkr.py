@@ -3,8 +3,8 @@ import json
 import os
 import pandas as pd
 from src.features import compute_hea_features
+from src.consts import composition_labels
 
-composition_labels = ["Ti", "Nb", "Zr", "Hf", "Ta", "Sc", "Mo", "W", "Y", "La"]
 
 def compute_lambda(row):
     nominator = np.sum([row[e]*row[f'{e}_eta_total'] for e in composition_labels])
