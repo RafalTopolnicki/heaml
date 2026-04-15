@@ -5,30 +5,29 @@ from concurrent.futures import ProcessPoolExecutor, as_completed
 import pandas as pd
 
 from src.process_kkr import process_kkr
-from src.utils import generate_dirname, append_errorlog, save_dict_to_json
+from src.utils import generate_dirname, append_errorlog, save_dict_to_json, log_iteration_summary
 from src.ml import train_cb_model
-from src.consts import composition_labels, ACQUISITION_ALPHA, ACQUISITION_METRIC
+from src.consts import composition_labels, ACQUISITION_ALPHA, ACQUISITION_METRIC, TARGET
 from src.sampling import generate_candidates_data
 from process_hea import run_one_hea
-
-
+import numpy as np
+from sklearn.metrics.pairwise import cosine_distances
 
 minimal_compositions = {'Ti': 0, 'Nb': 0, 'Zr': 0, 'Hf': 0, 'Ta': 0, 'Sc': 0, 'Mo': 0, 'W': 0, 'Y': 0, 'La': 0}
 maximal_compositions = {'Ti': 1, 'Nb': 1, 'Zr': 1, 'Hf': 1, 'Ta': 1, 'Sc': 1, 'Mo': 1, 'W': 1, 'Y': 1, 'La': 1}
 assert len(composition_labels) <= len(minimal_compositions) # check actual labels
 assert len(composition_labels) <= len(maximal_compositions)
 
+
 def read_experiments_from_directory(path):
     results = []
-    dirlist = os.listdir(path)
-    for dir in dirlist:
-        res = process_kkr(path=path, dirname=dir)
-        if res:
-            results.append(res)
+    for entry in os.listdir(path):
+        full_path = os.path.join(path, entry)
+        if os.path.isdir(full_path):  # only directories
+            res = process_kkr(path=path, dirname=entry)
+            if res:
+                results.append(res)
     return results
-
-import numpy as np
-from sklearn.metrics.pairwise import cosine_distances
 
 def compute_min_distances(df_known, df_candidates, columns, metric="euclidean"):
 
@@ -86,6 +85,11 @@ def compute_one_composition(composition_dict, workdir):
 def compute_one_composition_task(task):
     comp_dict, computation_dir = task
     return compute_one_composition(comp_dict, computation_dir)
+
+def find_largest_in_data(data):
+    vals = [d[TARGET] for d in data]
+    return np.max(vals)
+
 
 def select_diverse_top_candidates(
     df_known,
@@ -154,18 +158,17 @@ if __name__ == "__main__":
     parser.add_argument("--initdir", type=str, required=True)
     parser.add_argument("--errorlog", type=str, required=True)
     parser.add_argument("--iterations", type=int, default=2)
-    parser.add_argument("--workers", type=int, default=1)
-    parser.add_argument("--champions_per_step", type=int, default=1)
+    parser.add_argument("--workers", type=int, default=4)
+    parser.add_argument("--champions_per_step", type=int, default=4)
     parser.add_argument("--seed", type=int, default=0)
-    parser.add_argument("--number_of_models", type=int, default=3)
+    parser.add_argument("--number_of_models", type=int, default=10)
     args = vars(parser.parse_args())
     champions_per_step = args['champions_per_step']
     workdir = args['workdir']
     iterations = args['iterations']
-    computation_dir = os.path.join(workdir, 'computation')
-    os.makedirs(computation_dir, exist_ok=True)
+    os.makedirs(workdir, exist_ok=True)
     save_dict_to_json(args, os.path.join(workdir, "parameters.json"))
-
+    iteration_log_path = os.path.join(workdir, "optimization_log.txt")
     # generate candidates
     all_candidates = generate_candidates_data()
 
@@ -174,12 +177,15 @@ if __name__ == "__main__":
     known_data = init_data.copy()
 
     for iteration in range(1, iterations+1):
+        print(f'(IIII) Iteration: ', iteration, 'Number of datapoints: ', len(known_data), ' MaxTc:', find_largest_in_data(known_data))
         exit_file = "EXIT"
         if os.path.exists(exit_file):
             print("EXIT file detected — stopping all")
             sys.exit(0)
 
         iterationdir = os.path.join(workdir, f'iteration_{iteration}')
+        computationdir = os.path.join(iterationdir, 'computation')
+        os.makedirs(computationdir, exist_ok=True)
 
         # train multiple models
         model_training_metrics = []
@@ -220,7 +226,7 @@ if __name__ == "__main__":
         tasks = []
         for _, row in df_top_candidates.iterrows():
             comp_dict = dict(zip(composition_labels, row[composition_labels].values))
-            tasks.append((comp_dict, computation_dir))
+            tasks.append((comp_dict, computationdir))
 
         if args["workers"] == 1:
             for task in tasks:
@@ -230,6 +236,18 @@ if __name__ == "__main__":
                 futures = [executor.submit(compute_one_composition_task, task) for task in tasks]
                 for future in as_completed(futures):
                     _ = future.result()
-        # no merge all new KKR results with the intial one
-        all_new_data = read_experiments_from_directory(computation_dir)
-        known_data = init_data + all_new_data
+        # now merge all new KKR results with the intial one
+        new_data = read_experiments_from_directory(computationdir)
+
+        # create now list of all known data
+        known_data = known_data + new_data
+
+        # log the progress
+        log_iteration_summary(
+            log_path=iteration_log_path,
+            iteration=iteration,
+            known_data=known_data,
+            new_data=new_data,
+            composition_labels=composition_labels,
+            target_col=TARGET,
+        )

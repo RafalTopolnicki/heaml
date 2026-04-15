@@ -4,6 +4,7 @@ import gzip
 import shutil
 import os
 import json
+from datetime import datetime
 
 TOTAL_ENERGY_RE = re.compile(r"total energy\s*=\s*([-+0-9.Ee]+)")
 
@@ -78,3 +79,84 @@ def energy_to_si(e):
 
 def energy_from_si(e):
     return e / 2.1798741e-18
+
+
+def format_composition(comp_dict, digits=4):
+    parts = []
+    for el, val in comp_dict.items():
+        parts.append(f"{el}={val:.{digits}f}")
+    return ", ".join(parts)
+
+
+def log_iteration_summary(
+    log_path,
+    iteration,
+    known_data,
+    new_data,
+    composition_labels,
+    target_col="Tc_mu0.1",
+):
+    """
+    Append one iteration summary to a text log file.
+
+    Parameters
+    ----------
+    log_path : str
+        Path to log file.
+    iteration : int
+        Iteration index.
+    known_data : list[dict]
+        Full known dataset after this iteration.
+    new_data : list[dict]
+        Only the structures added in this iteration.
+    composition_labels : list[str]
+        Element/composition column names.
+    target_col : str
+        Name of target column, default 'Tc_mu0.1'
+    """
+    def valid_rows(rows):
+        out = []
+        for row in rows:
+            if target_col in row and row[target_col] is not None:
+                out.append(row)
+        return out
+
+    known_valid = valid_rows(known_data)
+    new_valid = valid_rows(new_data)
+
+    best_known = max(known_valid, key=lambda r: r[target_col]) if known_valid else None
+    best_new = max(new_valid, key=lambda r: r[target_col]) if new_valid else None
+
+    with open(log_path, "a") as f:
+        f.write("=" * 80 + "\n")
+        f.write(f"timestamp: {datetime.now().isoformat()}\n")
+        f.write(f"iteration: {iteration}\n")
+        f.write(f"n_known_total: {len(known_data)}\n")
+        f.write(f"n_new_this_iteration: {len(new_data)}\n")
+
+        if best_known is not None:
+            comp_known = {el: best_known.get(el, 0.0) for el in composition_labels}
+            f.write(f"best_known_{target_col}: {best_known[target_col]:.8f}\n")
+            f.write(f"best_known_composition: {format_composition(comp_known)}\n")
+        else:
+            f.write(f"best_known_{target_col}: NA\n")
+
+        if best_new is not None:
+            comp_new = {el: best_new.get(el, 0.0) for el in composition_labels}
+            f.write(f"best_new_{target_col}: {best_new[target_col]:.8f}\n")
+            f.write(f"best_new_composition: {format_composition(comp_new)}\n")
+        else:
+            f.write(f"best_new_{target_col}: NA\n")
+
+        f.write("\nnew_structures:\n")
+        if not new_valid:
+            f.write("  none\n")
+        else:
+            for i, row in enumerate(new_valid, start=1):
+                comp = {el: row.get(el, 0.0) for el in composition_labels}
+                f.write(
+                    f"  {i:03d} | {target_col}={row[target_col]:.8f} | "
+                    f"{format_composition(comp)}\n"
+                )
+
+        f.write("\n")

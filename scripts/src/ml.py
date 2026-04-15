@@ -4,10 +4,9 @@ from sklearn.model_selection import train_test_split
 from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
 from catboost import CatBoostRegressor
 import numpy as np
-from src.consts import composition_labels
+from src.consts import composition_labels, TARGET
 
 FEATURES_TO_TRAIN_MODEL = composition_labels + ADDITIONAL_FEATURES
-TARGET = 'Tc_mu0.2'
 
 def train_cb_model(kkr_data, predict_df=None, seed=100):
     df_ = pd.DataFrame(kkr_data)
