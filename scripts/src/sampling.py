@@ -13,21 +13,12 @@ def generate_simplex_sobol(n_components, n_points):
 
     return x
 
-# def generate_simplex_sobol(n_components, n_points):
-#     sampler = qmc.Sobol(d=n_components, scramble=True)
-#     x = sampler.random(n_points)
-#
-#     # project to simplex
-#     x = -np.log(x)
-#     x = x / x.sum(axis=1, keepdims=True)
-#     return x
-
 def generate_candidates_data():
     composition_grid = generate_simplex_sobol(n_components=len(composition_labels), n_points=CANDIDATE_COMPOSITIONS_N)
     candidates = []
     for comp in composition_grid:
         comp_d = dict(zip(composition_labels, comp))
-        comp_d = comp_d | compute_hea_features(comp_d)
+        comp_d = {**comp_d, **compute_hea_features(comp_d)}
         candidates.append(comp_d)
     return pd.DataFrame(candidates)
 

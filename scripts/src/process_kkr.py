@@ -57,13 +57,18 @@ def process_kkr(path, dirname):
     try:
         composition, elements = get_composition(path, dirname)
         comp_dict = dict(zip(elements, composition))
-        data = {'name': dirname} | read_params(path, dirname) | read_debye(path, dirname) | read_macmillan(path, dirname)
+        # Mind: dict merging old-style as this has to run on old python
+        #data = {'name': dirname} | read_params(path, dirname) | read_debye(path, dirname) | read_macmillan(path, dirname)
+        data = {'name': dirname}
+        data.update(read_params(path, dirname))
+        data.update(read_debye(path, dirname))
+        data.update(read_macmillan(path, dirname))
         data['lambda'] = compute_lambda(data)
         data['Tc_mu0.1'] = tc_from_data(data, mu=0.1)
         data['Tc_mu0.2'] = tc_from_data(data, mu=0.2)
         data['Tc_mu0.3'] = tc_from_data(data, mu=0.3)
         # add features
-        data = data | compute_hea_features(comp_dict=comp_dict)
+        data = {**data, **compute_hea_features(comp_dict=comp_dict)}
         return data
     except Exception as e:
          print(f'Error in processing {dirname}: {e}')
