@@ -1,17 +1,26 @@
 import pandas as pd
-from scipy.stats import qmc
 import numpy as np
 from src.consts import composition_labels, CANDIDATE_COMPOSITIONS_N
 from src.features import compute_hea_features
+import sobol_seq
 
 def generate_simplex_sobol(n_components, n_points):
-    sampler = qmc.Sobol(d=n_components, scramble=True)
-    x = sampler.random(n_points)
+    u = sobol_seq.i4_sobol_generate(n_components, n_points)
 
     # project to simplex
-    x = -np.log(x)
+    x = -np.log(u)
     x = x / x.sum(axis=1, keepdims=True)
+
     return x
+
+# def generate_simplex_sobol(n_components, n_points):
+#     sampler = qmc.Sobol(d=n_components, scramble=True)
+#     x = sampler.random(n_points)
+#
+#     # project to simplex
+#     x = -np.log(x)
+#     x = x / x.sum(axis=1, keepdims=True)
+#     return x
 
 def generate_candidates_data():
     composition_grid = generate_simplex_sobol(n_components=len(composition_labels), n_points=CANDIDATE_COMPOSITIONS_N)
