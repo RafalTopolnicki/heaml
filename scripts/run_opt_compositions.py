@@ -192,6 +192,7 @@ if __name__ == "__main__":
         model_training_metrics = []
         preds = []
         for model_id in range(args["number_of_models"]):
+            print(f'(II) Training model: {model_id}')
             model, metrics, pred_ = train_cb_model(known_data, seed=100+model_id, predict_df=all_candidates)
             preds.append(pred_)
             model_training_metrics.append({'metrics': metrics})
