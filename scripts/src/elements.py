@@ -1,5 +1,80 @@
 import numpy as np
 
+ATOMIC_FEATURES = {
+    "atomic_radius_pm": {
+        "Ti": 140,
+        "Nb": 145,
+        "Zr": 155,
+        "Hf": 155,
+        "Ta": 145,
+        "Sc": 160,
+        "Mo": 145,
+        "W": 135,
+        "Y": 180,
+        "La": 195,
+    },
+    "electronegativity_pauling": {
+        "Ti": 1.54,
+        "Nb": 1.60,
+        "Zr": 1.33,
+        "Hf": 1.30,
+        "Ta": 1.50,
+        "Sc": 1.36,
+        "Mo": 2.16,
+        "W": 2.36,
+        "Y": 1.22,
+        "La": 1.10,
+    },
+    "valence_electron_count": {
+        "Ti": 4,
+        "Nb": 5,
+        "Zr": 4,
+        "Hf": 4,
+        "Ta": 5,
+        "Sc": 3,
+        "Mo": 6,
+        "W": 6,
+        "Y": 3,
+        "La": 3,
+    },
+    "vec": {
+        "Ti": 4,
+        "Nb": 5,
+        "Zr": 4,
+        "Hf": 4,
+        "Ta": 5,
+        "Sc": 3,
+        "Mo": 6,
+        "W": 6,
+        "Y": 3,
+        "La": 3,
+    },
+    "d_electron_count": {
+        "Ti": 2,   # [Ar] 3d2 4s2
+        "Nb": 4,   # [Kr] 4d4 5s1
+        "Zr": 2,   # [Kr] 4d2 5s2
+        "Hf": 2,   # [Xe] 4f14 5d2 6s2
+        "Ta": 3,   # [Xe] 4f14 5d3 6s2
+        "Sc": 1,   # [Ar] 3d1 4s2
+        "Mo": 5,   # [Kr] 4d5 5s1
+        "W": 4,    # [Xe] 4f14 5d4 6s2
+        "Y": 1,    # [Kr] 4d1 5s2
+        "La": 1,   # [Xe] 5d1 6s2
+    },
+    "vdw_radius_pm": {
+        "Ti": 246,
+        "Nb": 256,
+        "Zr": 252,
+        "Hf": 253,
+        "Ta": 257,
+        "Sc": 258,
+        "Mo": 245,
+        "W": 249,
+        "Y": 275,
+        "La": 298,
+    },
+}
+
 class Element:
     def __init__(self, lattice, bulk_modulus, debye_temperature, atomic_nuber, density, mass):
         self.lattice = lattice

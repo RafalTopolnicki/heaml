@@ -5,7 +5,7 @@ from datetime import datetime
 import numpy as np
 
 from process_hea import run_one_hea
-
+from src.utils import generate_dirname, append_errorlog
 
 composition_labels = ["Ti", "Nb", "Zr", "Hf", "Ta", "Sc", "Mo", "W", "Y", "La"]
 minimal_compositions = {'Ti': 0, 'Nb': 0, 'Zr': 0, 'Hf': 0, 'Ta': 0, 'Sc': 0, 'Mo': 0, 'W': 0, 'Y': 0, 'La': 0}
@@ -20,24 +20,6 @@ def generate_random_composition(n_elements=5, seed=None):
         for element, c in zip(composition_labels, compostion):
             if c >= minimal_compositions[element] and c <= maximal_compositions[element]:
                 return compostion
-
-
-def generate_dirname(composition_labels, composition_ratio):
-    txt = ""
-    for label, ratio in zip(composition_labels, composition_ratio):
-        txt += f"{label}{ratio:.4f}"
-    return txt
-
-
-def append_errorlog(errorlog_path, workdirname):
-    errorlog_dir = os.path.dirname(errorlog_path)
-    if errorlog_dir:
-        os.makedirs(errorlog_dir, exist_ok=True)
-    timestamp = datetime.now().isoformat(timespec="seconds")
-    with open(errorlog_path, "a", encoding="utf-8") as f:
-        f.write(f"{timestamp} {workdirname}\n")
-
-
 
 def compute_one_random_composition(task):
     args, sample_id, seed = task

@@ -7,6 +7,20 @@ import json
 
 TOTAL_ENERGY_RE = re.compile(r"total energy\s*=\s*([-+0-9.Ee]+)")
 
+def generate_dirname(composition_labels, composition_ratio):
+    txt = ""
+    for label, ratio in zip(composition_labels, composition_ratio):
+        txt += f"{label}{ratio:.4f}"
+    return txt
+
+def append_errorlog(errorlog_path, workdirname):
+    errorlog_dir = os.path.dirname(errorlog_path)
+    if errorlog_dir:
+        os.makedirs(errorlog_dir, exist_ok=True)
+    timestamp = datetime.now().isoformat(timespec="seconds")
+    with open(errorlog_path, "a", encoding="utf-8") as f:
+        f.write(f"{timestamp} {workdirname}\n")
+
 def parse_energy(text):
     m = TOTAL_ENERGY_RE.findall(text)
     return float(m[-1]) if m else np.nan
