@@ -38,7 +38,6 @@ def append_errorlog(errorlog_path, workdirname):
         f.write(f"{timestamp} {workdirname}\n")
 
 
-import os
 
 def compute_one_random_composition(task):
     args, sample_id, seed = task
