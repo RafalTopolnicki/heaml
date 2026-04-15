@@ -11,6 +11,7 @@ from src.consts import composition_labels, ACQUISITION_ALPHA, ACQUISITION_METRIC
 from src.sampling import generate_candidates_data
 from process_hea import run_one_hea
 import numpy as np
+import datetime
 from sklearn.metrics.pairwise import cosine_distances
 
 minimal_compositions = {'Ti': 0, 'Nb': 0, 'Zr': 0, 'Hf': 0, 'Ta': 0, 'Sc': 0, 'Mo': 0, 'W': 0, 'Y': 0, 'La': 0}
@@ -177,7 +178,7 @@ if __name__ == "__main__":
     known_data = init_data.copy()
 
     for iteration in range(1, iterations+1):
-        print(f'(IIII) Iteration: ', iteration, 'Number of datapoints: ', len(known_data), ' MaxTc:', find_largest_in_data(known_data))
+        print(f'(IIII) Iteration: ', iteration, datetime.datetime.now(), 'Number of datapoints: ', len(known_data), 'MaxTc:', find_largest_in_data(known_data))
         exit_file = "EXIT"
         if os.path.exists(exit_file):
             print("EXIT file detected — stopping all")
