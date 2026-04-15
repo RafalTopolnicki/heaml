@@ -229,7 +229,7 @@ if __name__ == "__main__":
         # log results
         save_dict_to_json(model_training_metrics, os.path.join(iterationdir, "model_training_metrics.json"))
         df_top_candidates.to_csv(os.path.join(iterationdir, "top_candidates.csv"), index=False)
-        df_candidates.to_csv(os.path.join(iterationdir, "all_candidates.csv"), index=False)
+        #df_candidates.to_csv(os.path.join(iterationdir, "all_candidates.csv"), index=False)
         # evaluate KKR on those top coordinates
         tasks = []
         for _, row in df_top_candidates.iterrows():
