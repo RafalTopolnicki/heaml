@@ -1,69 +1,90 @@
 import pandas as pd
 import numpy as np
-from src.consts import composition_labels, CANDIDATE_COMPOSITIONS_N
-from src.features import compute_hea_features
 import sobol_seq
 
-def generate_simplex_sobol(n_components, n_points):
-    u = sobol_seq.i4_sobol_generate(n_components, n_points)
+from src.consts import composition_labels, CANDIDATE_COMPOSITIONS_N
+from src.features import compute_hea_features
 
-    # project to simplex
+
+def generate_simplex_sobol(n_components, n_points, skip=0, eps=1e-12):
+    """
+    Generate quasi-uniform points on the simplex using Sobol points in [0,1]^d
+    and the exponential-normalization transform.
+    """
+    u = sobol_seq.i4_sobol_generate(n_components, n_points, skip)
+    u = np.clip(u, eps, 1.0)  # avoid log(0)
     x = -np.log(u)
     x = x / x.sum(axis=1, keepdims=True)
-
     return x
 
-def generate_candidates_data():
-    composition_grid = generate_simplex_sobol(n_components=len(composition_labels), n_points=CANDIDATE_COMPOSITIONS_N)
+
+def is_valid_composition(comp_dict, min_comp=None, max_comp=None):
+    """
+    Optional composition filter.
+    """
+    if min_comp is not None:
+        for el, vmin in min_comp.items():
+            if comp_dict.get(el, 0.0) < vmin:
+                return False
+
+    if max_comp is not None:
+        for el, vmax in max_comp.items():
+            if comp_dict.get(el, 0.0) > vmax:
+                return False
+
+    return True
+
+
+def generate_candidates_data(
+    n_candidates=CANDIDATE_COMPOSITIONS_N,
+    min_comp=None,
+    max_comp=None,
+    oversample_factor=2,
+    max_rounds=50,
+    round_decimals=10,
+):
+    """
+    Generate exactly n_candidates candidate compositions.
+
+    Strategy:
+    - generate Sobol simplex points in batches
+    - optionally filter them
+    - deduplicate by rounded composition
+    - stop once enough are collected
+    """
     candidates = []
-    for comp in composition_grid:
-        comp_d = dict(zip(composition_labels, comp))
-        comp_d = {**comp_d, **compute_hea_features(comp_d)}
-        candidates.append(comp_d)
-    return pd.DataFrame(candidates)
+    seen = set()
+    skip = 0
+    n_components = len(composition_labels)
 
+    for _ in range(max_rounds):
+        batch_size = max(1000, oversample_factor * (n_candidates - len(candidates)))
+        composition_grid = generate_simplex_sobol(
+            n_components=n_components,
+            n_points=batch_size,
+            skip=skip,
+        )
+        skip += batch_size
 
+        for comp in composition_grid:
+            comp_d = dict(zip(composition_labels, comp))
 
+            if not is_valid_composition(comp_d, min_comp=min_comp, max_comp=max_comp):
+                continue
 
+            # deduplicate by composition only
+            key = tuple(round(float(comp_d[el]), round_decimals) for el in composition_labels)
+            if key in seen:
+                continue
+            seen.add(key)
 
+            full_d = {**comp_d, **compute_hea_features(comp_d)}
+            candidates.append(full_d)
 
+            if len(candidates) >= n_candidates:
+                return pd.DataFrame(candidates)
 
-
-
-
-
-
-
-
-
-
-# def generate_compositions(n_components=6, tol=1e-6):
-#     """
-#     Generate all n_components-tuples from composition_grid
-#     that sum to 1 (within tolerance).
-#
-#     Returns:
-#         numpy array of shape (N, n_components)
-#     """
-#     composition_grid = np.linspace(NEW_COMPOSITION_MIN, NEW_COMPOSITION_MAX, NEW_COMPOSITION_NUM)
-#     grid = np.array(composition_grid)
-#     results = []
-#
-#     def backtrack(current, remaining_sum, depth):
-#         if depth == n_components - 1:
-#             # last component determined by remainder
-#             val = remaining_sum
-#             # snap to nearest grid value
-#             idx = np.abs(grid - val).argmin()
-#             if abs(grid[idx] - val) < tol:
-#                 results.append(current + [grid[idx]])
-#             return
-#
-#         for g in grid:
-#             if g > remaining_sum:
-#                 break  # pruning
-#             backtrack(current + [g], remaining_sum - g, depth + 1)
-#
-#     backtrack([], 1.0, 0)
-#     return np.array(results)
-#
+    raise RuntimeError(
+        f"Could only generate {len(candidates)} unique valid candidates "
+        f"after {max_rounds} rounds. Relax constraints or increase max_rounds."
+    )

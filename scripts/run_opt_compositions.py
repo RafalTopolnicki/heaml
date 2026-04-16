@@ -15,7 +15,7 @@ import datetime
 from sklearn.metrics.pairwise import cosine_distances
 
 minimal_compositions = {'Ti': 0, 'Nb': 0, 'Zr': 0, 'Hf': 0, 'Ta': 0, 'Sc': 0, 'Mo': 0, 'W': 0, 'Y': 0, 'La': 0}
-maximal_compositions = {'Ti': 1, 'Nb': 1, 'Zr': 1, 'Hf': 1, 'Ta': 1, 'Sc': 1, 'Mo': 1, 'W': 1, 'Y': 1, 'La': 1}
+maximal_compositions = {'Ti': 0.6, 'Nb': 0.6, 'Zr': 0.6, 'Hf': 0.6, 'Ta': 0.6, 'Sc': 0.6, 'Mo': 0.6, 'W': 0.6, 'Y': 0.6, 'La': 0.6}
 assert len(composition_labels) <= len(minimal_compositions) # check actual labels
 assert len(composition_labels) <= len(maximal_compositions)
 
@@ -203,7 +203,7 @@ if __name__ == "__main__":
 
 
     # generate candidates
-    all_candidates = generate_candidates_data()
+    all_candidates = generate_candidates_data(min_comp=minimal_compositions, max_comp=maximal_compositions)
 
     # read initial computations
     init_data = read_experiments_from_directory(args["initdir"])
