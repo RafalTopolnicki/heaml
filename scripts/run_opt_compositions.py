@@ -153,6 +153,32 @@ def select_diverse_top_candidates(
 
     return pd.DataFrame(selected_rows)
 
+def filter_known_candidates(df_known, df_candidates, columns, tol=1e-6):
+    """
+    Remove candidate rows that are already present in known data
+    (up to a tolerance in composition space).
+    """
+    dists = compute_min_distances(
+        df_known=df_known,
+        df_candidates=df_candidates,
+        columns=columns,
+        metric="euclidean",
+    )
+    return df_candidates.loc[dists > tol].copy()
+
+def composition_key(row, columns, ndigits=6):
+    return tuple(round(float(row[c]), ndigits) for c in columns)
+
+def deduplicate_known_data(data, columns, ndigits=8):
+    seen = set()
+    out = []
+    for row in data:
+        key = composition_key(row, columns, ndigits)
+        if key not in seen:
+            seen.add(key)
+            out.append(row)
+    return out
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--workdir", type=str, required=True)
@@ -216,6 +242,17 @@ if __name__ == "__main__":
         df_candidates = all_candidates.copy()
         df_candidates["raw_acquisition"] = acquisitions
 
+        df_candidates = all_candidates.copy()
+        df_candidates["raw_acquisition"] = acquisitions
+
+        # remove already-known or too-close candidates
+        df_candidates = filter_known_candidates(
+            df_known=pd.DataFrame(known_data),
+            df_candidates=df_candidates,
+            columns=composition_labels,
+            min_dist=1e-6,  # try 0.01 later for stronger novelty
+        ).reset_index(drop=True)
+
         df_top_candidates = select_diverse_top_candidates(
             df_known=pd.DataFrame(known_data),
             df_candidates=df_candidates,
@@ -226,6 +263,7 @@ if __name__ == "__main__":
             score_col="raw_acquisition",
             maximize=True,
         ).reset_index(drop=True)
+
         # log results
         save_dict_to_json(model_training_metrics, os.path.join(iterationdir, "model_training_metrics.json"))
         df_top_candidates.to_csv(os.path.join(iterationdir, "top_candidates.csv"), index=False)
@@ -249,6 +287,7 @@ if __name__ == "__main__":
 
         # create now list of all known data
         known_data = known_data + new_data
+        known_data = deduplicate_known_data(known_data, composition_labels)
 
         # log the progress
         log_iteration_summary(
