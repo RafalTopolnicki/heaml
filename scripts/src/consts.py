@@ -1,6 +1,21 @@
+import os
 
-AKAIMODBIN="/home/rafal/WORK/HEA/RKKY/cpa2002v010.potential2026/specx"
-#AKAIMODBIN="/home/amber/HEAML/AkaiKKR/cpa2002v010.potential2026/specx"
+paths = [
+    "/home/rafal/WORK/HEA/RKKY/cpa2002v010.potential2026/specx",
+    "/home/amber/HEAML/AkaiKKR/cpa2002v010.potential2026/specx",
+]
+
+AKAIMODBIN = None
+for p in paths:
+    if os.path.isfile(p) and os.access(p, os.X_OK):
+        AKAIMODBIN = p
+        break
+
+if AKAIMODBIN is None:
+    raise RuntimeError("specx binary not found in known locations")
+
+print(f"Using AKAIMODBIN: {AKAIMODBIN}")
+
 AKAIBIN=AKAIMODBIN
 
 ATOMS_PER_CELL = 2
