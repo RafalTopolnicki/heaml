@@ -254,6 +254,7 @@ if __name__ == "__main__":
         ).reset_index(drop=True)
 
         df_top_candidates = select_diverse_top_candidates(
+
             df_known=pd.DataFrame(known_data),
             df_candidates=df_candidates,
             columns=composition_labels,
