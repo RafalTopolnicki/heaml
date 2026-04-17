@@ -7,7 +7,7 @@ import math
 from src.process_kkr import process_kkr
 from src.utils import generate_dirname, append_errorlog, save_dict_to_json, log_iteration_summary
 from src.ml import train_cb_model
-from src.consts import composition_labels, ACQUISITION_ALPHA, ACQUISITION_METRIC, TARGET, CANDIDATE_COMPOSITIONS_N
+from src.consts import composition_labels, ACQUISITION_ALPHA, ACQUISITION_METRIC, TARGET, CANDIDATE_COMPOSITIONS_N, MIN_NOVELTY_DIST
 from src.sampling import generate_candidates_data
 from process_hea import run_one_hea
 import numpy as np
@@ -88,7 +88,7 @@ def compute_one_composition_task(task):
     return compute_one_composition(comp_dict, computation_dir)
 
 def find_largest_in_data(data):
-    vals = [d[TARGET] for d in data]
+    vals = [d[TARGET] for d in data if TARGET in d and pd.notna(d[TARGET])]
     return np.max(vals)
 
 
@@ -153,23 +153,24 @@ def select_diverse_top_candidates(
 
     return pd.DataFrame(selected_rows)
 
-def filter_known_candidates(df_known, df_candidates, columns, tol=1e-6):
+def filter_known_candidates(df_known, df_candidates, columns, min_dist=0.01, metric="euclidean"):
     """
-    Remove candidate rows that are already present in known data
-    (up to a tolerance in composition space).
+    Remove candidates that are too close to already known points.
     """
     dists = compute_min_distances(
         df_known=df_known,
         df_candidates=df_candidates,
         columns=columns,
-        metric="euclidean",
+        metric=metric,
     )
-    return df_candidates.loc[dists > tol].copy()
+    out = df_candidates.copy()
+    out["dist_to_known"] = dists
+    return out.loc[out["dist_to_known"] >= min_dist].copy()
 
-def composition_key(row, columns, ndigits=6):
+def composition_key(row, columns, ndigits=5):
     return tuple(round(float(row[c]), ndigits) for c in columns)
 
-def deduplicate_known_data(data, columns, ndigits=8):
+def deduplicate_known_data(data, columns, ndigits=5):
     seen = set()
     out = []
     for row in data:
@@ -203,7 +204,7 @@ if __name__ == "__main__":
 
 
     # generate candidates
-    all_candidates = generate_candidates_data(min_comp=minimal_compositions, max_comp=maximal_compositions)
+    #all_candidates = generate_candidates_data(min_comp=minimal_compositions, max_comp=maximal_compositions)
 
     # read initial computations
     init_data = read_experiments_from_directory(args["initdir"])
@@ -220,6 +221,18 @@ if __name__ == "__main__":
         computationdir = os.path.join(iterationdir, 'computation')
         os.makedirs(computationdir, exist_ok=True)
 
+        # generate new candidates
+        all_candidates = generate_candidates_data(
+            known_data=known_data,
+            min_comp=minimal_compositions,
+            max_comp=maximal_compositions,
+            n_candidates=CANDIDATE_COMPOSITIONS_N,
+            fresh_fraction=0.8,
+            local_top_k=5,
+            local_noise_scale=0.03,
+            seed=args["seed"] + iteration,
+        )
+
         # train multiple models
         model_training_metrics = []
         preds = []
@@ -233,15 +246,6 @@ if __name__ == "__main__":
         mus = preds.mean(axis=0)
         sigmas = preds.std(axis=0)
         acquisitions = mus + 2*sigmas
-        # df_candidates = all_candidates.copy()
-        # df_candidates['raw_acquisition'] = acquisitions
-        # df_candidates['composition_distance'] = compute_min_distances(df_known=pd.DataFrame(init_data), df_candidates=df_candidates, columns=composition_labels, metric=ACQUISITION_METRIC)
-        # df_candidates['acquisition'] = df_candidates['raw_acquisition'] - ACQUISITION_ALPHA*df_candidates['composition_distance']
-        # df_candidates = df_candidates.sort_values(by='acquisition', ascending=True)
-        # df_top_candidates = df_candidates.head(champions_per_step).reset_index(drop=True)
-        df_candidates = all_candidates.copy()
-        df_candidates["raw_acquisition"] = acquisitions
-
         df_candidates = all_candidates.copy()
         df_candidates["raw_acquisition"] = acquisitions
 
@@ -250,7 +254,8 @@ if __name__ == "__main__":
             df_known=pd.DataFrame(known_data),
             df_candidates=df_candidates,
             columns=composition_labels,
-            tol=1e-6,  # try 0.01 later for stronger novelty
+            min_dist=MIN_NOVELTY_DIST,
+            metric="euclidean",
         ).reset_index(drop=True)
 
         df_top_candidates = select_diverse_top_candidates(
@@ -284,7 +289,8 @@ if __name__ == "__main__":
                 for future in as_completed(futures):
                     _ = future.result()
         # now merge all new KKR results with the intial one
-        new_data = read_experiments_from_directory(computationdir)
+        new_data = [d for d in read_experiments_from_directory(computationdir) if
+                    d.get(TARGET) is not None and not pd.isna(d.get(TARGET))]
 
         # create now list of all known data
         known_data = known_data + new_data

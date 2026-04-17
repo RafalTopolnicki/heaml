@@ -85,8 +85,7 @@ def train_cb_model(kkr_data, predict_df=None, seed=100, valid_size=0.2):
     valid_metrics = evaluate_predictions(y_valid, valid_pred)
 
     # stage 2: retrain on ALL available data
-    final_model = make_model(seed=seed, iterations=best_iteration)
-    final_model.fit(X, y, verbose=False)
+    final_model = model
 
     metrics = {
         "n_rows_total": int(len(data)),
