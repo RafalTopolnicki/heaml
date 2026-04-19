@@ -7,6 +7,7 @@ from lattice import run_kkr_eos
 from finalscf import run_kkr_finalscf
 from debye import run_kkr_elastic_debye
 from macmillan import run_mcmillan_sweep
+from src.process_kkr import process_kkr
 
 
 # =========================
@@ -84,6 +85,9 @@ def run_one_hea(**kwargs):
     print('Debye computations DONE')
     print(debye_output)
     os.chdir(cwd)
+    # make all final computations
+    allresults = process_kkr(path=workdir, dirname='')
+    save_dict_to_json(allresults, os.path.join(workdir, "results.json"))
 
 
 
