@@ -7,9 +7,10 @@ from src.consts import composition_labels
 
 
 def compute_lambda(row):
-    nominator = np.sum([row[e]*row[f'{e}_eta_total'] for e in composition_labels])
+    used_labels = [e for e in composition_labels if e in row.keys()]
+    nominator = np.sum([row[e]*row[f'{e}_eta_total'] for e in used_labels])
     mixture_mass = row['mixture_mass']
-    composition_sum = np.sum([row[e] for e in composition_labels])
+    #composition_sum = np.sum([row[e] for e in composition_labels])
     denominator = mixture_mass*row['thetaDB']**2
     return nominator/denominator*5.47e4
 
