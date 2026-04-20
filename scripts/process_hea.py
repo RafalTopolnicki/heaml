@@ -15,6 +15,7 @@ from src.process_kkr import process_kkr
 # =========================
 def run_one_hea(**kwargs):
     workdir = kwargs.get("workdir", ".")
+    overwrite_params = kwargs.get("overwrite_params", False)
     os.makedirs(workdir, exist_ok=True)
     cwd = os.getcwd()
 
@@ -24,16 +25,15 @@ def run_one_hea(**kwargs):
                          'concentrations': hea.concentrations,
                          'density': hea.density}
     # overwrite def params
-    # for lattcie optimization only
     KKR_PARAMS_LATTICE_PARAMS = KKR_PARAMS_LATTICE.copy()
-    KKR_PARAMS_LATTICE_PARAMS['ew'] = kwargs.get('ew', KKR_PARAMS_LATTICE['ew'])
-    KKR_PARAMS_LATTICE_PARAMS['xc'] = kwargs.get('xc', KKR_PARAMS_LATTICE['xc'])
-    KKR_PARAMS_LATTICE_PARAMS['rel'] = kwargs.get('rel', KKR_PARAMS_LATTICE['rel'])
-    KKR_PARAMS_LATTICE_PARAMS['bzqlty'] = kwargs.get('bzqlty', KKR_PARAMS_LATTICE['bzqlty'])
-    KKR_PARAMS_LATTICE_PARAMS['pmix'] = kwargs.get('pmix', KKR_PARAMS_LATTICE['pmix'])
-    KKR_PARAMS_LATTICE_PARAMS['edelt'] = kwargs.get('edelt', KKR_PARAMS_LATTICE['edelt'])
-    KKR_PARAMS_LATTICE_PARAMS['mxl'] = kwargs.get('mxl', KKR_PARAMS_LATTICE['mxl'])
-    KKR_PARAMS_LATTICE_PARAMS['magtype'] = kwargs.get('magtype', KKR_PARAMS_LATTICE['magtype'])
+    KKR_PARAMS_DEBYE_PARAMS = KKR_PARAMS_DEBYE.copy()
+    KKR_PARAMS_FINALSCF_PARAMS = KKR_PARAMS_FINALSCF.copy()
+    if overwrite_params:
+        for param in ['ew', 'xc', 'rel', 'bzqlty', 'pmix', 'magtype']:
+            KKR_PARAMS_LATTICE_PARAMS[param] = kwargs.get(param, KKR_PARAMS_LATTICE[param])
+            KKR_PARAMS_DEBYE_PARAMS[param] = kwargs.get(param, KKR_PARAMS_DEBYE[param])
+            KKR_PARAMS_FINALSCF_PARAMS[param] = kwargs.get(param, KKR_PARAMS_FINALSCF[param])
+
     run_params = {
         'element_labels': kwargs['element_labels'],
         'concentrations': list(kwargs['concentrations']),
@@ -43,8 +43,8 @@ def run_one_hea(**kwargs):
         'mixture_debye_temperature': hea.mixture_debye_temperature,
         'mixture_mass': hea.mass,
         'KKR_PARAMS_LATTICE': KKR_PARAMS_LATTICE_PARAMS,
-        'KKR_PARAMS_DEBYE': KKR_PARAMS_DEBYE,
-        'KKR_PARAMS_FINALSCF': KKR_PARAMS_FINALSCF
+        'KKR_PARAMS_DEBYE': KKR_PARAMS_DEBYE_PARAMS,
+        'KKR_PARAMS_FINALSCF': KKR_PARAMS_FINALSCF_PARAMS
                 }
     save_dict_to_json(run_params, os.path.join(workdir, 'run_params.json'))
     # optimize lattice
@@ -61,8 +61,9 @@ def run_one_hea(**kwargs):
     os.chdir(cwd)
     if kwargs['task'] == 'lattice':
         return
+
     # run final scf
-    scf_params = KKR_PARAMS_FINALSCF
+    scf_params = KKR_PARAMS_FINALSCF_PARAMS
     scf_params.update(hea_configuration)
     scf_params['a0'] = eof_output['lattice_constant_bohr']
     scf_params['workdir'] = os.path.join(workdir, scf_params['subdir'])
@@ -76,7 +77,7 @@ def run_one_hea(**kwargs):
     run_mcmillan_sweep(workdir=scf_params['workdir'])
 
     # run debye
-    debye_params = KKR_PARAMS_DEBYE
+    debye_params = KKR_PARAMS_DEBYE_PARAMS
     debye_params.update(hea_configuration)
     debye_params['a0'] = eof_output['lattice_constant_bohr']
     debye_params['B0'] = eof_output['bulk_modulus_gpa']
@@ -100,6 +101,7 @@ if __name__ == "__main__":
     parser.add_argument("--concentrations", nargs="+", required=True)
     parser.add_argument("--workdir", type=str, default=".")
     parser.add_argument("--no-gzip", action="store_true")
+    parser.add_argument("--overwrite_params", action="store_true")
 
 
     parser.add_argument("--ew", type=float, default=KKR_PARAMS_LATTICE['ew'])
