@@ -98,6 +98,7 @@ def run_scf_tetragonal(delta, args, logger):
         "c/a": ca,
         "gamma": gamma,
     }
+    args['rmt'] = args['rmt_tetragonal']
     return run_scf(filename, lattice_params, args, logger)
 
 
@@ -111,6 +112,7 @@ def run_scf_monoclinic(delta, args, logger):
         "c/a": ca,
         "gamma": gamma,
     }
+    args['rmt'] = args['rmt_monoclinic']
     return run_scf(filename, lattice_params, args, logger)
 
 
@@ -135,10 +137,8 @@ def run_kkr_elastic_debye(**kwargs):
 
         # tetragonal distortion
         # reference (delta = 0)
-        kwargs_no_rmt = kwargs.copy()
-        kwargs_no_rmt['rmt'] = 0
-        energy0_tetra, conv0_tetra, gz0_tetra = run_scf_tetragonal(0.0, kwargs_no_rmt, logger)
-        energy_tetra, conv_tetra, gz_tetra = run_scf_tetragonal(delta, kwargs_no_rmt, logger)
+        energy0_tetra, conv0_tetra, gz0_tetra = run_scf_tetragonal(0.0, kwargs, logger)
+        energy_tetra, conv_tetra, gz_tetra = run_scf_tetragonal(delta, kwargs, logger)
         Cp = (energy_tetra - energy0_tetra) / (6.0 * vol * delta ** 2)
 
         # monoclinic distortion

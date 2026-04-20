@@ -63,7 +63,8 @@ KKR_PARAMS_FINALSCF = {
 # RMT: 0.43157 for delta=0.005
 # RMT: 0.43272 for delta=0.001
 # TETRAGONAL
-# RMT: 0.43088 for all delta
+# RMT: 0.43301 for delta=0.000
+# RMT: 0.43088 for delta=0.005
 KKR_PARAMS_DEBYE = {
     'ew': 0.6,
     'xc': 'pbe',
@@ -72,7 +73,8 @@ KKR_PARAMS_DEBYE = {
     'mxl': 3,
     'magtype': 'nmag',
     'delta': 0.005,
-    'rmt': 0.43157, # CHECK THIS LATER
+    'rmt_monoclinic': 0.43157,
+    'rmt_tetragonal': 0.43157,
     'pmix': 0.01,
 
     'edelt': 0.001,
