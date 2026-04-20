@@ -74,9 +74,8 @@ KKR_PARAMS_DEBYE = {
     'magtype': 'nmag',
     'delta': 0.005,
     'rmt_monoclinic': 0.43157,
-    'rmt_tetragonal': 0.43157,
+    'rmt_tetragonal': 0.43088,
     'pmix': 0.01,
-
     'edelt': 0.001,
     'subdir': 'debye',
     'output': 'debye',
