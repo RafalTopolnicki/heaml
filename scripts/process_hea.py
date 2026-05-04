@@ -29,7 +29,7 @@ def run_one_hea(**kwargs):
     KKR_PARAMS_DEBYE_PARAMS = KKR_PARAMS_DEBYE.copy()
     KKR_PARAMS_FINALSCF_PARAMS = KKR_PARAMS_FINALSCF.copy()
     if overwrite_params:
-        for param in ['ew', 'xc', 'rel', 'bzqlty', 'pmix', 'magtype']:
+        for param in ['ew', 'xc', 'rel', 'bzqlty', 'pmix', 'magtype', 'edelt']:
             KKR_PARAMS_LATTICE_PARAMS[param] = kwargs.get(param, KKR_PARAMS_LATTICE[param])
             KKR_PARAMS_DEBYE_PARAMS[param] = kwargs.get(param, KKR_PARAMS_DEBYE[param])
             KKR_PARAMS_FINALSCF_PARAMS[param] = kwargs.get(param, KKR_PARAMS_FINALSCF[param])

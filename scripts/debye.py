@@ -45,6 +45,25 @@ def get_monoclinic_distortion(delta, a0):
     gamma = gamma_rad / np.pi * 180.0
     return a_local, ba, ca, gamma
 
+def rmt_max_tetragonal(ca, ba=1.0):
+    return 0.25 * np.sqrt(1.0 + ba**2 + ca**2)
+
+
+def rmt_max_monoclinic(ca, gamma_deg, ba=1.0):
+    gamma_rad = np.deg2rad(gamma_deg)
+    return 0.25 * np.sqrt(
+        1.0 + ba**2 + ca**2 - 2.0 * ba * abs(np.cos(gamma_rad))
+    )
+
+def rmt_max_monoclinic_from_delta(delta):
+    ca = 1.0 / (1.0 - delta**2) / np.sqrt(1.0 + delta**2)
+    gamma_rad = np.pi / 2.0 - 2.0 * np.arctan(delta)
+    gamma_deg = np.rad2deg(gamma_rad)
+    return rmt_max_monoclinic(ca=ca, gamma_deg=gamma_deg, ba=1.0)
+
+def rmt_max_tetragonal_from_delta(delta):
+    ca = 1.0 / (1.0 + delta)**3
+    return rmt_max_tetragonal(ca=ca, ba=1.0)
 
 def run_scf(filename, lattice_params, args, logger):
     inp = filename + ".inp"
