@@ -23,14 +23,42 @@ def read_params(path, dirname):
     return data
 
 def read_debye(path, dirname):
-    data = json.load(open(os.path.join(path, dirname, 'debye', 'debye_summary.json'), 'r'))
-    del data['run_log']
-    del data['results_csv']
-    del data['delta']
-    del data['energy0_mono_ev']
-    del data['energy0_tetra_ev']
-    del data['energy_tetra']
-    del data['energy_mono']
+    data = json.load(open(os.path.join(path, dirname, "debye", "debye_summary.json"), "r"))
+
+    # Backward compatibility:
+    # old code downstream expects "thetaDB"
+    if "thetaDB_K" in data and "thetaDB" not in data:
+        data["thetaDB"] = data["thetaDB_K"]
+
+    # Remove file/log metadata if present
+    for key in [
+        "run_log",
+        "results_csv",
+        "all_scf_results_csv",
+        "even_energy_fit_data_csv",
+        "rmt_candidates_json",
+    ]:
+        data.pop(key, None)
+
+    # Remove large nested fit diagnostics if you do not want them as ML columns
+    for key in [
+        "tetra_fit",
+        "c44_fit",
+        "C44_diagnostics_Ry_bohr3",
+        "C44_diagnostics_GPa",
+    ]:
+        data.pop(key, None)
+
+    # Remove old single-run energy keys if present
+    for key in [
+        "delta",
+        "energy0_mono_ev",
+        "energy0_tetra_ev",
+        "energy_tetra",
+        "energy_mono",
+    ]:
+        data.pop(key, None)
+
     return data
 
 def get_composition(path, dirname):

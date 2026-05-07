@@ -2,6 +2,7 @@ import os
 
 paths = [
     "/home/rafal/WORK/HEA/RKKY/cpa2002v010.potential2026/specx",
+    "/home/rto/HEAML/AkaiKKR/cpa2002v010.potential2026/specx",
     "/home/amber/HEAML/AkaiKKR/cpa2002v010.potential2026/specx",
 ]
 
@@ -66,19 +67,25 @@ KKR_PARAMS_FINALSCF = {
 # RMT: 0.43301 for delta=0.000
 # RMT: 0.43088 for delta=0.005
 KKR_PARAMS_DEBYE = {
-    'ew': 0.6,
-    'xc': 'pbe',
-    'rel': 'sra',
-    'bzqlty': 10,
-    'mxl': 3,
-    'magtype': 'nmag',
-    'delta': 0.005,
-#    'rmt_monoclinic': 0.43157,
-#    'rmt_tetragonal': 0.000,
-    'rmt_monoclinic': 0.43156,
-    'rmt_tetragonal': 0.43007,
-    'pmix': 0.01,
-    'edelt': 0.001,
-    'subdir': 'debye',
-    'output': 'debye',
+    "ew": 0.6,
+    "xc": "pbe",
+    "rel": "sra",
+    "bzqlty": 10,
+    "mxl": 3,
+    "magtype": "nmag",
+
+    "deltas": [0.005],
+    "fit_mode": "linear",
+    "one_sided": True,
+    "c44_mode": "monoclinic",
+    "rmt_safety": 0.999,
+
+    "cp_scale": 1.0,
+    "c44_scale": 0.33,
+    "b0_scale": 1.0,
+
+    "pmix": 0.01,
+    "edelt": 0.001,
+    "subdir": "debye",
+    "output": "debye",
 }

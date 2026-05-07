@@ -29,7 +29,7 @@ def run_one_hea(**kwargs):
     KKR_PARAMS_DEBYE_PARAMS = KKR_PARAMS_DEBYE.copy()
     KKR_PARAMS_FINALSCF_PARAMS = KKR_PARAMS_FINALSCF.copy()
     if overwrite_params:
-        for param in ['ew', 'xc', 'rel', 'bzqlty', 'pmix', 'magtype', 'edelt']:
+        for param in ["ew", "xc", "rel", "bzqlty", "pmix", "magtype", "edelt", "mxl"]:
             KKR_PARAMS_LATTICE_PARAMS[param] = kwargs.get(param, KKR_PARAMS_LATTICE[param])
             KKR_PARAMS_DEBYE_PARAMS[param] = kwargs.get(param, KKR_PARAMS_DEBYE[param])
             KKR_PARAMS_FINALSCF_PARAMS[param] = kwargs.get(param, KKR_PARAMS_FINALSCF[param])
@@ -76,14 +76,33 @@ def run_one_hea(**kwargs):
     # run MacMillan
     run_mcmillan_sweep(workdir=scf_params['workdir'])
 
-    # run debye
-    debye_params = KKR_PARAMS_DEBYE_PARAMS
+    # run Debye
+    debye_params = KKR_PARAMS_DEBYE_PARAMS.copy()
     debye_params.update(hea_configuration)
-    debye_params['a0'] = eof_output['lattice_constant_bohr']
-    debye_params['B0'] = eof_output['bulk_modulus_gpa']
-    debye_params['workdir'] = os.path.join(workdir, debye_params['subdir'])
+
+    debye_params["a0"] = eof_output["lattice_constant_bohr"]
+    debye_params["B0"] = eof_output["bulk_modulus_gpa"]
+    debye_params["workdir"] = os.path.join(workdir, debye_params["subdir"])
+
+    # debye.py expects "deltas", not only "delta"
+    if "deltas" not in debye_params:
+        debye_params["deltas"] = [debye_params.get("delta", 0.005)]
+
+    # You want one value only
+    debye_params["deltas"] = [0.005]
+
+    # Recommended default for one delta
+    debye_params["fit_mode"] = debye_params.get("fit_mode", "linear")
+
+    # Keep standard two-sided +/- delta
+    debye_params["one_sided"] = True
+
+    # Use the original monoclinic C44 mode unless you explicitly want simple_shear
+    debye_params["c44_mode"] = debye_params.get("c44_mode", "monoclinic")
+
     debye_output = run_kkr_elastic_debye(**debye_params)
-    print('Debye computations DONE')
+
+    print("Debye computations DONE")
     print(debye_output)
     os.chdir(cwd)
     # make all final computations
