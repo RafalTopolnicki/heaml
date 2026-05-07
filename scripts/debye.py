@@ -9,7 +9,7 @@ import pandas as pd
 
 from src.write_akai_input import scf_input
 from src.utils import dist_to_si, energy_to_si, parse_energy, converged_info_in_string, gzip_file, cleanup_potential_files, cleanup_fortran_files
-from src.consts import AKAIBIN, ATOMS_PER_CELL
+from src.consts import AKAIBIN, ATOMS_PER_CELL, KKR_PARAMS_DEBYE
 
 
 def setup_logger(log_file):
@@ -134,6 +134,8 @@ def run_kkr_elastic_debye(**kwargs):
         vol = kwargs["a0"] ** 3
         volsi = dist_to_si(kwargs["a0"]) ** 3
         B0si = kwargs["B0"] * 1e9
+        kwargs['rmt_monoclinic'] = KKR_PARAMS_DEBYE['rmt_monoclinic']
+        kwargs['rmt_tetragonal'] = KKR_PARAMS_DEBYE['rmt_tetragonal']
 
         # tetragonal distortion
         # reference (delta = 0)
