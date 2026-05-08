@@ -6,6 +6,14 @@ from src.features import compute_hea_features
 from src.consts import composition_labels
 
 
+def normalize_composition(composition):
+    composition = np.array(composition, dtype=float)
+    total = np.sum(composition)
+    if total <= 0:
+        raise ValueError("Invalid composition sum")
+    return (composition / total).tolist()
+
+
 def compute_lambda(row):
     used_labels = [e for e in composition_labels if e in row.keys()]
     nominator = np.sum([row[e]*row[f'{e}_eta_total'] for e in used_labels])
@@ -16,7 +24,8 @@ def compute_lambda(row):
 
 def read_params(path, dirname):
     data = json.load(open(os.path.join(path, dirname, 'run_params.json'), 'r'))
-    for l, c in zip(data['element_labels'], data['concentrations']):
+    concentrations = normalize_composition(data['concentrations'])
+    for l, c in zip(data['element_labels'], concentrations):
         data[l] = c
     del data['element_labels']
     del data['concentrations']
@@ -63,7 +72,7 @@ def read_debye(path, dirname):
 
 def get_composition(path, dirname):
     data = json.load(open(os.path.join(path, dirname, 'run_params.json'), 'r'))
-    return data['concentrations'], data['element_labels']
+    return normalize_composition(data['concentrations']), data['element_labels']
 
 def read_macmillan(path, dirname):
     composition_dict, elements = get_composition(path, dirname)
@@ -97,10 +106,11 @@ def process_kkr(path, dirname):
         data['Tc_mu0.2'] = tc_from_data(data, mu=0.2)
         data['Tc_mu0.3'] = tc_from_data(data, mu=0.3)
         # add features
-        data = {**data, **compute_hea_features(comp_dict=comp_dict)}
+        data = {**data, **compute_hea_features(comp_dict=comp_dict, normalize_composition=True)}
         return data
     except Exception as e:
          print(f'Error in processing {dirname}: {e}')
          return None
 
 #out = process_kkr(path='/home/rafal/WORK/HEA/ML/random.ratios/sra.kp10.ew0.6/', dirname='Ti0.0008Nb0.3225Zr0.0191Hf0.4401Ta0.0272Sc0.0316Mo0.0243W0.0594Y0.0584La0.0165')
+out = process_kkr(path='/home/rafal/WORK/HEA/', dirname='TEMP')

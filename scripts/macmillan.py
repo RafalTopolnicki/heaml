@@ -303,7 +303,7 @@ def normalize_u(x: np.ndarray, u: np.ndarray, norm_mode: str) -> np.ndarray:
     elif norm_mode == "r2u2":
         norm2 = float(simpson(x * x * u * u, x=x))
     else:
-        raise ValueError(f"Unknown norm_mode: {norm_mode}")
+        raise ValueError(f"Unknown norm_mode: {norm_mode}")pycharm
 
     if norm2 <= 0 or not np.isfinite(norm2):
         raise ValueError(f"Invalid norm encountered while normalizing radial function: {norm_mode}")
