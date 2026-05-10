@@ -1,5 +1,6 @@
 import argparse
 import os
+import shutil
 import sys
 from concurrent.futures import ProcessPoolExecutor, as_completed
 import pandas as pd
@@ -18,6 +19,23 @@ minimal_compositions = {'Ti': 0, 'Nb': 0, 'Zr': 0, 'Hf': 0, 'Ta': 0, 'Sc': 0, 'M
 maximal_compositions = {'Ti': 0.6, 'Nb': 0.6, 'Zr': 0.6, 'Hf': 0.6, 'Ta': 0.6, 'Sc': 0.6, 'Mo': 0.6, 'W': 0.6, 'Y': 0.6, 'La': 0.6}
 assert len(composition_labels) <= len(minimal_compositions) # check actual labels
 assert len(composition_labels) <= len(maximal_compositions)
+
+
+def snapshot_python_code(workdir):
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    code_dir = os.path.join(workdir, "code")
+
+    copy_specs = [
+        (script_dir, os.path.join(code_dir, "scripts")),
+        (os.path.join(script_dir, "src"), os.path.join(code_dir, "scripts", "src")),
+    ]
+
+    for source_dir, target_dir in copy_specs:
+        os.makedirs(target_dir, exist_ok=True)
+        for filename in os.listdir(source_dir):
+            source_path = os.path.join(source_dir, filename)
+            if os.path.isfile(source_path) and filename.endswith(".py"):
+                shutil.copy2(source_path, os.path.join(target_dir, filename))
 
 
 def read_experiments_from_directory(path):
@@ -195,6 +213,7 @@ if __name__ == "__main__":
     workdir = args['workdir']
     iterations = args['iterations']
     os.makedirs(workdir, exist_ok=True)
+    snapshot_python_code(workdir)
     save_dict_to_json(args, os.path.join(workdir, "parameters.json"))
     iteration_log_path = os.path.join(workdir, "optimization_log.txt")
 
