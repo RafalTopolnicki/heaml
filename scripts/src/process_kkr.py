@@ -14,16 +14,22 @@ def normalize_composition(composition):
     return (composition / total).tolist()
 
 
+_Ry_to_J = 2.1798741e-18
+_Bohr_to_m = 5.29177210903e-11
+_amu_to_kg = 1.66053906660e-27
+_hbar = 1.054571817e-34
+_kB = 1.380649e-23
+# C such that λ = eta [Ry/Bohr²] * C / (M_mix [amu] * Theta_D [K]²)
+# Derived from Debye model: <ω²> = (3/5)(k_B Θ_D/ħ)², validated on Ta without fitting
+_C_THEORETICAL = (5.0/3.0) * (_Ry_to_J / _Bohr_to_m**2) * _hbar**2 / (_amu_to_kg * _kB**2)
+
+
 def compute_lambda(row):
     used_labels = [e for e in composition_labels if e in row.keys()]
     nominator = np.sum([row[e]*row[f'{e}_eta_total'] for e in used_labels])
     mixture_mass = row['mixture_mass']
-    #composition_sum = np.sum([row[e] for e in composition_labels])
     denominator = mixture_mass*row['thetaDB']**2
-    # Empirically calibrated from elemental Ta (lambda_exp=0.69, eta_mean mode):
-    # C = lambda_exp * M_Ta * ThetaD^2 / eta_total = 0.69*180.9*288.19^2/39.91 ~ 2.60e5
-    # CHECK THIS LATER
-    return nominator/denominator*2.60e5
+    return nominator/denominator*_C_THEORETICAL
 
 def read_params(path, dirname):
     data = json.load(open(os.path.join(path, dirname, 'run_params.json'), 'r'))
@@ -79,7 +85,7 @@ def get_composition(path, dirname):
 
 def read_macmillan(path, dirname):
     composition_dict, elements = get_composition(path, dirname)
-    df = pd.read_csv(open(os.path.join(path, dirname, 'finalscf', 'mcmillan_results.csv')))
+    df = pd.read_csv(open(os.path.join(path, dirname, 'finalscf', 'mcmillan_cutoff_results.csv')))
     df = df[(df['reduce_mode'] == 'mean') & (df['integral_mode'] == 'plain') & (df['norm_mode'] == 'none')]
     assert len(df) == len(composition_dict)
     df['component_label'] = [elements[x-1] for x in df['component']]
@@ -87,8 +93,11 @@ def read_macmillan(path, dirname):
     results = {}
     for _, row in df.iterrows():
         cmp_label = row['component_label']
-        for key in ['eta_sp', 'eta_pd', 'eta_df', 'M_sp', 'M_pd', 'M_df', 'eta_total']:
-            results[f'{cmp_label}_{key}'] = row[key]
+        # cutoff columns: eta_cutoff_sp → stored as eta_sp for downstream compatibility
+        for ch in ['sp', 'pd', 'df']:
+            results[f'{cmp_label}_eta_{ch}'] = row[f'eta_cutoff_{ch}']
+            results[f'{cmp_label}_M_{ch}'] = row[f'M_cutoff_{ch}']
+        results[f'{cmp_label}_eta_total'] = row['eta_total_cutoff']
     return results
 
 def tc_from_data(data, mu):
@@ -116,4 +125,4 @@ def process_kkr(path, dirname):
          return None
 
 #out = process_kkr(path='/home/rafal/WORK/HEA/ML/random.ratios/sra.kp10.ew0.6/', dirname='Ti0.0008Nb0.3225Zr0.0191Hf0.4401Ta0.0272Sc0.0316Mo0.0243W0.0594Y0.0584La0.0165')
-out = process_kkr(path='/home/rafal/WORK/HEA/', dirname='TEMP')
+#out = process_kkr(path='/home/rafal/WORK/HEA/', dirname='TEMP')

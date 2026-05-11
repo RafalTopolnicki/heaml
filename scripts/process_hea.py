@@ -6,7 +6,7 @@ from src.consts import KKR_PARAMS_LATTICE, KKR_PARAMS_DEBYE, KKR_PARAMS_FINALSCF
 from lattice import run_kkr_eos
 from finalscf import run_kkr_finalscf
 from debye import run_kkr_elastic_debye
-from macmillan import run_mcmillan_sweep
+from macmillan_cutoff import run_mcmillan_cutoff_sweep
 from src.process_kkr import process_kkr
 
 
@@ -73,9 +73,6 @@ def run_one_hea(**kwargs):
     print(scf_output)
     os.chdir(cwd)
 
-    # run MacMillan
-    run_mcmillan_sweep(workdir=scf_params['workdir'])
-
     # run Debye
     debye_params = KKR_PARAMS_DEBYE_PARAMS.copy()
     debye_params.update(hea_configuration)
@@ -105,6 +102,14 @@ def run_one_hea(**kwargs):
     print("Debye computations DONE")
     print(debye_output)
     os.chdir(cwd)
+
+    # run McMillan-Hopfield with last-node cutoff (after Debye so theta_D is available)
+    run_mcmillan_cutoff_sweep(
+        workdir=scf_params['workdir'],
+        mixture_mass=run_params['mixture_mass'],
+        theta_d=debye_output.get('thetaDB_K'),
+    )
+
     # make all final computations
     allresults = process_kkr(path=workdir, dirname='')
     save_dict_to_json(allresults, os.path.join(workdir, "results.json"))
