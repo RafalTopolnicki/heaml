@@ -7,6 +7,7 @@ import json
 from datetime import datetime
 
 TOTAL_ENERGY_RE = re.compile(r"total energy\s*=\s*([-+0-9.Ee]+)")
+AKAI_COMMAND_RE = re.compile(r"^\s*go=(\S+)\s+file=", re.MULTILINE)
 
 def generate_dirname(composition_labels, composition_ratio):
     txt = ""
@@ -29,6 +30,30 @@ def parse_energy(text):
 
 def converged_info_in_string(text):
     return "itr=499" not in text
+
+
+def extract_akai_command_block(text, command):
+    matches = list(AKAI_COMMAND_RE.finditer(text))
+    if not matches:
+        return text
+
+    for index, match in enumerate(matches):
+        if match.group(1).lower() == command.lower():
+            end = matches[index + 1].start() if index + 1 < len(matches) else len(text)
+            return text[match.start():end]
+
+    return ""
+
+
+def parse_go_energy(text):
+    return parse_energy(extract_akai_command_block(text, "go"))
+
+
+def converged_go_in_string(text):
+    go_text = extract_akai_command_block(text, "go")
+    if not go_text:
+        return False
+    return converged_info_in_string(go_text) and "*** no convergence" not in go_text.lower()
 
 def gzip_file(path):
     if not os.path.exists(path):

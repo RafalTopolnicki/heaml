@@ -5,7 +5,7 @@ import pandas as pd
 
 from src.write_akai_input import scf_input_bcc
 from src.consts import AKAIBIN
-from src.utils import gzip_file, parse_energy, converged_info_in_string, cleanup_potential_files
+from src.utils import gzip_file, parse_go_energy, converged_go_in_string, cleanup_potential_files
 
 
 def run_scf(lattice, args):
@@ -38,8 +38,8 @@ def run_scf(lattice, args):
 
     text = open(out).read()
 
-    energy = parse_energy(text)
-    conv = converged_info_in_string(text)
+    energy = parse_go_energy(text)
+    conv = converged_go_in_string(text)
 
     cleanup_potential_files(base)
 

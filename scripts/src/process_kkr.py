@@ -20,7 +20,10 @@ def compute_lambda(row):
     mixture_mass = row['mixture_mass']
     #composition_sum = np.sum([row[e] for e in composition_labels])
     denominator = mixture_mass*row['thetaDB']**2
-    return nominator/denominator*5.47e4
+    # Empirically calibrated from elemental Ta (lambda_exp=0.69, eta_mean mode):
+    # C = lambda_exp * M_Ta * ThetaD^2 / eta_total = 0.69*180.9*288.19^2/39.91 ~ 2.60e5
+    # CHECK THIS LATER
+    return nominator/denominator*2.60e5
 
 def read_params(path, dirname):
     data = json.load(open(os.path.join(path, dirname, 'run_params.json'), 'r'))
@@ -77,7 +80,7 @@ def get_composition(path, dirname):
 def read_macmillan(path, dirname):
     composition_dict, elements = get_composition(path, dirname)
     df = pd.read_csv(open(os.path.join(path, dirname, 'finalscf', 'mcmillan_results.csv')))
-    df = df[(df['reduce_mode'] == 'sum') & (df['integral_mode'] == 'plain') & (df['norm_mode'] == 'none')]
+    df = df[(df['reduce_mode'] == 'mean') & (df['integral_mode'] == 'plain') & (df['norm_mode'] == 'none')]
     assert len(df) == len(composition_dict)
     df['component_label'] = [elements[x-1] for x in df['component']]
     df.reset_index(drop=True, inplace=True)
