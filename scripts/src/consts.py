@@ -84,6 +84,10 @@ KKR_PARAMS_DEBYE = {
     "c44_scale": 0.33,
     "b0_scale": 1.0,
 
+    # If True, use composition-weighted elemental Debye temperatures (mixture_debye_temperature)
+    # instead of the KKR-computed thetaDB_K for the McMillan lambda and Tc formulas.
+    "use_mixture_debye": False,
+
     "pmix": 0.01,
     "edelt": 0.001,
     "subdir": "debye",

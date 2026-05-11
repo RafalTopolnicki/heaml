@@ -34,6 +34,7 @@ def run_one_hea(**kwargs):
             KKR_PARAMS_DEBYE_PARAMS[param] = kwargs.get(param, KKR_PARAMS_DEBYE[param])
             KKR_PARAMS_FINALSCF_PARAMS[param] = kwargs.get(param, KKR_PARAMS_FINALSCF[param])
 
+    use_mixture_debye = bool(KKR_PARAMS_DEBYE_PARAMS.get('use_mixture_debye', False))
     run_params = {
         'element_labels': kwargs['element_labels'],
         'concentrations': list(kwargs['concentrations']),
@@ -42,6 +43,7 @@ def run_one_hea(**kwargs):
         'mixture_bulk_modulus': hea.mixture_bulk_modulus,
         'mixture_debye_temperature': hea.mixture_debye_temperature,
         'mixture_mass': hea.mass,
+        'use_mixture_debye': use_mixture_debye,
         'KKR_PARAMS_LATTICE': KKR_PARAMS_LATTICE_PARAMS,
         'KKR_PARAMS_DEBYE': KKR_PARAMS_DEBYE_PARAMS,
         'KKR_PARAMS_FINALSCF': KKR_PARAMS_FINALSCF_PARAMS
@@ -74,40 +76,50 @@ def run_one_hea(**kwargs):
     os.chdir(cwd)
 
     # run Debye
-    debye_params = KKR_PARAMS_DEBYE_PARAMS.copy()
-    debye_params.update(hea_configuration)
+    if use_mixture_debye:
+        # Skip expensive KKR tetragonal/monoclinic distortions; use composition-weighted
+        # elemental Debye temperatures directly.
+        debye_workdir = os.path.join(workdir, KKR_PARAMS_DEBYE_PARAMS["subdir"])
+        os.makedirs(debye_workdir, exist_ok=True)
+        debye_output = {"thetaDB_K": hea.mixture_debye_temperature}
+        save_dict_to_json(debye_output, os.path.join(debye_workdir, "debye_summary.json"))
+        print(f"Debye skipped (use_mixture_debye=True): thetaDB_K={hea.mixture_debye_temperature:.2f} K")
+    else:
+        debye_params = KKR_PARAMS_DEBYE_PARAMS.copy()
+        debye_params.update(hea_configuration)
 
-    debye_params["a0"] = eof_output["lattice_constant_bohr"]
-    debye_params["B0"] = eof_output["bulk_modulus_gpa"]
-    debye_params["workdir"] = os.path.join(workdir, debye_params["subdir"])
+        debye_params["a0"] = eof_output["lattice_constant_bohr"]
+        debye_params["B0"] = eof_output["bulk_modulus_gpa"]
+        debye_params["workdir"] = os.path.join(workdir, debye_params["subdir"])
 
-    # debye.py expects "deltas", not only "delta"
-    if "deltas" not in debye_params:
-        debye_params["deltas"] = [debye_params.get("delta", 0.005)]
+        # debye.py expects "deltas", not only "delta"
+        if "deltas" not in debye_params:
+            debye_params["deltas"] = [debye_params.get("delta", 0.005)]
 
-    # You want one value only
-    debye_params["deltas"] = [0.005]
+        # You want one value only
+        debye_params["deltas"] = [0.005]
 
-    # Recommended default for one delta
-    debye_params["fit_mode"] = debye_params.get("fit_mode", "linear")
+        # Recommended default for one delta
+        debye_params["fit_mode"] = debye_params.get("fit_mode", "linear")
 
-    # Keep standard two-sided +/- delta
-    debye_params["one_sided"] = True
+        # Keep standard two-sided +/- delta
+        debye_params["one_sided"] = True
 
-    # Use the original monoclinic C44 mode unless you explicitly want simple_shear
-    debye_params["c44_mode"] = debye_params.get("c44_mode", "monoclinic")
+        # Use the original monoclinic C44 mode unless you explicitly want simple_shear
+        debye_params["c44_mode"] = debye_params.get("c44_mode", "monoclinic")
 
-    debye_output = run_kkr_elastic_debye(**debye_params)
+        debye_output = run_kkr_elastic_debye(**debye_params)
 
-    print("Debye computations DONE")
-    print(debye_output)
-    os.chdir(cwd)
+        print("Debye computations DONE")
+        print(debye_output)
+        os.chdir(cwd)
 
     # run McMillan-Hopfield with last-node cutoff (after Debye so theta_D is available)
+    theta_d_for_log = debye_output.get('thetaDB_K')
     run_mcmillan_cutoff_sweep(
         workdir=scf_params['workdir'],
         mixture_mass=run_params['mixture_mass'],
-        theta_d=debye_output.get('thetaDB_K'),
+        theta_d=theta_d_for_log,
     )
 
     # make all final computations

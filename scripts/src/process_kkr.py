@@ -113,6 +113,8 @@ def process_kkr(path, dirname):
         data.update(read_params(path, dirname))
         data.update(read_debye(path, dirname))
         data.update(read_macmillan(path, dirname))
+        if data.get('use_mixture_debye'):
+            data['thetaDB'] = data['mixture_debye_temperature']
         data['lambda'] = compute_lambda(data)
         data['Tc_mu0.1'] = tc_from_data(data, mu=0.1)
         data['Tc_mu0.2'] = tc_from_data(data, mu=0.2)
