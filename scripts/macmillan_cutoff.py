@@ -12,9 +12,21 @@ Rationale:
 
   Fix: use the last zero-crossing of each wavefunction as the lower limit.
   The "last node" is the outermost zero of u_l(r) — beyond it the wavefunction
-  is in its valence outer lobe and the potential is smooth/screened. Integrating
-  from max(last_node(u_l), last_node(u_{l+1})) to R_MT removes the unphysical
-  core contribution without any empirical fitting.
+  is in its valence outer lobe and the potential is smooth/screened.
+
+  Four cutoff modes are supported (--cutoff-mode):
+    max   (default) r_cut = max(r_last_l, r_last_{l+1})
+                    Removes core contamination from whichever wavefunction
+                    extends furthest.  sp→r_last_p, pd→r_last_p, df→r_last_f
+    min             r_cut = min(r_last_l, r_last_{l+1})
+                    Uses the shallower of the two nodes.
+    lower           r_cut = r_last_l   (lower-l wavefunction only)
+                    sp→r_last_s, pd→r_last_p, df→r_last_d
+    upper           r_cut = r_last_{l+1}  (higher-l wavefunction only)
+                    sp→r_last_p, pd→r_last_d, df→r_last_f
+                    For pd this removes only d-core contamination, not p-core.
+                    Physically motivated if p valence wavefunctions are already
+                    OPW-orthogonal to p core states (true in SRA KKR).
 
   With this cutoff for Ta (BCC, a=6.27 Bohr):
     eta_sp:    39.7  → 0.010 Ry/Bohr²  (core contamination removed)
@@ -78,6 +90,12 @@ from macmillan import (
     compute_M,
 )
 
+try:
+    from finalscf import run_kkr_finalscf as _run_kkr_finalscf
+    _KKR_AVAILABLE = True
+except ImportError:
+    _KKR_AVAILABLE = False
+
 
 # ---------------------------------------------------------------------------
 # Node detection
@@ -123,12 +141,36 @@ def compute_M_from_cutoff(
 # Per-block computation
 # ---------------------------------------------------------------------------
 
+_CUTOFF_MODES = ("max", "min", "lower", "upper")
+
+
+def _resolve_r_cut(
+    r_last_a: float,
+    r_last_b: float,
+    cutoff_mode: str,
+    manual_r_cut: Optional[float],
+) -> float:
+    """Return the integration lower limit for one channel pair (a=lower-l, b=upper-l)."""
+    if manual_r_cut is not None:
+        return manual_r_cut
+    if cutoff_mode == "max":
+        return max(r_last_a, r_last_b)
+    if cutoff_mode == "min":
+        return min(r_last_a, r_last_b)
+    if cutoff_mode == "lower":
+        return r_last_a
+    if cutoff_mode == "upper":
+        return r_last_b
+    raise ValueError(f"Unknown cutoff_mode {cutoff_mode!r}; choose from {_CUTOFF_MODES}")
+
+
 def compute_one_combination_cutoff(
     block: Dict[str, Any],
     integral_mode: str,
     norm_mode: str,
     reduce_mode: str,
     manual_r_cut: Optional[float] = None,
+    cutoff_mode: str = "max",
 ) -> Dict[str, Any]:
     """
     Compute both full and last-node-cutoff eta for one (block, mode) combination.
@@ -171,6 +213,7 @@ def compute_one_combination_cutoff(
         "integral_mode": integral_mode,
         "norm_mode": norm_mode,
         "reduce_mode": reduce_mode,
+        "cutoff_mode": cutoff_mode,
         "Ntot": Ntot,
         "Ns": grouped_dos.get("s", np.nan),
         "Np": grouped_dos.get("p", np.nan),
@@ -194,7 +237,7 @@ def compute_one_combination_cutoff(
         nodes_b = find_all_nodes(x, u2)
         r_last_a = nodes_a[-1] if nodes_a else 0.0
         r_last_b = nodes_b[-1] if nodes_b else 0.0
-        r_cut = manual_r_cut if manual_r_cut is not None else max(r_last_a, r_last_b)
+        r_cut = _resolve_r_cut(r_last_a, r_last_b, cutoff_mode, manual_r_cut)
 
         nl = float(grouped_dos[a])
         nlp1 = float(grouped_dos[b])
@@ -226,9 +269,146 @@ def compute_one_combination_cutoff(
     return result
 
 
+def plot_radial_functions(
+    block: Dict[str, Any],
+    workdir: str,
+    output_prefix: str,
+    manual_r_cut: Optional[float] = None,
+    cutoff_mode: str = "max",
+    logger: Optional[logging.Logger] = None,
+) -> None:
+    """Save one PNG per orbital showing u_l, V, dV/dr and adjacent integrands."""
+    try:
+        import matplotlib
+        matplotlib.use("Agg")
+        import matplotlib.pyplot as plt
+    except ImportError:
+        if logger:
+            logger.warning("matplotlib not available — skipping orbital plots")
+        return
+
+    x_full = np.array(block["xr"], dtype=float)
+    v_full = np.array(block["v3"], dtype=float)
+    mxlcmp = int(block["mxlcmp"])
+
+    radial_key = "rstr_real_ef" if "rstr_real_ef" in block else "rstr_at_ef"
+    x = x_full[:-1]
+    v = v_full[:-1]
+    raw_rstr = {
+        int(k): np.array(vals[:-1], dtype=float)
+        for k, vals in block[radial_key].items()
+    }
+
+    dVdr = derivative_nonuniform(x, v)
+    # Use canonical reduce/norm for plotting
+    radials = reduce_l_block_radials(raw_rstr, mxlcmp, x, "mean", "none")
+
+    labels = ["s", "p", "d", "f", "g", "h"]
+    channel_names = ["sp", "pd", "df", "fg", "gh"]
+    comp = block["component"]
+    spin = block["spin"]
+
+    # Pre-compute r_cut per channel
+    r_cuts: Dict[str, float] = {}
+    for l in range(mxlcmp - 1):
+        ch = channel_names[l]
+        na = find_all_nodes(x, radials[labels[l]])
+        nb = find_all_nodes(x, radials[labels[l + 1]])
+        r_cuts[ch] = _resolve_r_cut(
+            na[-1] if na else 0.0,
+            nb[-1] if nb else 0.0,
+            cutoff_mode,
+            manual_r_cut,
+        )
+
+    for l in range(mxlcmp):
+        lbl = labels[l]
+        u = radials[lbl]
+
+        _LOG_FLOOR = 10.0  # clip |dV/dr| below this before log
+
+        # Collect panels: (y-data, y-label, panel-title, r_cut lines, log_scale)
+        panels: List[tuple] = [
+            (u,    f"u_{lbl}(r)",          f"wavefunction  u_{lbl}(r)",         [], False),
+            (v,    "V(r)  [Ry]",           "potential  V(r)",                   [], False),
+            (dVdr, "dV/dr  [Ry/Bohr]",     "potential gradient  dV/dr",         [], False),
+            (np.abs(dVdr), f"|dV/dr|  (floor={_LOG_FLOOR:.0f})  [Ry/Bohr]",
+             f"|dV/dr|  log scale  (clipped below {_LOG_FLOOR:.0f})",            [], True),
+        ]
+        # Adjacent channels — integrand panels
+        if l < mxlcmp - 1:
+            ch = channel_names[l]
+            b = labels[l + 1]
+            integrand = u * dVdr * radials[b]
+            panels.append((
+                integrand,
+                f"u_{lbl}·(dV/dr)·u_{b}",
+                f"integrand  u_{lbl}·(dV/dr)·u_{b}  [{ch} channel]",
+                [(r_cuts[ch], ch)],
+                False,
+            ))
+        if l > 0:
+            ch = channel_names[l - 1]
+            a = labels[l - 1]
+            integrand = radials[a] * dVdr * u
+            panels.append((
+                integrand,
+                f"u_{a}·(dV/dr)·u_{lbl}",
+                f"integrand  u_{a}·(dV/dr)·u_{lbl}  [{ch} channel]",
+                [(r_cuts[ch], ch)],
+                False,
+            ))
+
+        n = len(panels)
+        fig, axes = plt.subplots(n, 1, figsize=(9, 2.8 * n), sharex=True)
+        if n == 1:
+            axes = [axes]
+
+        cutoff_label = (
+            f"manual r_cut={manual_r_cut:.4f} Bohr"
+            if manual_r_cut is not None
+            else f"auto ({cutoff_mode})"
+        )
+        fig.suptitle(
+            f"Orbital  {lbl.upper()}  —  component={comp}  spin={spin}\n"
+            f"cutoff: {cutoff_label}",
+            fontsize=11,
+        )
+
+        for ax, panel in zip(axes, panels):
+            y, ylabel, title, rlines, log_scale = panel
+            if log_scale:
+                y_plot = np.clip(y, _LOG_FLOOR, None)
+                ax.semilogy(x, y_plot, lw=1.0, color="steelblue")
+                ax.set_ylim(bottom=_LOG_FLOOR)
+            else:
+                ax.plot(x, y, lw=1.0, color="steelblue")
+                ax.axhline(0, color="k", lw=0.5, ls=":")
+            for rc, ch in rlines:
+                ax.axvline(rc, color="tomato", lw=1.0, ls="--",
+                           label=f"r_cut_{ch} = {rc:.4f} Bohr")
+                ax.legend(fontsize=7, loc="upper right")
+            ax.set_ylabel(ylabel, fontsize=8)
+            ax.set_title(title, fontsize=8)
+            ax.grid(True, alpha=0.25)
+
+        axes[-1].set_xlabel("r  [Bohr]", fontsize=9)
+        plt.tight_layout()
+
+        fname = os.path.join(
+            workdir,
+            f"{output_prefix}_orbital_{lbl}_comp{comp}_spin{spin}.png",
+        )
+        fig.savefig(fname, dpi=130, bbox_inches="tight")
+        plt.close(fig)
+        if logger:
+            logger.info("Orbital plot saved: %s", fname)
+
+
 def sweep_combinations_cutoff(
     block: Dict[str, Any],
     manual_r_cut: Optional[float] = None,
+    cutoff_mode: str = "max",
 ) -> pd.DataFrame:
     integral_modes = ["plain", "r2"]
     norm_modes = ["none", "u2", "r2u2"]
@@ -244,6 +424,7 @@ def sweep_combinations_cutoff(
                     norm_mode=norm_mode,
                     reduce_mode=reduce_mode,
                     manual_r_cut=manual_r_cut,
+                    cutoff_mode=cutoff_mode,
                 )
                 rows.append(row)
     return pd.DataFrame(rows)
@@ -277,13 +458,23 @@ def run_mcmillan_cutoff_sweep(
     theta_d: Optional[float] = None,
     save_json: bool = False,
     manual_r_cut: Optional[float] = None,
+    cutoff_mode: str = "max",
+    # KKR invocation
+    run_kkr: bool = True,
+    elements: Optional[List[str]] = None,
+    concentrations: Optional[List[float]] = None,
+    a0: Optional[float] = None,
+    sym: str = "bcc",
+    ew: float = 0.7,
+    xc: str = "pbe",
+    rel: str = "nrl",
+    bzqlty: float = 10,
+    pmix: float = 0.01,
+    edelt: float = 0.001,
+    mxl: int = 3,
 ) -> Dict[str, Any]:
     workdir = os.path.abspath(workdir)
     os.makedirs(workdir, exist_ok=True)
-
-    fort51_path = os.path.join(workdir, "fort.51")
-    if not os.path.exists(fort51_path):
-        raise FileNotFoundError(f"fort.51 not found: {fort51_path}")
 
     old_cwd = os.getcwd()
     os.chdir(workdir)
@@ -295,7 +486,37 @@ def run_mcmillan_cutoff_sweep(
         if manual_r_cut is not None:
             logger.info("Manual cutoff: r_cut=%.6f Bohr (overrides node detection)", manual_r_cut)
         else:
-            logger.info("Cutoff mode: automatic (last node of each wavefunction pair)")
+            logger.info("Cutoff mode: %s", cutoff_mode)
+
+        if run_kkr:
+            if not _KKR_AVAILABLE:
+                raise RuntimeError("run_kkr=True but finalscf.py could not be imported")
+            if elements is None or concentrations is None or a0 is None:
+                raise ValueError("--elements, --concentrations and --a0 are required when --run-kkr is set")
+            logger.info(
+                "Running KKR finalscf: sym=%s a0=%.5f elements=%s conc=%s",
+                sym, a0, elements, concentrations,
+            )
+            _run_kkr_finalscf(
+                workdir=workdir,
+                output=output_prefix,
+                sym=sym,
+                elements=elements,
+                concentrations=concentrations,
+                a0=a0,
+                ew=ew,
+                xc=xc,
+                rel=rel,
+                bzqlty=bzqlty,
+                pmix=pmix,
+                edelt=edelt,
+                mxl=mxl,
+            )
+            logger.info("KKR finalscf finished")
+
+        fort51_path = os.path.join(workdir, "fort.51")
+        if not os.path.exists(fort51_path):
+            raise FileNotFoundError(f"fort.51 not found: {fort51_path}")
 
         data = parse_fort51(fort51_path)
 
@@ -313,7 +534,8 @@ def run_mcmillan_cutoff_sweep(
         dfs = []
         for block in selected:
             logger.info("Processing component=%s spin=%s", block["component"], block["spin"])
-            df = sweep_combinations_cutoff(block, manual_r_cut=manual_r_cut)
+            plot_radial_functions(block, workdir, output_prefix, manual_r_cut, cutoff_mode, logger)
+            df = sweep_combinations_cutoff(block, manual_r_cut=manual_r_cut, cutoff_mode=cutoff_mode)
             df.insert(0, "fort51_path", fort51_path)
             dfs.append(df)
 
@@ -426,6 +648,42 @@ def main():
         default=None,
         help="Manual integration cutoff in Bohr. Overrides automatic last-node detection for all channels.",
     )
+    ap.add_argument(
+        "--cutoff-mode",
+        default="max",
+        choices=list(_CUTOFF_MODES),
+        help=(
+            "How to pick r_cut from the two last-node positions for each channel pair. "
+            "'max' (default): max(r_last_l, r_last_{l+1}). "
+            "'min': min of the two. "
+            "'lower': r_last_l only (lower angular momentum wavefunction). "
+            "'upper': r_last_{l+1} only (higher-l wavefunction) — "
+            "gives r_cut_pd=r_last_d, testing whether p-core contamination matters for pd."
+        ),
+    )
+
+    # KKR invocation
+    kkr = ap.add_argument_group("KKR invocation (required when --run-kkr, ignored otherwise)")
+    kkr.add_argument(
+        "--run-kkr",
+        action=argparse.BooleanOptionalAction,
+        default=True,
+        help="Run KKR finalscf before computing eta (default: true). "
+             "Set --no-run-kkr to read pre-computed fort.51/fort.50 from workdir.",
+    )
+    kkr.add_argument("--elements", nargs="+", default=None, help="Element symbols, e.g. Ta Nb Hf")
+    kkr.add_argument("--concentrations", nargs="+", type=float, default=None,
+                     help="Concentrations matching --elements (must sum to 1)")
+    kkr.add_argument("--a0", type=float, default=None, help="Lattice constant in Bohr")
+    kkr.add_argument("--sym", default="bcc", choices=["bcc", "fcc"], help="Crystal structure")
+    kkr.add_argument("--ew", type=float, default=0.7)
+    kkr.add_argument("--xc", default="pbe")
+    kkr.add_argument("--rel", default="nrl", choices=["nrl", "sra", "srals"])
+    kkr.add_argument("--bzqlty", type=float, default=10)
+    kkr.add_argument("--pmix", type=float, default=0.01)
+    kkr.add_argument("--edelt", type=float, default=0.001)
+    kkr.add_argument("--mxl", type=int, default=3)
+
     args = ap.parse_args()
 
     result = run_mcmillan_cutoff_sweep(
@@ -437,6 +695,19 @@ def main():
         theta_d=args.theta_d,
         save_json=args.save_json,
         manual_r_cut=args.r_cut,
+        cutoff_mode=args.cutoff_mode,
+        run_kkr=args.run_kkr,
+        elements=args.elements,
+        concentrations=args.concentrations,
+        a0=args.a0,
+        sym=args.sym,
+        ew=args.ew,
+        xc=args.xc,
+        rel=args.rel,
+        bzqlty=args.bzqlty,
+        pmix=args.pmix,
+        edelt=args.edelt,
+        mxl=args.mxl,
     )
 
     canonical = result["dataframe"][

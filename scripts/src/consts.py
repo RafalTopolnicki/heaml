@@ -57,6 +57,15 @@ KKR_PARAMS_FINALSCF = {
     'edelt': 0.001,
     'subdir': 'finalscf',
     'output': 'finalscf',
+
+    # McMillan-Hopfield integration cutoff.
+    # How r_cut is derived from the two last-node positions for each channel (l, l+1):
+    #   'max'   r_cut = max(r_last_l, r_last_{l+1})  — recommended; removes entire
+    #           oscillating core region for every channel.
+    #   'min'   r_cut = min of the two last nodes.
+    #   'lower' r_cut = r_last_l   (e.g. pd uses r_last_p)
+    #   'upper' r_cut = r_last_{l+1} (e.g. pd uses r_last_d) — gives unphysical λ≈23, do not use.
+    'mcmillan_cutoff_mode': 'max',
 }
 # MONOCLINIC
 # RMT: 0.42723 for delta=0.020

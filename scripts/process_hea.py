@@ -120,6 +120,7 @@ def run_one_hea(**kwargs):
         workdir=scf_params['workdir'],
         mixture_mass=run_params['mixture_mass'],
         theta_d=theta_d_for_log,
+        cutoff_mode=KKR_PARAMS_FINALSCF_PARAMS.get('mcmillan_cutoff_mode', 'max'),
     )
 
     # make all final computations
