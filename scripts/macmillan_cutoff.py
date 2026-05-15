@@ -36,7 +36,7 @@ import json
 import logging
 import os
 import sys
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Dict, List, Optional
 
 import numpy as np
 import pandas as pd
@@ -73,7 +73,6 @@ if _script_dir not in sys.path:
 from macmillan import (
     parse_fort51,
     group_dosef_by_l,
-    normalize_u,
     reduce_l_block_radials,
     derivative_nonuniform,
     compute_M,
@@ -129,6 +128,7 @@ def compute_one_combination_cutoff(
     integral_mode: str,
     norm_mode: str,
     reduce_mode: str,
+    manual_r_cut: Optional[float] = None,
 ) -> Dict[str, Any]:
     """
     Compute both full and last-node-cutoff eta for one (block, mode) combination.
@@ -194,7 +194,7 @@ def compute_one_combination_cutoff(
         nodes_b = find_all_nodes(x, u2)
         r_last_a = nodes_a[-1] if nodes_a else 0.0
         r_last_b = nodes_b[-1] if nodes_b else 0.0
-        r_cut = max(r_last_a, r_last_b)
+        r_cut = manual_r_cut if manual_r_cut is not None else max(r_last_a, r_last_b)
 
         nl = float(grouped_dos[a])
         nlp1 = float(grouped_dos[b])
@@ -226,7 +226,10 @@ def compute_one_combination_cutoff(
     return result
 
 
-def sweep_combinations_cutoff(block: Dict[str, Any]) -> pd.DataFrame:
+def sweep_combinations_cutoff(
+    block: Dict[str, Any],
+    manual_r_cut: Optional[float] = None,
+) -> pd.DataFrame:
     integral_modes = ["plain", "r2"]
     norm_modes = ["none", "u2", "r2u2"]
     reduce_modes = ["mean", "sum", "first"]
@@ -240,6 +243,7 @@ def sweep_combinations_cutoff(block: Dict[str, Any]) -> pd.DataFrame:
                     integral_mode=integral_mode,
                     norm_mode=norm_mode,
                     reduce_mode=reduce_mode,
+                    manual_r_cut=manual_r_cut,
                 )
                 rows.append(row)
     return pd.DataFrame(rows)
@@ -272,6 +276,7 @@ def run_mcmillan_cutoff_sweep(
     mixture_mass: Optional[float] = None,
     theta_d: Optional[float] = None,
     save_json: bool = False,
+    manual_r_cut: Optional[float] = None,
 ) -> Dict[str, Any]:
     workdir = os.path.abspath(workdir)
     os.makedirs(workdir, exist_ok=True)
@@ -287,6 +292,10 @@ def run_mcmillan_cutoff_sweep(
         logger.info("Starting McMillan-Hopfield cutoff sweep")
         logger.info("workdir=%s", workdir)
         logger.info("C_THEORETICAL = %.4e", C_THEORETICAL)
+        if manual_r_cut is not None:
+            logger.info("Manual cutoff: r_cut=%.6f Bohr (overrides node detection)", manual_r_cut)
+        else:
+            logger.info("Cutoff mode: automatic (last node of each wavefunction pair)")
 
         data = parse_fort51(fort51_path)
 
@@ -304,7 +313,7 @@ def run_mcmillan_cutoff_sweep(
         dfs = []
         for block in selected:
             logger.info("Processing component=%s spin=%s", block["component"], block["spin"])
-            df = sweep_combinations_cutoff(block)
+            df = sweep_combinations_cutoff(block, manual_r_cut=manual_r_cut)
             df.insert(0, "fort51_path", fort51_path)
             dfs.append(df)
 
@@ -411,6 +420,12 @@ def main():
         help="Debye temperature in K. Required with --mixture-mass to compute λ.",
     )
     ap.add_argument("--save-json", action="store_true", help="Also save JSON output")
+    ap.add_argument(
+        "--r-cut",
+        type=float,
+        default=None,
+        help="Manual integration cutoff in Bohr. Overrides automatic last-node detection for all channels.",
+    )
     args = ap.parse_args()
 
     result = run_mcmillan_cutoff_sweep(
@@ -421,6 +436,7 @@ def main():
         mixture_mass=args.mixture_mass,
         theta_d=args.theta_d,
         save_json=args.save_json,
+        manual_r_cut=args.r_cut,
     )
 
     canonical = result["dataframe"][
@@ -438,6 +454,10 @@ def main():
     print(canonical[[c for c in cols if c in canonical.columns]].to_string(index=False))
     print(f"\nCSV: {result['summary']['csv_path']}")
     print(f"C_theoretical = {C_THEORETICAL:.4e}")
+
+    canonical_json_path = os.path.join(args.workdir, f"{args.output_prefix}_canonical.json")
+    canonical.to_json(canonical_json_path, orient="records", indent=2)
+    print(f"Canonical JSON: {canonical_json_path}")
 
 
 if __name__ == "__main__":
