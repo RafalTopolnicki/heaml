@@ -118,6 +118,7 @@ def run_one_hea(**kwargs):
     theta_d_for_log = debye_output.get('thetaDB_K')
     run_mcmillan_cutoff_sweep(
         workdir=scf_params['workdir'],
+        run_kkr=False,
         mixture_mass=run_params['mixture_mass'],
         theta_d=theta_d_for_log,
         cutoff_mode=KKR_PARAMS_FINALSCF_PARAMS.get('mcmillan_cutoff_mode', 'max'),
