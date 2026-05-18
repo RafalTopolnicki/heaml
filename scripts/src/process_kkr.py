@@ -31,6 +31,13 @@ def compute_lambda(row):
     denominator = mixture_mass*row['thetaDB']**2
     return nominator/denominator*_C_THEORETICAL
 
+def compute_lambda_nocutoff(row):
+    used_labels = [e for e in composition_labels if e in row.keys()]
+    nominator = np.sum([row[e]*row[f'{e}_eta_total_full'] for e in used_labels])
+    mixture_mass = row['mixture_mass']
+    denominator = mixture_mass*row['thetaDB']**2
+    return nominator/denominator*_C_THEORETICAL
+
 def read_params(path, dirname):
     data = json.load(open(os.path.join(path, dirname, 'run_params.json'), 'r'))
     concentrations = normalize_composition(data['concentrations'])
@@ -93,11 +100,15 @@ def read_macmillan(path, dirname):
     results = {}
     for _, row in df.iterrows():
         cmp_label = row['component_label']
-        # cutoff columns: eta_cutoff_sp → stored as eta_sp for downstream compatibility
         for ch in ['sp', 'pd', 'df']:
+            # cutoff (primary)
             results[f'{cmp_label}_eta_{ch}'] = row[f'eta_cutoff_{ch}']
             results[f'{cmp_label}_M_{ch}'] = row[f'M_cutoff_{ch}']
+            # full integral (no cutoff)
+            results[f'{cmp_label}_eta_{ch}_full'] = row[f'eta_full_{ch}']
+            results[f'{cmp_label}_M_{ch}_full'] = row[f'M_full_{ch}']
         results[f'{cmp_label}_eta_total'] = row['eta_total_cutoff']
+        results[f'{cmp_label}_eta_total_full'] = row['eta_total_full']
     return results
 
 def tc_from_data(data, mu):
@@ -119,6 +130,11 @@ def process_kkr(path, dirname):
         data['Tc_mu0.1'] = tc_from_data(data, mu=0.1)
         data['Tc_mu0.2'] = tc_from_data(data, mu=0.2)
         data['Tc_mu0.3'] = tc_from_data(data, mu=0.3)
+        data['lambda_nocutoff'] = compute_lambda_nocutoff(data)
+        _lam_nc = data['lambda_nocutoff']
+        data['Tc_mu0.1_nocutoff'] = tc_from_data({**data, 'lambda': _lam_nc}, mu=0.1)
+        data['Tc_mu0.2_nocutoff'] = tc_from_data({**data, 'lambda': _lam_nc}, mu=0.2)
+        data['Tc_mu0.3_nocutoff'] = tc_from_data({**data, 'lambda': _lam_nc}, mu=0.3)
         # add features
         data = {**data, **compute_hea_features(comp_dict=comp_dict, normalize_composition=True)}
         return data
