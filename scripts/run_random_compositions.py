@@ -4,7 +4,7 @@ from concurrent.futures import ProcessPoolExecutor, as_completed
 import numpy as np
 
 from process_hea import run_one_hea
-from src.utils import generate_dirname, append_errorlog
+from src.utils import generate_dirname, append_errorlog, save_dict_to_json
 from src.consts import composition_labels as ALL_ELEMENTS
 
 
@@ -74,6 +74,7 @@ if __name__ == "__main__":
 
     print(f"Running with elements: {elements}")
     os.makedirs(args["workdir"], exist_ok=True)
+    save_dict_to_json(args, os.path.join(args["workdir"], "parameters.json"))
 
     tasks = [(args, i, i + args["seed"]) for i in range(args["number_of_samples"])]
 
