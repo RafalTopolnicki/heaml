@@ -14,19 +14,28 @@ Rationale:
   The "last node" is the outermost zero of u_l(r) — beyond it the wavefunction
   is in its valence outer lobe and the potential is smooth/screened.
 
-  Four cutoff modes are supported (--cutoff-mode):
-    max   (default) r_cut = max(r_last_l, r_last_{l+1})
-                    Removes core contamination from whichever wavefunction
-                    extends furthest.  sp→r_last_p, pd→r_last_p, df→r_last_f
-    min             r_cut = min(r_last_l, r_last_{l+1})
-                    Uses the shallower of the two nodes.
-    lower           r_cut = r_last_l   (lower-l wavefunction only)
-                    sp→r_last_s, pd→r_last_p, df→r_last_d
-    upper           r_cut = r_last_{l+1}  (higher-l wavefunction only)
-                    sp→r_last_p, pd→r_last_d, df→r_last_f
-                    For pd this removes only d-core contamination, not p-core.
-                    Physically motivated if p valence wavefunctions are already
-                    OPW-orthogonal to p core states (true in SRA KKR).
+  Five cutoff modes are supported (--cutoff-mode):
+    max     (default) r_cut = max(r_last_l, r_last_{l+1})
+                      Removes core contamination from whichever wavefunction
+                      extends furthest.  sp→r_last_p, pd→r_last_p, df→r_last_f
+    min               r_cut = min(r_last_l, r_last_{l+1})
+                      Uses the shallower of the two nodes.
+    lower             r_cut = r_last_l   (lower-l wavefunction only)
+                      sp→r_last_s, pd→r_last_p, df→r_last_d
+    upper             r_cut = r_last_{l+1}  (higher-l wavefunction only)
+                      sp→r_last_p, pd→r_last_d, df→r_last_f
+                      For pd this removes only d-core contamination, not p-core.
+                      Physically motivated if p valence wavefunctions are already
+                      OPW-orthogonal to p core states (true in SRA KKR).
+    valence           Apply per-wavefunction cutoff only when the actual node
+                      count exceeds the expected number of genuine valence nodes
+                      (stored in VALENCE_NODES_EXPECTED in src/consts.py).
+                      If n_actual > n_expected, r_cut = r_last (contamination
+                      present); otherwise r_cut = 0 (all nodes are physical).
+                      r_cut for the channel = max(r_cut_l, r_cut_{l+1}).
+                      Fixes the La df anomaly: La 5d has 2 genuine valence nodes
+                      (n-l-1=2), so no cutoff is applied there, preserving the
+                      inner negative lobe that cancels part of M_df.
 
   With this cutoff for Ta (BCC, a=6.27 Bohr):
     eta_sp:    39.7  → 0.010 Ry/Bohr²  (core contamination removed)
@@ -96,6 +105,11 @@ try:
 except ImportError:
     _KKR_AVAILABLE = False
 
+try:
+    from src.consts import VALENCE_NODES_EXPECTED as _VALENCE_NODES_EXPECTED
+except ImportError:
+    _VALENCE_NODES_EXPECTED: Dict[str, Dict[int, int]] = {}
+
 
 # ---------------------------------------------------------------------------
 # Node detection
@@ -141,7 +155,7 @@ def compute_M_from_cutoff(
 # Per-block computation
 # ---------------------------------------------------------------------------
 
-_CUTOFF_MODES = ("max", "min", "lower", "upper")
+_CUTOFF_MODES = ("max", "min", "lower", "upper", "valence")
 
 
 def _resolve_r_cut(
@@ -149,6 +163,11 @@ def _resolve_r_cut(
     r_last_b: float,
     cutoff_mode: str,
     manual_r_cut: Optional[float],
+    *,
+    n_nodes_a: int = 0,
+    n_nodes_b: int = 0,
+    valence_expected_a: int = 0,
+    valence_expected_b: int = 0,
 ) -> float:
     """Return the integration lower limit for one channel pair (a=lower-l, b=upper-l)."""
     if manual_r_cut is not None:
@@ -161,6 +180,11 @@ def _resolve_r_cut(
         return r_last_a
     if cutoff_mode == "upper":
         return r_last_b
+    if cutoff_mode == "valence":
+        # Apply cutoff only when extra core-contamination nodes are present.
+        effective_a = r_last_a if n_nodes_a > valence_expected_a else 0.0
+        effective_b = r_last_b if n_nodes_b > valence_expected_b else 0.0
+        return max(effective_a, effective_b)
     raise ValueError(f"Unknown cutoff_mode {cutoff_mode!r}; choose from {_CUTOFF_MODES}")
 
 
@@ -171,9 +195,13 @@ def compute_one_combination_cutoff(
     reduce_mode: str,
     manual_r_cut: Optional[float] = None,
     cutoff_mode: str = "max",
+    valence_nodes: Optional[Dict[int, int]] = None,
 ) -> Dict[str, Any]:
     """
     Compute both full and last-node-cutoff eta for one (block, mode) combination.
+
+    valence_nodes: mapping {l: expected_node_count} for the element in this block,
+                   used only when cutoff_mode="valence".  If None, treated as all zeros.
     """
     x_full = np.array(block["xr"], dtype=float)
     v_full = np.array(block["v3"], dtype=float)
@@ -237,7 +265,14 @@ def compute_one_combination_cutoff(
         nodes_b = find_all_nodes(x, u2)
         r_last_a = nodes_a[-1] if nodes_a else 0.0
         r_last_b = nodes_b[-1] if nodes_b else 0.0
-        r_cut = _resolve_r_cut(r_last_a, r_last_b, cutoff_mode, manual_r_cut)
+        vn = valence_nodes or {}
+        r_cut = _resolve_r_cut(
+            r_last_a, r_last_b, cutoff_mode, manual_r_cut,
+            n_nodes_a=len(nodes_a),
+            n_nodes_b=len(nodes_b),
+            valence_expected_a=vn.get(l, 0),
+            valence_expected_b=vn.get(l + 1, 0),
+        )
 
         nl = float(grouped_dos[a])
         nlp1 = float(grouped_dos[b])
@@ -276,6 +311,7 @@ def plot_radial_functions(
     manual_r_cut: Optional[float] = None,
     cutoff_mode: str = "max",
     logger: Optional[logging.Logger] = None,
+    valence_nodes: Optional[Dict[int, int]] = None,
 ) -> None:
     """Save one PNG per orbital showing u_l, V, dV/dr and adjacent integrands."""
     try:
@@ -310,6 +346,7 @@ def plot_radial_functions(
 
     # Pre-compute r_cut per channel
     r_cuts: Dict[str, float] = {}
+    vn = valence_nodes or {}
     for l in range(mxlcmp - 1):
         ch = channel_names[l]
         na = find_all_nodes(x, radials[labels[l]])
@@ -319,6 +356,10 @@ def plot_radial_functions(
             nb[-1] if nb else 0.0,
             cutoff_mode,
             manual_r_cut,
+            n_nodes_a=len(na),
+            n_nodes_b=len(nb),
+            valence_expected_a=vn.get(l, 0),
+            valence_expected_b=vn.get(l + 1, 0),
         )
 
     for l in range(mxlcmp):
@@ -409,6 +450,7 @@ def sweep_combinations_cutoff(
     block: Dict[str, Any],
     manual_r_cut: Optional[float] = None,
     cutoff_mode: str = "max",
+    valence_nodes: Optional[Dict[int, int]] = None,
 ) -> pd.DataFrame:
     integral_modes = ["plain", "r2"]
     norm_modes = ["none", "u2", "r2u2"]
@@ -425,6 +467,7 @@ def sweep_combinations_cutoff(
                     reduce_mode=reduce_mode,
                     manual_r_cut=manual_r_cut,
                     cutoff_mode=cutoff_mode,
+                    valence_nodes=valence_nodes,
                 )
                 rows.append(row)
     return pd.DataFrame(rows)
@@ -534,9 +577,36 @@ def run_mcmillan_cutoff_sweep(
         dfs = []
         for block in selected:
             logger.info("Processing component=%s spin=%s", block["component"], block["spin"])
-            plot_radial_functions(block, workdir, output_prefix, manual_r_cut, cutoff_mode, logger)
-            df = sweep_combinations_cutoff(block, manual_r_cut=manual_r_cut, cutoff_mode=cutoff_mode)
+
+            # Resolve element label and valence node table for this block.
+            comp_idx = int(block["component"]) - 1  # fort.51 components are 1-indexed
+            elem_label: Optional[str] = None
+            if elements is not None and 0 <= comp_idx < len(elements):
+                elem_label = elements[comp_idx]
+            block_valence_nodes: Optional[Dict[int, int]] = None
+            if cutoff_mode == "valence" and elem_label is not None:
+                block_valence_nodes = _VALENCE_NODES_EXPECTED.get(elem_label)
+                if block_valence_nodes is None:
+                    logger.warning(
+                        "cutoff_mode=valence: no VALENCE_NODES_EXPECTED entry for %s; "
+                        "treating all expected nodes as 0 (same as max mode)",
+                        elem_label,
+                    )
+                    block_valence_nodes = {}
+
+            plot_radial_functions(
+                block, workdir, output_prefix, manual_r_cut, cutoff_mode, logger,
+                valence_nodes=block_valence_nodes,
+            )
+            df = sweep_combinations_cutoff(
+                block,
+                manual_r_cut=manual_r_cut,
+                cutoff_mode=cutoff_mode,
+                valence_nodes=block_valence_nodes,
+            )
             df.insert(0, "fort51_path", fort51_path)
+            if elem_label is not None:
+                df.insert(1, "element", elem_label)
             dfs.append(df)
 
         master_df = pd.concat(dfs, ignore_index=True)
@@ -657,8 +727,11 @@ def main():
             "'max' (default): max(r_last_l, r_last_{l+1}). "
             "'min': min of the two. "
             "'lower': r_last_l only (lower angular momentum wavefunction). "
-            "'upper': r_last_{l+1} only (higher-l wavefunction) — "
-            "gives r_cut_pd=r_last_d, testing whether p-core contamination matters for pd."
+            "'upper': r_last_{l+1} only (higher-l wavefunction). "
+            "'valence': apply cutoff only when n_actual_nodes > expected valence nodes "
+            "(from VALENCE_NODES_EXPECTED in src/consts.py); otherwise no cutoff. "
+            "Requires --elements to identify each component. "
+            "Fixes La df anomaly: La 5d has 2 genuine valence nodes, so r_cut_df=0."
         ),
     )
 

@@ -122,6 +122,7 @@ def run_one_hea(**kwargs):
         mixture_mass=run_params['mixture_mass'],
         theta_d=theta_d_for_log,
         cutoff_mode=KKR_PARAMS_FINALSCF_PARAMS.get('mcmillan_cutoff_mode', 'max'),
+        elements=kwargs['element_labels'],
     )
 
     # make all final computations

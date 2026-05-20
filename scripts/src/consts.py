@@ -25,6 +25,25 @@ ATOMS_PER_CELL = 2
 # Individual runs may use a subset via the --elements CLI argument.
 composition_labels = ["Ti", "Nb", "Zr", "Hf", "Ta", "Sc", "Mo", "W", "Y", "La"]
 
+# Expected number of genuine radial nodes for the valence orbital of each element and l.
+# Used by cutoff_mode="valence" in macmillan_cutoff.py: apply last-node cutoff only when
+# n_actual_nodes > n_expected (extra core-contamination nodes present).
+# s, p: 0 — inner oscillations are always orthogonality contamination.
+# d:    0 for 3d, 1 for 4d, 2 for 5d  (n-l-1 genuine valence nodes).
+# f:    0 for all — first f element La has 4f^1, n-l-1 = 0.
+VALENCE_NODES_EXPECTED: dict = {
+    "Sc": {0: 0, 1: 0, 2: 0, 3: 0},  # 3d
+    "Ti": {0: 0, 1: 0, 2: 0, 3: 0},  # 3d
+    "Y":  {0: 0, 1: 0, 2: 1, 3: 0},  # 4d
+    "Zr": {0: 0, 1: 0, 2: 1, 3: 0},  # 4d
+    "Nb": {0: 0, 1: 0, 2: 1, 3: 0},  # 4d
+    "Mo": {0: 0, 1: 0, 2: 1, 3: 0},  # 4d
+    "Hf": {0: 0, 1: 0, 2: 2, 3: 0},  # 5d
+    "Ta": {0: 0, 1: 0, 2: 2, 3: 0},  # 5d
+    "W":  {0: 0, 1: 0, 2: 2, 3: 0},  # 5d
+    "La": {0: 0, 1: 0, 2: 2, 3: 0},  # 5d (4f: n-l-1=0, no genuine f nodes)
+}
+
 CANDIDATE_COMPOSITIONS_N = 300_000
 ACQUISITION_ALPHA = 1.0
 ACQUISITION_METRIC = 'cosine'
@@ -62,12 +81,15 @@ KKR_PARAMS_FINALSCF = {
 
     # McMillan-Hopfield integration cutoff.
     # How r_cut is derived from the two last-node positions for each channel (l, l+1):
-    #   'max'   r_cut = max(r_last_l, r_last_{l+1})  — recommended; removes entire
-    #           oscillating core region for every channel.
-    #   'min'   r_cut = min of the two last nodes.
-    #   'lower' r_cut = r_last_l   (e.g. pd uses r_last_p)
-    #   'upper' r_cut = r_last_{l+1} (e.g. pd uses r_last_d) — gives unphysical λ≈23, do not use.
-    'mcmillan_cutoff_mode': 'max',
+    #   'max'     r_cut = max(r_last_l, r_last_{l+1})  — removes core contamination from
+    #             whichever wavefunction extends furthest.
+    #   'min'     r_cut = min of the two last nodes.
+    #   'lower'   r_cut = r_last_l   (e.g. pd uses r_last_p)
+    #   'upper'   r_cut = r_last_{l+1} (e.g. pd uses r_last_d) — gives unphysical λ≈23, do not use.
+    #   'valence' per-wavefunction cutoff only when n_actual_nodes > expected valence nodes
+    #             (see VALENCE_NODES_EXPECTED above). Fixes La df anomaly: La 5d has 2 genuine
+    #             valence nodes so no cutoff is applied there, preserving the physical inner lobe.
+    'mcmillan_cutoff_mode': 'valence',
 }
 # MONOCLINIC
 # RMT: 0.42723 for delta=0.020
