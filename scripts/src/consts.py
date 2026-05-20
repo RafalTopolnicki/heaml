@@ -81,6 +81,7 @@ KKR_PARAMS_FINALSCF = {
 
     # McMillan-Hopfield integration cutoff.
     # How r_cut is derived from the two last-node positions for each channel (l, l+1):
+    #   'none'    no cutoff — integrate from 0 (full muffin-tin integral, original behaviour).
     #   'max'     r_cut = max(r_last_l, r_last_{l+1})  — removes core contamination from
     #             whichever wavefunction extends furthest.
     #   'min'     r_cut = min of the two last nodes.

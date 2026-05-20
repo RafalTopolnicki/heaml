@@ -155,7 +155,7 @@ def compute_M_from_cutoff(
 # Per-block computation
 # ---------------------------------------------------------------------------
 
-_CUTOFF_MODES = ("max", "min", "lower", "upper", "valence")
+_CUTOFF_MODES = ("none", "max", "min", "lower", "upper", "valence")
 
 
 def _resolve_r_cut(
@@ -172,6 +172,8 @@ def _resolve_r_cut(
     """Return the integration lower limit for one channel pair (a=lower-l, b=upper-l)."""
     if manual_r_cut is not None:
         return manual_r_cut
+    if cutoff_mode == "none":
+        return 0.0
     if cutoff_mode == "max":
         return max(r_last_a, r_last_b)
     if cutoff_mode == "min":
