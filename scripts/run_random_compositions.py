@@ -39,6 +39,10 @@ def compute_one_random_composition(task):
     workdirname = generate_dirname(composition_labels, composition_ratio)
     full_workdir = os.path.join(args["workdir"], workdirname)
 
+    if os.path.exists(os.path.join(full_workdir, "results.json")):
+        print(f"Skipping {workdirname} — results.json already exists")
+        return {"ok": True, "workdirname": workdirname, "skipped": True}
+
     run_params = {
         "workdir": full_workdir,
         "element_labels": composition_labels,
