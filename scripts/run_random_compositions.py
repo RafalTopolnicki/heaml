@@ -1,42 +1,30 @@
 import argparse
 import os
 from concurrent.futures import ProcessPoolExecutor, as_completed
-from datetime import datetime
 import numpy as np
 
 from process_hea import run_one_hea
 from src.utils import generate_dirname, append_errorlog
+from src.consts import composition_labels as ALL_ELEMENTS
 
-composition_labels = ["Ti", "Nb", "Zr", "Hf", "Ta", "Sc", "Mo", "W", "Y", "La"]
-minimal_compositions = {'Ti': 0, 'Nb': 0, 'Zr': 0, 'Hf': 0, 'Ta': 0, 'Sc': 0, 'Mo': 0, 'W': 0, 'Y': 0, 'La': 0}
-maximal_compositions = {'Ti': 1, 'Nb': 1, 'Zr': 1, 'Hf': 1, 'Ta': 1, 'Sc': 1, 'Mo': 1, 'W': 1, 'Y': 1, 'La': 1}
-assert len(composition_labels) <= len(minimal_compositions) # check actual labels
-assert len(composition_labels) <= len(maximal_compositions)
 
-def generate_random_composition(n_elements=5, seed=None):
+def generate_random_composition(elements, seed=None):
     rng = np.random.default_rng(seed)
-    while True:
-        compostion = rng.dirichlet(np.ones(n_elements))
-        for element, c in zip(composition_labels, compostion):
-            if c >= minimal_compositions[element] and c <= maximal_compositions[element]:
-                return compostion
+    return rng.dirichlet(np.ones(len(elements)))
+
 
 def compute_one_random_composition(task):
     args, sample_id, seed = task
+    elements = args["elements"]
 
-    # global stop condition
     exit_file = "EXIT"
     if os.path.exists(exit_file):
         print("EXIT file detected — stopping worker")
         return {"ok": False, "stopped": True}
 
-    # independent RNG per task
-    composition_ratio = generate_random_composition(
-        n_elements=len(composition_labels),
-        seed=seed,
-    )
+    composition_ratio = generate_random_composition(elements, seed=seed)
 
-    workdirname = generate_dirname(composition_labels, composition_ratio)
+    workdirname = generate_dirname(elements, composition_ratio)
     full_workdir = os.path.join(args["workdir"], workdirname)
 
     if os.path.exists(os.path.join(full_workdir, "results.json")):
@@ -45,7 +33,7 @@ def compute_one_random_composition(task):
 
     run_params = {
         "workdir": full_workdir,
-        "element_labels": composition_labels,
+        "element_labels": elements,
         "concentrations": composition_ratio,
         "task": args['task'],
     }
@@ -60,7 +48,6 @@ def compute_one_random_composition(task):
         return {"ok": False, "workdirname": workdirname, "mixtureerror": str(exc)}
 
 
-
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--workdir", type=str, required=True)
@@ -69,11 +56,26 @@ if __name__ == "__main__":
     parser.add_argument("--workers", type=int, default=1)
     parser.add_argument("--seed", type=int, default=0)
     parser.add_argument("--task", type=str, default="all", choices=["lattice", "all"])
+    parser.add_argument(
+        "--elements", type=str, default=None,
+        help="Comma-separated subset of elements to use, e.g. Ti,Nb,Zr,Hf,Ta. "
+             f"Must be a subset of: {','.join(ALL_ELEMENTS)}. Defaults to all elements.",
+    )
     args = vars(parser.parse_args())
 
+    if args["elements"] is not None:
+        elements = [e.strip() for e in args["elements"].split(",")]
+        invalid = [e for e in elements if e not in ALL_ELEMENTS]
+        if invalid:
+            raise ValueError(f"Unknown elements: {invalid}. Allowed: {ALL_ELEMENTS}")
+    else:
+        elements = list(ALL_ELEMENTS)
+    args["elements"] = elements
+
+    print(f"Running with elements: {elements}")
     os.makedirs(args["workdir"], exist_ok=True)
 
-    tasks = [(args, i, i+args["seed"]) for i in range(args["number_of_samples"])]
+    tasks = [(args, i, i + args["seed"]) for i in range(args["number_of_samples"])]
 
     if args["workers"] == 1:
         for task in tasks:

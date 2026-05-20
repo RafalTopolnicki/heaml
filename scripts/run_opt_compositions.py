@@ -8,17 +8,12 @@ import math
 from src.process_kkr import process_kkr
 from src.utils import generate_dirname, append_errorlog, save_dict_to_json, log_iteration_summary
 from src.ml import train_cb_model
-from src.consts import composition_labels, ACQUISITION_ALPHA, ACQUISITION_METRIC, TARGET, CANDIDATE_COMPOSITIONS_N, MIN_NOVELTY_DIST
+from src.consts import composition_labels as ALL_ELEMENTS, ACQUISITION_ALPHA, ACQUISITION_METRIC, TARGET, CANDIDATE_COMPOSITIONS_N, MIN_NOVELTY_DIST
 from src.sampling import generate_candidates_data
 from process_hea import run_one_hea
 import numpy as np
 import datetime
 from sklearn.metrics.pairwise import cosine_distances
-
-minimal_compositions = {'Ti': 0, 'Nb': 0, 'Zr': 0, 'Hf': 0, 'Ta': 0, 'Sc': 0, 'Mo': 0, 'W': 0, 'Y': 0, 'La': 0}
-maximal_compositions = {'Ti': 0.6, 'Nb': 0.6, 'Zr': 0.6, 'Hf': 0.6, 'Ta': 0.6, 'Sc': 0.6, 'Mo': 0.6, 'W': 0.6, 'Y': 0.6, 'La': 0.6}
-assert len(composition_labels) <= len(minimal_compositions) # check actual labels
-assert len(composition_labels) <= len(maximal_compositions)
 
 
 def snapshot_python_code(workdir):
@@ -85,6 +80,10 @@ def compute_one_composition(composition_dict, workdir):
 
     workdirname = generate_dirname(composition_labels, composition_ratios)
     full_workdir = os.path.join(workdir, workdirname)
+
+    if os.path.exists(os.path.join(full_workdir, "results.json")):
+        print(f"Skipping {workdirname} — results.json already exists")
+        return {"ok": True, "workdirname": workdirname, "skipped": True}
 
     run_params = {
         "workdir": full_workdir,
@@ -208,7 +207,25 @@ if __name__ == "__main__":
     parser.add_argument("--champions_per_step", type=int, default=4)
     parser.add_argument("--seed", type=int, default=0)
     parser.add_argument("--number_of_models", type=int, default=10)
+    parser.add_argument(
+        "--elements", type=str, default=None,
+        help="Comma-separated subset of elements to use, e.g. Ti,Nb,Zr,Hf,Ta. "
+             f"Must be a subset of: {','.join(ALL_ELEMENTS)}. Defaults to all elements.",
+    )
     args = vars(parser.parse_args())
+
+    if args["elements"] is not None:
+        composition_labels = [e.strip() for e in args["elements"].split(",")]
+        invalid = [e for e in composition_labels if e not in ALL_ELEMENTS]
+        if invalid:
+            raise ValueError(f"Unknown elements: {invalid}. Allowed: {ALL_ELEMENTS}")
+    else:
+        composition_labels = list(ALL_ELEMENTS)
+    print(f"Running with elements: {composition_labels}")
+
+    minimal_compositions = {e: 0.0 for e in composition_labels}
+    maximal_compositions = {e: 0.6 for e in composition_labels}
+
     champions_per_step = args['champions_per_step']
     workdir = args['workdir']
     iterations = args['iterations']

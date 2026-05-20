@@ -21,6 +21,8 @@ AKAIBIN=AKAIMODBIN
 
 ATOMS_PER_CELL = 2
 
+# Maximal set of elements considered across all experiments.
+# Individual runs may use a subset via the --elements CLI argument.
 composition_labels = ["Ti", "Nb", "Zr", "Hf", "Ta", "Sc", "Mo", "W", "Y", "La"]
 
 CANDIDATE_COMPOSITIONS_N = 300_000
