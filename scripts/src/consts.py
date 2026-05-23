@@ -44,7 +44,7 @@ VALENCE_NODES_EXPECTED: dict = {
     "La": {0: 0, 1: 0, 2: 2, 3: 0},  # 5d (4f: n-l-1=0, no genuine f nodes)
 }
 
-CANDIDATE_COMPOSITIONS_N = 300_000
+CANDIDATE_COMPOSITIONS_N = 100_000 # in each iteration new points are generated
 ACQUISITION_ALPHA = 1.0
 ACQUISITION_METRIC = 'cosine'
 TARGET = 'Tc_mu0.2'

@@ -145,14 +145,17 @@ def generate_candidates_data(
     n_fresh = int(round(n_candidates * fresh_fraction))
     n_local = n_candidates - n_fresh
 
+    print(f"[candidates] generating {n_fresh} global + {n_local} local (seed={seed})")
     df_fresh = generate_global_candidates(
         n_candidates=n_fresh,
         min_comp=min_comp,
         max_comp=max_comp,
         skip=seed * 100000,
     )
+    print(f"[candidates] global done: {len(df_fresh)}")
 
     if known_data is None or len(known_data) == 0 or n_local == 0:
+        print(f"[candidates] skipping local (no known data or n_local=0), total={len(df_fresh)}")
         return df_fresh.reset_index(drop=True)
 
     df_local = generate_local_candidates(
@@ -164,10 +167,13 @@ def generate_candidates_data(
         max_comp=max_comp,
         seed=seed,
     )
+    print(f"[candidates] local done: {len(df_local)} (top_k={local_top_k}, noise={local_noise_scale})")
 
     df_all = pd.concat([df_fresh, df_local], ignore_index=True)
+    n_before = len(df_all)
 
     # deduplicate by composition columns
     df_all = df_all.drop_duplicates(subset=composition_labels).reset_index(drop=True)
+    print(f"[candidates] after dedup: {len(df_all)} (dropped {n_before - len(df_all)} duplicates)")
 
     return df_all

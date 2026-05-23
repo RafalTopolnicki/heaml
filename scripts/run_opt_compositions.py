@@ -1,4 +1,5 @@
 import argparse
+import json
 import os
 import shutil
 import sys
@@ -187,6 +188,32 @@ def filter_known_candidates(df_known, df_candidates, columns, min_dist=0.01, met
 def composition_key(row, columns, ndigits=5):
     return tuple(round(float(row[c]), ndigits) for c in columns)
 
+def write_init_tc_comparison(init_data, initdir, workdir, target=TARGET):
+    rows = []
+    for entry in init_data:
+        name = entry.get("name", "")
+        tc_computed = entry.get(target)
+        tc_stored = None
+        results_path = os.path.join(initdir, name, "results.json")
+        if os.path.exists(results_path):
+            try:
+                with open(results_path) as f:
+                    stored = json.load(f)
+                tc_stored = stored.get(target)
+            except Exception:
+                pass
+        rows.append({
+            "name": name,
+            f"{target}_computed": tc_computed,
+            f"{target}_stored": tc_stored,
+            "diff": (tc_computed - tc_stored) if (tc_computed is not None and tc_stored is not None) else None,
+        })
+    df = pd.DataFrame(rows)
+    out_path = os.path.join(workdir, "init_tc_comparison.csv")
+    df.to_csv(out_path, index=False)
+    print(f"Init Tc comparison written to {out_path} ({len(df)} rows)")
+
+
 def deduplicate_known_data(data, columns, ndigits=5):
     seen = set()
     out = []
@@ -244,6 +271,7 @@ if __name__ == "__main__":
 
     # read initial computations
     init_data = read_experiments_from_directory(args["initdir"])
+    write_init_tc_comparison(init_data, args["initdir"], workdir)
     known_data = init_data.copy()
 
     for iteration in range(1, iterations+1):
