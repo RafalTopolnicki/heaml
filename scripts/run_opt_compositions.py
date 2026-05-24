@@ -9,7 +9,7 @@ import math
 from src.process_kkr import process_kkr
 from src.utils import generate_dirname, append_errorlog, save_dict_to_json, log_iteration_summary
 from src.ml import train_cb_model
-from src.consts import composition_labels as ALL_ELEMENTS, ACQUISITION_ALPHA, ACQUISITION_METRIC, TARGET, CANDIDATE_COMPOSITIONS_N, MIN_NOVELTY_DIST
+from src.consts import composition_labels as ALL_ELEMENTS, ACQUISITION_ALPHA, ACQUISITION_METRIC, TARGET, CANDIDATE_COMPOSITIONS_N, MIN_NOVELTY_DIST, FRESH_FRACTION, LOCAL_TOP_K, LOCAL_NOISE_SCALE
 from src.sampling import generate_candidates_data
 from process_hea import run_one_hea
 import numpy as np
@@ -291,9 +291,9 @@ if __name__ == "__main__":
             min_comp=minimal_compositions,
             max_comp=maximal_compositions,
             n_candidates=CANDIDATE_COMPOSITIONS_N,
-            fresh_fraction=0.8,
-            local_top_k=5,
-            local_noise_scale=0.03,
+            fresh_fraction=FRESH_FRACTION,
+            local_top_k=LOCAL_TOP_K,
+            local_noise_scale=LOCAL_NOISE_SCALE,
             seed=args["seed"] + iteration,
         )
 
