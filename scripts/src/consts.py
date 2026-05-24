@@ -51,6 +51,7 @@ TARGET = 'Tc_mu0.2'
 MIN_NOVELTY_DIST = 0.01
 
 FRESH_FRACTION = 0.8      # initial: 0.8 — share of global (Sobol) candidates per iteration
+MODEL_SUBSAMPLE_FRACTION = 0.8  # fraction of known data each model is trained on (1.0 = all data, no diversity)
 LOCAL_TOP_K = 5           # initial: 5  — number of top compositions used as local-search centers
 LOCAL_NOISE_SCALE = 0.03  # initial: 0.03 — std of Gaussian perturbation for local candidates
 

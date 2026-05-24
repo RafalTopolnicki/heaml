@@ -9,7 +9,7 @@ import math
 from src.process_kkr import process_kkr
 from src.utils import generate_dirname, append_errorlog, save_dict_to_json, log_iteration_summary
 from src.ml import train_cb_model
-from src.consts import composition_labels as ALL_ELEMENTS, ACQUISITION_ALPHA, ACQUISITION_METRIC, TARGET, CANDIDATE_COMPOSITIONS_N, MIN_NOVELTY_DIST, FRESH_FRACTION, LOCAL_TOP_K, LOCAL_NOISE_SCALE
+from src.consts import composition_labels as ALL_ELEMENTS, ACQUISITION_ALPHA, ACQUISITION_METRIC, TARGET, CANDIDATE_COMPOSITIONS_N, MIN_NOVELTY_DIST, FRESH_FRACTION, LOCAL_TOP_K, LOCAL_NOISE_SCALE, MODEL_SUBSAMPLE_FRACTION
 from src.sampling import generate_candidates_data
 from process_hea import run_one_hea
 import numpy as np
@@ -297,12 +297,17 @@ if __name__ == "__main__":
             seed=args["seed"] + iteration,
         )
 
-        # train multiple models
+        # train multiple models, each on a random subset of known data for ensemble diversity
         model_training_metrics = []
         preds = []
+        rng = np.random.default_rng(args["seed"] + iteration)
         for model_id in range(args["number_of_models"]):
-            print(f'(II) Training model: {model_id}')
-            model, metrics, pred_ = train_cb_model(known_data, seed=100+model_id, predict_df=all_candidates)
+            n = len(known_data)
+            k = max(1, int(MODEL_SUBSAMPLE_FRACTION * n))
+            indices = rng.choice(n, size=k, replace=False)
+            sub_data = [known_data[i] for i in indices]
+            print(f'(II) Training model: {model_id} on {k}/{n} points')
+            model, metrics, pred_ = train_cb_model(sub_data, seed=100+model_id, predict_df=all_candidates)
             preds.append(pred_)
             model_training_metrics.append({'metrics': metrics})
         preds = np.array(preds)
