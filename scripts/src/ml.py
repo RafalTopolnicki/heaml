@@ -4,7 +4,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
 from catboost import CatBoostRegressor
 import numpy as np
-from src.consts import composition_labels, TARGET
+from src.consts import composition_labels, TARGET, MODEL_USE_EARLY_STOPPING
 
 FEATURES_TO_TRAIN_MODEL = composition_labels + ADDITIONAL_FEATURES
 
@@ -77,16 +77,21 @@ def train_cb_model(kkr_data, predict_df=None, seed=100, valid_size=0.2):
     if best_iteration <= 0:
         best_iteration = 5000
 
-    # validation metrics from the tuning model
     train_pred = model.predict(X_train)
     valid_pred = model.predict(X_valid)
 
     train_metrics = evaluate_predictions(y_train, train_pred)
     valid_metrics = evaluate_predictions(y_valid, valid_pred)
 
-    # stage 2: retrain on ALL available data using the tuned iteration count
-    final_model = make_model(seed=seed, iterations=best_iteration)
-    final_model.fit(X, y, verbose=False)
+    if MODEL_USE_EARLY_STOPPING:
+        # use the early-stopping model directly — preserves genuine per-model variance
+        # so ensemble σ reflects real uncertainty rather than collapsing to near-zero
+        predict_model = model
+    else:
+        # retrain on ALL subsample data at the tuned iteration count
+        # (collapses train R²→1 and kills ensemble diversity — not recommended)
+        predict_model = make_model(seed=seed, iterations=best_iteration)
+        predict_model.fit(X, y, verbose=False)
 
     metrics = {
         "n_rows_total": int(len(data)),
@@ -96,11 +101,12 @@ def train_cb_model(kkr_data, predict_df=None, seed=100, valid_size=0.2):
         "train": train_metrics,
         "validation": valid_metrics,
         "best_iteration": int(best_iteration),
+        "use_early_stopping": MODEL_USE_EARLY_STOPPING,
     }
 
     y_pred = None
     if predict_df is not None:
         X_pred = predict_df[FEATURES_TO_TRAIN_MODEL]
-        y_pred = final_model.predict(X_pred)
+        y_pred = predict_model.predict(X_pred)
 
-    return final_model, metrics, y_pred
+    return predict_model, metrics, y_pred

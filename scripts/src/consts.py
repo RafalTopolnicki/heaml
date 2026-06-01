@@ -51,7 +51,11 @@ TARGET = 'Tc_mu0.2'
 MIN_NOVELTY_DIST = 0.01
 
 FRESH_FRACTION = 0.8      # initial: 0.8 — share of global (Sobol) candidates per iteration
-MODEL_SUBSAMPLE_FRACTION = 0.8  # fraction of known data each model is trained on (1.0 = all data, no diversity)
+MODEL_SUBSAMPLE_FRACTION = 0.5  # fraction of known data each model is trained on; lower = more diversity between ensemble members
+# If True, use the early-stopping model directly for ensemble predictions instead of retraining on the full
+# subsample. Retraining (False) causes train R²→1 and collapses ensemble σ, turning μ+2σ into pure
+# exploitation. Early-stopping preserves genuine per-model variance and a meaningful uncertainty estimate.
+MODEL_USE_EARLY_STOPPING = True
 LOCAL_TOP_K = 20           # initial: 5  — number of top compositions used as local-search centers
 LOCAL_NOISE_SCALE = 0.03  # initial: 0.03 — std of Gaussian perturbation for local candidates
 
