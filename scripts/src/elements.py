@@ -2,7 +2,7 @@ import numpy as np
 
 ATOMIC_FEATURES = {
     "atomic_radius_pm": {
-        "Ti": 140,
+        "Ti": 147,
         "Nb": 145,
         "Zr": 155,
         "Hf": 155,
@@ -10,7 +10,7 @@ ATOMIC_FEATURES = {
         "Sc": 160,
         "Mo": 145,
         "W": 135,
-        "Y": 180,
+        "Y": 190,
         "La": 195,
     },
     "electronegativity_pauling": {
@@ -63,15 +63,15 @@ ATOMIC_FEATURES = {
     },
     "vdw_radius_pm": {
         "Ti": 246,
-        "Nb": 256,
+        "Nb": 207,
         "Zr": 252,
-        "Hf": 253,
+        "Hf": 212,
         "Ta": 257,
-        "Sc": 258,
+        "Sc": 211,
         "Mo": 245,
         "W": 249,
         "Y": 275,
-        "La": 298,
+        "La": 240,
     },
 }
 
@@ -93,13 +93,13 @@ class Element:
 ELEMENTS = {
     'Ti': Element(atomic_nuber=22, lattice=6.15, bulk_modulus=110, debye_temperature=420, density=4510, mass=47.87, ebulk=-1707.612764), # beta-ti
     'Nb': Element(atomic_nuber=41, lattice=6.25, bulk_modulus=170, debye_temperature=275, density=8570, mass=92.9, ebulk=-7639.952493), #
-    'Zr': Element(atomic_nuber=40, lattice=6.73, bulk_modulus=95, debye_temperature=270, density=6150, mass=91.2, ebulk=-7197.582394), # beta-Zr
-    'Hf': Element(atomic_nuber=72, lattice=6.83, bulk_modulus=110, debye_temperature=250, density=13310, mass=178.5, ebulk=-30156.28394), # 1.12*3.2A # hcp
-    'Ta': Element(atomic_nuber=73, lattice=6.37, bulk_modulus=200, debye_temperature=240, density=15578, mass=180.9, ebulk=-31209.08986), # alpha-Ta
+    'Zr': Element(atomic_nuber=40, lattice=6.73, bulk_modulus=95, debye_temperature=270, density=6520, mass=91.2, ebulk=-7197.582394), # beta-Zr
+    'Hf': Element(atomic_nuber=72, lattice=6.83, bulk_modulus=110, debye_temperature=250, density=13070, mass=178.5, ebulk=-30156.28394), # 1.12*3.2A # hcp
+    'Ta': Element(atomic_nuber=73, lattice=6.37, bulk_modulus=200, debye_temperature=240, density=16650, mass=180.9, ebulk=-31209.08986), # alpha-Ta
     'Sc': Element(atomic_nuber=21, lattice=6.93, bulk_modulus=57, debye_temperature=355, density=2990, mass=44.95, ebulk=-1528.442522), # 1.12*3.3A # hcp
-    'Y': Element(atomic_nuber=39, lattice=6.889, bulk_modulus=41, debye_temperature=210, density=6973, mass=173.05, ebulk=-6770.71001), # ????
+    'Y': Element(atomic_nuber=39, lattice=6.889, bulk_modulus=41, debye_temperature=280, density=4472, mass=88.906, ebulk=-6770.71001),
     'La': Element(atomic_nuber=57, lattice=7.97, bulk_modulus=28, debye_temperature=135, density=6160, mass=138.9, ebulk=-16986.83094), # 1.12*3.77A
-    'Mo': Element(atomic_nuber=42, lattice=5.947, bulk_modulus=250, debye_temperature=423, density=10250, mass=95.95, ebulk=-8098.013095),
+    'Mo': Element(atomic_nuber=42, lattice=5.947, bulk_modulus=230, debye_temperature=450, density=10250, mass=95.95, ebulk=-8098.013095),
     'W': Element(atomic_nuber=74, lattice=5.982, bulk_modulus=310, debye_temperature=400, density=19270, mass=183.8, ebulk=-32284.99135),
 }
 
