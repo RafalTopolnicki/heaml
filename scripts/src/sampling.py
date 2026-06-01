@@ -62,7 +62,7 @@ def generate_global_candidates(
                 continue
             seen.add(key)
 
-            comp_d = {**comp_d, **compute_hea_features(comp_d)}
+            comp_d = {**comp_d, **compute_hea_features(comp_d), "_source": "global"}
             candidates.append(comp_d)
 
             if len(candidates) >= n_candidates:
@@ -122,7 +122,7 @@ def generate_local_candidates(
                 continue
             seen.add(key)
 
-            comp_d = {**comp_d, **compute_hea_features(comp_d)}
+            comp_d = {**comp_d, **compute_hea_features(comp_d), "_source": "local"}
             candidates.append(comp_d)
             generated_here += 1
 

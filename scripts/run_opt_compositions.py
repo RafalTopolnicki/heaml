@@ -316,6 +316,8 @@ if __name__ == "__main__":
         sigmas = preds.std(axis=0)
         acquisitions = mus + 2*sigmas
         df_candidates = all_candidates.copy()
+        df_candidates["pred_target"] = mus
+        df_candidates["pred_target_std"] = sigmas
         df_candidates["raw_acquisition"] = acquisitions
 
         # remove already-known or too-close candidates
@@ -343,10 +345,36 @@ if __name__ == "__main__":
         save_dict_to_json(model_training_metrics, os.path.join(iterationdir, "model_training_metrics.json"))
         df_top_candidates.to_csv(os.path.join(iterationdir, "top_candidates.csv"), index=False)
         #df_candidates.to_csv(os.path.join(iterationdir, "all_candidates.csv"), index=False)
-        # evaluate KKR on those top coordinates
+
+        # log selected candidates and write per-composition selection_info.json
+        print(f"\n[Iter {iteration}] Selected {len(df_top_candidates)} candidates:")
         tasks = []
         for _, row in df_top_candidates.iterrows():
             comp_dict = dict(zip(composition_labels, row[composition_labels].values))
+            workdirname = generate_dirname(composition_labels, list(comp_dict.values()))
+            source = row.get("_source", "unknown")
+            source_label = "local (top-K neighborhood)" if source == "local" else "global (random Sobol)"
+            pred_target = float(row.get("pred_target", float("nan")))
+            pred_target_std = float(row.get("pred_target_std", float("nan")))
+            acq = float(row.get("raw_acquisition", float("nan")))
+            print(
+                f"  {workdirname:50s} | pred_target={pred_target:.4f}"
+                f" | std={pred_target_std:.4f} | acq={acq:.4f} | source={source_label}"
+            )
+            comp_dir = os.path.join(computationdir, workdirname)
+            os.makedirs(comp_dir, exist_ok=True)
+            selection_info = {
+                "iteration": iteration,
+                "pred_target": pred_target,
+                "pred_target_std": pred_target_std,
+                "acquisition": acq,
+                "source": source,
+                "source_label": source_label,
+                "target": TARGET,
+                "composition_distance": float(row.get("composition_distance", float("nan"))),
+                "composition": comp_dict,
+            }
+            save_dict_to_json(selection_info, os.path.join(comp_dir, "selection_info.json"))
             tasks.append((comp_dict, computationdir))
 
         if args["workers"] == 1:
