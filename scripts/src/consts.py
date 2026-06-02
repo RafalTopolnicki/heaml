@@ -48,7 +48,7 @@ CANDIDATE_COMPOSITIONS_N = 100_000 # in each iteration new points are generated
 ACQUISITION_ALPHA = 1.0
 ACQUISITION_METRIC = 'cosine'
 TARGET = 'Tc_mu0.2'
-MIN_NOVELTY_DIST = 0.01
+MIN_NOVELTY_DIST = 0.02
 
 FRESH_FRACTION = 0.8      # initial: 0.8 — share of global (Sobol) candidates per iteration
 MODEL_SUBSAMPLE_FRACTION = 0.5  # fraction of known data each model is trained on; lower = more diversity between ensemble members
