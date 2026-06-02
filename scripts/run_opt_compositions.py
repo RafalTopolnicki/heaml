@@ -239,6 +239,14 @@ if __name__ == "__main__":
         help="Comma-separated subset of elements to use, e.g. Ti,Nb,Zr,Hf,Ta. "
              f"Must be a subset of: {','.join(ALL_ELEMENTS)}. Defaults to all elements.",
     )
+    parser.add_argument(
+        "--min_element", type=str, action="append", default=[],
+        help="Per-element minimum concentration, e.g. --min_element Nb=0.05. Can be repeated.",
+    )
+    parser.add_argument(
+        "--max_element", type=str, action="append", default=[],
+        help="Per-element maximum concentration, e.g. --max_element Sc=0.15. Can be repeated.",
+    )
     args = vars(parser.parse_args())
 
     if args["elements"] is not None:
@@ -252,6 +260,22 @@ if __name__ == "__main__":
 
     minimal_compositions = {e: 0.0 for e in composition_labels}
     maximal_compositions = {e: 0.6 for e in composition_labels}
+
+    for spec in args["min_element"]:
+        el, val = spec.split("=")
+        el = el.strip()
+        if el not in composition_labels:
+            raise ValueError(f"--min_element unknown element: {el}")
+        minimal_compositions[el] = float(val)
+
+    for spec in args["max_element"]:
+        el, val = spec.split("=")
+        el = el.strip()
+        if el not in composition_labels:
+            raise ValueError(f"--max_element unknown element: {el}")
+        maximal_compositions[el] = float(val)
+
+    print(f"Composition bounds: min={minimal_compositions} max={maximal_compositions}")
 
     champions_per_step = args['champions_per_step']
     workdir = args['workdir']
