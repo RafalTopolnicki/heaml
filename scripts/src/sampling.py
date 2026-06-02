@@ -74,6 +74,7 @@ def generate_global_candidates(
 def generate_local_candidates(
     known_data,
     n_candidates,
+    composition_labels=None,
     top_k=5,
     noise_scale=0.03,
     min_comp=None,
@@ -81,6 +82,10 @@ def generate_local_candidates(
     round_decimals=8,
     seed=0,
 ):
+    from src.consts import composition_labels as _default_composition_labels
+    if composition_labels is None:
+        composition_labels = _default_composition_labels
+
     rng = np.random.default_rng(seed)
 
     df_known = pd.DataFrame(known_data).copy()
@@ -141,7 +146,12 @@ def generate_candidates_data(
     local_top_k=5,
     local_noise_scale=0.03,
     seed=0,
+    composition_labels=None,
 ):
+    from src.consts import composition_labels as _default_composition_labels
+    if composition_labels is None:
+        composition_labels = _default_composition_labels
+
     n_fresh = int(round(n_candidates * fresh_fraction))
     n_local = n_candidates - n_fresh
 
@@ -161,6 +171,7 @@ def generate_candidates_data(
     df_local = generate_local_candidates(
         known_data=known_data,
         n_candidates=n_local,
+        composition_labels=composition_labels,
         top_k=local_top_k,
         noise_scale=local_noise_scale,
         min_comp=min_comp,
@@ -172,7 +183,6 @@ def generate_candidates_data(
     df_all = pd.concat([df_fresh, df_local], ignore_index=True)
     n_before = len(df_all)
 
-    # deduplicate by composition columns
     df_all = df_all.drop_duplicates(subset=composition_labels).reset_index(drop=True)
     print(f"[candidates] after dedup: {len(df_all)} (dropped {n_before - len(df_all)} duplicates)")
 

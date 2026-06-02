@@ -319,6 +319,7 @@ if __name__ == "__main__":
             local_top_k=LOCAL_TOP_K,
             local_noise_scale=LOCAL_NOISE_SCALE,
             seed=args["seed"] + iteration,
+            composition_labels=composition_labels,
         )
 
         # train multiple models, each on a random subset of known data for ensemble diversity
