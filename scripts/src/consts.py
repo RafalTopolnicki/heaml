@@ -45,9 +45,14 @@ VALENCE_NODES_EXPECTED: dict = {
 }
 
 CANDIDATE_COMPOSITIONS_N = 100_000 # in each iteration new points are generated
-ACQUISITION_ALPHA = 1.0
 ACQUISITION_METRIC = 'cosine'
+
 TARGET = 'Tc_mu0.2'
+ACQUISITION_ALPHA = 1.0
+
+#TARGET = 'lambda'
+#ACQUISITION_ALPHA = 0.2 # smaller value due to different scale of lambda
+
 MIN_NOVELTY_DIST = 0.02
 
 FRESH_FRACTION = 0.8      # initial: 0.8 — share of global (Sobol) candidates per iteration
