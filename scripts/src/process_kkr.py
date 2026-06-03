@@ -3,7 +3,7 @@ import json
 import os
 import pandas as pd
 from src.features import compute_hea_features
-from src.consts import composition_labels
+from src.consts import composition_labels, PHYSICAL_CP_MIN_GPA, PHYSICAL_THETA_MIN_K
 
 
 def normalize_composition(composition):
@@ -127,9 +127,19 @@ def process_kkr(path, dirname):
         if data.get('use_mixture_debye'):
             data['thetaDB'] = data['mixture_debye_temperature']
         data['lambda'] = compute_lambda(data)
-        data['Tc_mu0.1'] = tc_from_data(data, mu=0.1)
-        data['Tc_mu0.2'] = tc_from_data(data, mu=0.2)
-        data['Tc_mu0.3'] = tc_from_data(data, mu=0.3)
+        cp_ok = data.get('Cp_GPa', 0.0) >= PHYSICAL_CP_MIN_GPA
+        theta_ok = data.get('thetaDB', 0.0) >= PHYSICAL_THETA_MIN_K
+        data['outside_range'] = not (cp_ok and theta_ok)
+        if data['outside_range']:
+            data['lambda_unphysical'] = data['lambda']
+            data['lambda'] = 0.0
+            data['Tc_mu0.1'] = 0.0
+            data['Tc_mu0.2'] = 0.0
+            data['Tc_mu0.3'] = 0.0
+        else:
+            data['Tc_mu0.1'] = tc_from_data(data, mu=0.1)
+            data['Tc_mu0.2'] = tc_from_data(data, mu=0.2)
+            data['Tc_mu0.3'] = tc_from_data(data, mu=0.3)
         data['lambda_nocutoff'] = compute_lambda_nocutoff(data)
         _lam_nc = data['lambda_nocutoff']
         data['Tc_mu0.1_nocutoff'] = tc_from_data({**data, 'lambda': _lam_nc}, mu=0.1)

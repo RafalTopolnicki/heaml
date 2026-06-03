@@ -55,6 +55,14 @@ ACQUISITION_ALPHA = 1.0
 
 MIN_NOVELTY_DIST = 0.02
 
+# Physical validity thresholds for elastic stability.
+# Compositions that violate either threshold are considered mechanically ill-defined:
+# their KKR-computed Debye temperature collapses toward zero (Hill shear modulus ≈ 0),
+# which drives lambda → ∞ via 1/ω². Such points are excluded from optimization by
+# zeroing out the target; the raw computed value is preserved in 'lambda_raw_phys'.
+PHYSICAL_CP_MIN_GPA =  0.0   # Cauchy pressure lower bound (GPa); more negative → cubic instability
+PHYSICAL_THETA_MIN_K = 100.0 # KKR Debye temperature lower bound (K); below this the elastic model is unreliable
+
 FRESH_FRACTION = 0.8      # initial: 0.8 — share of global (Sobol) candidates per iteration
 MODEL_SUBSAMPLE_FRACTION = 0.5  # fraction of known data each model is trained on; lower = more diversity between ensemble members
 # If True, use the early-stopping model directly for ensemble predictions instead of retraining on the full
