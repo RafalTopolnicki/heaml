@@ -160,7 +160,7 @@ def generate_candidates_data(
         n_candidates=n_fresh,
         min_comp=min_comp,
         max_comp=max_comp,
-        skip=seed * 100000,
+        skip=seed * max(n_candidates * 3, 1000),
     )
     print(f"[candidates] global done: {len(df_fresh)}")
 
