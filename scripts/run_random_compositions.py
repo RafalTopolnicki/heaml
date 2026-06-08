@@ -51,7 +51,7 @@ def compute_one_random_composition(task):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--workdir", type=str, required=True)
-    parser.add_argument("--errorlog", type=str, required=True)why I
+    parser.add_argument("--errorlog", type=str, required=True)
     parser.add_argument("--number_of_samples", type=int, default=2)
     parser.add_argument("--workers", type=int, default=1)
     parser.add_argument("--seed", type=int, default=0)
