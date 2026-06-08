@@ -32,7 +32,7 @@ def evaluate_predictions(y_true, pred):
     return {"MAE": mae, "RMSE": rmse, "R2": r2}
 
 
-def train_cb_model(kkr_data, predict_df=None, seed=100, valid_size=0.2):
+def train_cb_model(kkr_data, predict_df=None, seed=100, valid_size=0.2, elements=None):
     """
     Train CatBoost for active learning / BO.
 
@@ -48,10 +48,11 @@ def train_cb_model(kkr_data, predict_df=None, seed=100, valid_size=0.2):
     final_model, metrics, y_pred
     """
     df_ = pd.DataFrame(kkr_data)
-    data = df_[FEATURES_TO_TRAIN_MODEL + [TARGET]].copy()
-    data = data.dropna(subset=FEATURES_TO_TRAIN_MODEL + [TARGET]).reset_index(drop=True)
+    feature_cols = (elements if elements is not None else composition_labels) + ADDITIONAL_FEATURES
+    data = df_[feature_cols + [TARGET]].copy()
+    data = data.dropna(subset=feature_cols + [TARGET]).reset_index(drop=True)
 
-    X = data[FEATURES_TO_TRAIN_MODEL]
+    X = data[feature_cols]
     y = data[TARGET]
 
     if len(data) < 20:
@@ -97,7 +98,7 @@ def train_cb_model(kkr_data, predict_df=None, seed=100, valid_size=0.2):
         "n_rows_total": int(len(data)),
         "n_train": int(len(X_train)),
         "n_valid": int(len(X_valid)),
-        "feature_cols": FEATURES_TO_TRAIN_MODEL,
+        "feature_cols": feature_cols,
         "train": train_metrics,
         "validation": valid_metrics,
         "best_iteration": int(best_iteration),
@@ -106,7 +107,7 @@ def train_cb_model(kkr_data, predict_df=None, seed=100, valid_size=0.2):
 
     y_pred = None
     if predict_df is not None:
-        X_pred = predict_df[FEATURES_TO_TRAIN_MODEL]
+        X_pred = predict_df[feature_cols]
         y_pred = predict_model.predict(X_pred)
 
     return predict_model, metrics, y_pred

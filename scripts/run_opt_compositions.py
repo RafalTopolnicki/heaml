@@ -332,7 +332,7 @@ if __name__ == "__main__":
             indices = rng.choice(n, size=k, replace=False)
             sub_data = [known_data[i] for i in indices]
             print(f'(II) Training model: {model_id} on {k}/{n} points')
-            model, metrics, pred_ = train_cb_model(sub_data, seed=100+model_id, predict_df=all_candidates)
+            model, metrics, pred_ = train_cb_model(sub_data, seed=100+model_id, predict_df=all_candidates, elements=composition_labels)
             preds.append(pred_)
             model_training_metrics.append({'metrics': metrics})
         preds = np.array(preds)
