@@ -247,6 +247,15 @@ if __name__ == "__main__":
         "--max_element", type=str, action="append", default=[],
         help="Per-element maximum concentration, e.g. --max_element Sc=0.15. Can be repeated.",
     )
+    parser.add_argument(
+        "--min_components", type=int, default=1,
+        help="Minimum number of elements that must have composition > min_components_ratio. "
+             "Set to 0 or 1 to allow any composition including pure phases. Default: 1.",
+    )
+    parser.add_argument(
+        "--min_components_ratio", type=float, default=0.0,
+        help="Minimum composition fraction for an element to count toward min_components. Default: 0.0.",
+    )
     args = vars(parser.parse_args())
 
     if args["elements"] is not None:
@@ -276,6 +285,7 @@ if __name__ == "__main__":
         maximal_compositions[el] = float(val)
 
     print(f"Composition bounds: min={minimal_compositions} max={maximal_compositions}")
+    print(f"Component diversity: min_components={args['min_components']} min_components_ratio={args['min_components_ratio']}")
 
     champions_per_step = args['champions_per_step']
     workdir = args['workdir']
@@ -320,6 +330,8 @@ if __name__ == "__main__":
             local_noise_scale=LOCAL_NOISE_SCALE,
             seed=args["seed"] + iteration,
             composition_labels=composition_labels,
+            min_components=args["min_components"],
+            min_components_ratio=args["min_components_ratio"],
         )
 
         # train multiple models, each on a random subset of known data for ensemble diversity

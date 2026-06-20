@@ -14,7 +14,7 @@ def generate_simplex_sobol(n_components, n_points, skip=0, eps=1e-12):
     return x
 
 
-def is_valid_composition(comp_dict, min_comp=None, max_comp=None):
+def is_valid_composition(comp_dict, min_comp=None, max_comp=None, min_components=1, min_components_ratio=0.0):
     if min_comp is not None:
         for el, vmin in min_comp.items():
             if comp_dict.get(el, 0.0) < vmin:
@@ -24,6 +24,11 @@ def is_valid_composition(comp_dict, min_comp=None, max_comp=None):
         for el, vmax in max_comp.items():
             if comp_dict.get(el, 0.0) > vmax:
                 return False
+
+    if min_components > 1:
+        n_above = sum(1 for v in comp_dict.values() if v > min_components_ratio)
+        if n_above < min_components:
+            return False
 
     return True
 
@@ -36,6 +41,8 @@ def generate_global_candidates(
     oversample_factor=3,
     max_rounds=20,
     round_decimals=8,
+    min_components=1,
+    min_components_ratio=0.0,
 ):
     candidates = []
     seen = set()
@@ -54,7 +61,8 @@ def generate_global_candidates(
         for comp in composition_grid:
             comp_d = dict(zip(composition_labels, comp))
 
-            if not is_valid_composition(comp_d, min_comp=min_comp, max_comp=max_comp):
+            if not is_valid_composition(comp_d, min_comp=min_comp, max_comp=max_comp,
+                                        min_components=min_components, min_components_ratio=min_components_ratio):
                 continue
 
             key = tuple(round(float(comp_d[el]), round_decimals) for el in composition_labels)
@@ -81,6 +89,8 @@ def generate_local_candidates(
     max_comp=None,
     round_decimals=8,
     seed=0,
+    min_components=1,
+    min_components_ratio=0.0,
 ):
     from src.consts import composition_labels as _default_composition_labels
     if composition_labels is None:
@@ -119,7 +129,8 @@ def generate_local_candidates(
 
             comp_d = dict(zip(composition_labels, x))
 
-            if not is_valid_composition(comp_d, min_comp=min_comp, max_comp=max_comp):
+            if not is_valid_composition(comp_d, min_comp=min_comp, max_comp=max_comp,
+                                        min_components=min_components, min_components_ratio=min_components_ratio):
                 continue
 
             key = tuple(round(float(comp_d[el]), round_decimals) for el in composition_labels)
@@ -147,6 +158,8 @@ def generate_candidates_data(
     local_noise_scale=0.03,
     seed=0,
     composition_labels=None,
+    min_components=1,
+    min_components_ratio=0.0,
 ):
     from src.consts import composition_labels as _default_composition_labels
     if composition_labels is None:
@@ -161,6 +174,8 @@ def generate_candidates_data(
         min_comp=min_comp,
         max_comp=max_comp,
         skip=seed * max(n_candidates * 3, 1000),
+        min_components=min_components,
+        min_components_ratio=min_components_ratio,
     )
     print(f"[candidates] global done: {len(df_fresh)}")
 
@@ -177,6 +192,8 @@ def generate_candidates_data(
         min_comp=min_comp,
         max_comp=max_comp,
         seed=seed,
+        min_components=min_components,
+        min_components_ratio=min_components_ratio,
     )
     print(f"[candidates] local done: {len(df_local)} (top_k={local_top_k}, noise={local_noise_scale})")
 
