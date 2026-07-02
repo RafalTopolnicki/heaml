@@ -23,7 +23,7 @@ ATOMS_PER_CELL = 2
 
 # Maximal set of elements considered across all experiments.
 # Individual runs may use a subset via the --elements CLI argument.
-composition_labels = ["Ti", "Nb", "Zr", "Hf", "Ta", "Sc", "Mo", "W", "Y", "La"]
+composition_labels = ["Ti", "Nb", "Zr", "Hf", "Ta", "Sc", "Mo", "W", "Y", "La", "Re", "Ru"]
 
 # Expected number of genuine radial nodes for the valence orbital of each element and l.
 # Used by cutoff_mode="valence" in macmillan_cutoff.py: apply last-node cutoff only when

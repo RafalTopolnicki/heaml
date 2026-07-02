@@ -12,6 +12,8 @@ ATOMIC_FEATURES = {
         "W": 135,
         "Y": 190,
         "La": 195,
+        "Re": 135,
+        "Ru": 130,
     },
     "electronegativity_pauling": {
         "Ti": 1.54,
@@ -24,6 +26,8 @@ ATOMIC_FEATURES = {
         "W": 2.36,
         "Y": 1.22,
         "La": 1.10,
+        "Re": 1.90,
+        "Ru": 2.20,
     },
     "valence_electron_count": {
         "Ti": 4,
@@ -36,6 +40,8 @@ ATOMIC_FEATURES = {
         "W": 6,
         "Y": 3,
         "La": 3,
+        "Re": 7,
+        "Ru": 8,
     },
     "vec": {
         "Ti": 4,
@@ -48,6 +54,8 @@ ATOMIC_FEATURES = {
         "W": 6,
         "Y": 3,
         "La": 3,
+        "Re": 7,
+        "Ru": 8,
     },
     "d_electron_count": {
         "Ti": 2,   # [Ar] 3d2 4s2
@@ -60,6 +68,8 @@ ATOMIC_FEATURES = {
         "W": 4,    # [Xe] 4f14 5d4 6s2
         "Y": 1,    # [Kr] 4d1 5s2
         "La": 1,   # [Xe] 5d1 6s2
+        "Re": 5,   # [Xe] 4f14 5d5 6s2
+        "Ru": 7,   # [Kr] 4d7 5s1
     },
     "vdw_radius_pm": {
         "Ti": 246,
@@ -72,6 +82,8 @@ ATOMIC_FEATURES = {
         "W": 249,
         "Y": 275,
         "La": 240,
+        "Re": 217,
+        "Ru": 207,
     },
 }
 
@@ -101,6 +113,8 @@ ELEMENTS = {
     'La': Element(atomic_nuber=57, lattice=7.97, bulk_modulus=28, debye_temperature=135, density=6160, mass=138.9, ebulk=-16986.83094), # 1.12*3.77A
     'Mo': Element(atomic_nuber=42, lattice=5.947, bulk_modulus=230, debye_temperature=450, density=10250, mass=95.95, ebulk=-8098.013095),
     'W': Element(atomic_nuber=74, lattice=5.982, bulk_modulus=310, debye_temperature=400, density=19270, mass=183.8, ebulk=-32284.99135),
+    'Re': Element(atomic_nuber=75, lattice=5.84, bulk_modulus=370, debye_temperature=416, density=21020, mass=186.2, ebulk=0.0),  # HCP, BCC-equiv lattice
+    'Ru': Element(atomic_nuber=44, lattice=5.72, bulk_modulus=220, debye_temperature=600, density=12370, mass=101.07, ebulk=0.0),  # HCP, BCC-equiv lattice
 }
 
 class HEAClass:

@@ -24,7 +24,7 @@ from pathlib import Path
 
 import numpy as np
 
-ELEMENTS = ['Ti', 'Nb', 'Zr', 'Hf', 'Ta', 'Sc', 'Mo', 'W', 'Y', 'La']
+ELEMENTS = ['Ti', 'Nb', 'Zr', 'Hf', 'Ta', 'Sc', 'Mo', 'W', 'Y', 'La', 'Re', 'Ru']
 BOHR_TO_ANG = 0.529177210903
 COMP_RE = re.compile(r'(?:' + '|'.join(ELEMENTS) + r')[\d.]+')
 ELEM_FRAC_RE = re.compile(r'(' + '|'.join(ELEMENTS) + r')([\d.]+)')
