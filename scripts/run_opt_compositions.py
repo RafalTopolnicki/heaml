@@ -256,6 +256,10 @@ if __name__ == "__main__":
         "--min_components_ratio", type=float, default=0.0,
         help="Minimum composition fraction for an element to count toward min_components. Default: 0.0.",
     )
+    parser.add_argument(
+        "--acquisition_beta", type=float, default=2.0,
+        help="Exploration coefficient in UCB acquisition: score = mu + beta * sigma. Default: 2.0.",
+    )
     args = vars(parser.parse_args())
 
     if args["elements"] is not None:
@@ -351,7 +355,7 @@ if __name__ == "__main__":
         # find acquisition and candidates for the new HAE
         mus = preds.mean(axis=0)
         sigmas = preds.std(axis=0)
-        acquisitions = mus + 2*sigmas
+        acquisitions = mus + args["acquisition_beta"] * sigmas
         df_candidates = all_candidates.copy()
         df_candidates["pred_target"] = mus
         df_candidates["pred_target_std"] = sigmas
