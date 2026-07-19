@@ -70,6 +70,43 @@ def scf_input(filename, lattice_params, elements, concentrations, ew, xc, rel, b
             file.write(f'{comment_line}')
         file.close()
 
+def scf_input_hcp(filename, lattice_params, elements, concentrations, ew, xc, rel, bzqlty, pmix, edelt, mxl, rmt=0, magtype='nmag'):
+    """AkaiKKR input for HCP structure. lattice_params must contain 'lattice_constant' (a in Bohr) and 'c/a'."""
+    comment_line = 'c-------------------------\n'
+    a0 = lattice_params['lattice_constant']
+    ca = lattice_params['c/a']
+    with open(filename, 'w') as file:
+        file.write(f'c--- elements {elements}\n')
+        file.write(f'{comment_line}')
+        file.write(f'go {filename}.pot\n')
+        file.write(f'{comment_line}')
+        file.write(f'c   brvtyp     a        c/a   b/a   alpha   beta   gamma\n')
+        file.write(f'    hcp    {a0}  {ca} , , , , \n')
+        file.write(f'{comment_line}')
+        file.write(f'c   edelt    ewidth    reltyp   sdftyp   magtyp   record\n')
+        file.write(f'    {edelt}    {ew}    {rel}   {xc}      {magtype}      init\n')
+        file.write(f'{comment_line}')
+        file.write(f'c   outtyp    bzqlty   maxitr   pmix\n')
+        file.write(f'    update     {int(bzqlty)}    500 {pmix}\n')
+        file.write(f'{comment_line}')
+        file.write(f'c  ntyp\n')
+        file.write(f'   1\n')
+        file.write(f'{comment_line}')
+        file.write(f'c   type    ncmp    rmt    field   mxl  anclr   conc\n')
+        file.write(f'   X   {len(elements)}  {rmt}  {0.0}   {mxl}\n')
+        for element, concentration in zip(elements, concentrations):
+            file.write(f'       {element}   {concentration:.6f}\n')
+        file.write(f'{comment_line}')
+        file.write(f'c natm\n')
+        file.write(f'   2\n')
+        file.write(f'{comment_line}')
+        file.write(f'c   atmicx                        atmtyp\n')
+        file.write(f'0a         0b         0c       X\n')
+        file.write(f'1/3a     2/3b       1/2c       X\n')
+        file.write(f'{comment_line}')
+    file.close()
+
+
 def scf_input_bcc(filename, lattice_params, elements, concentrations, ew, xc, rel, bzqlty, pmix, edelt, mxl, rmt=0, magtype='nmag', sym='bcc', dos=False):
     comment_line = 'c-------------------------\n'
     a0 = lattice_params['lattice_constant']
