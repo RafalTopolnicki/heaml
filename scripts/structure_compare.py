@@ -348,7 +348,17 @@ def run_structure_compare(element_labels, concentrations, outdir="thermodynamic"
     print(f"\nComposition: {dirname}")
     print(f"Initial lattice guesses: BCC={a_bcc:.4f}  FCC={a_fcc:.4f}  HCP={a_hcp:.4f} Bohr\n")
 
-    print("=== BCC ===")
+    print("=== HCP ===")
+    hcp_result = run_hcp_eos(
+        a_init_bohr=a_hcp,
+        hea_cfg=hea_cfg,
+        kkr_p=kkr_p,
+        workdir=os.path.join(comp_dir, "hcp"),
+        ca_values=ca_values,
+        n_a_steps=n_steps,
+    )
+
+    print("\n=== BCC ===")
     bcc_result = run_cubic_eos(
         structure='bcc',
         a_init_bohr=a_bcc,
@@ -368,36 +378,40 @@ def run_structure_compare(element_labels, concentrations, outdir="thermodynamic"
         n_steps=n_steps,
     )
 
-    print("\n=== HCP ===")
-    hcp_result = run_hcp_eos(
-        a_init_bohr=a_hcp,
-        hea_cfg=hea_cfg,
-        kkr_p=kkr_p,
-        workdir=os.path.join(comp_dir, "hcp"),
-        ca_values=ca_values,
-        n_a_steps=n_steps,
-    )
+    RY_TO_EV = 13.605693122994
 
-    # build summary
-    e_bcc = bcc_result.get("energy_per_atom_ry")
-    e_fcc = fcc_result.get("energy_per_atom_ry")
-    e_hcp = hcp_result.get("energy_per_atom_ry")
+    def ry_to_ev(x):
+        return float(x) * RY_TO_EV if x is not None else None
 
     def safe_diff(a, b):
         if a is None or b is None:
             return None
         return float(a) - float(b)
 
+    # add eV fields to each structure result in-place
+    for res in (bcc_result, fcc_result, hcp_result):
+        e_ry = res.get("energy_per_atom_ry")
+        res["energy_per_atom_ev"] = ry_to_ev(e_ry)
+
+    e_bcc = bcc_result.get("energy_per_atom_ry")
+    e_fcc = fcc_result.get("energy_per_atom_ry")
+    e_hcp = hcp_result.get("energy_per_atom_ry")
+
     energies = {k: v for k, v in [("bcc", e_bcc), ("fcc", e_fcc), ("hcp", e_hcp)] if v is not None}
     most_stable = min(energies, key=energies.get) if energies else None
+
+    diff_bcc_fcc_ry = safe_diff(e_bcc, e_fcc)
+    diff_bcc_hcp_ry = safe_diff(e_bcc, e_hcp)
 
     summary = {
         "composition": dict(zip(element_labels, [float(c) for c in hea.concentrations])),
         "bcc": bcc_result,
         "fcc": fcc_result,
         "hcp": hcp_result,
-        "energy_difference_bcc_minus_fcc_ry": safe_diff(e_bcc, e_fcc),
-        "energy_difference_bcc_minus_hcp_ry": safe_diff(e_bcc, e_hcp),
+        "energy_difference_bcc_minus_fcc_ry": diff_bcc_fcc_ry,
+        "energy_difference_bcc_minus_fcc_ev": ry_to_ev(diff_bcc_fcc_ry),
+        "energy_difference_bcc_minus_hcp_ry": diff_bcc_hcp_ry,
+        "energy_difference_bcc_minus_hcp_ev": ry_to_ev(diff_bcc_hcp_ry),
         "most_stable": most_stable,
     }
 
@@ -406,12 +420,16 @@ def run_structure_compare(element_labels, concentrations, outdir="thermodynamic"
 
     print("\n=== SUMMARY ===")
     for struct, res in [("BCC", bcc_result), ("FCC", fcc_result), ("HCP", hcp_result)]:
-        e = res.get("energy_per_atom_ry")
-        print(f"  {struct}: E/atom = {e:.6f} Ry" if e else f"  {struct}: EOS fit failed")
-    if e_bcc and e_fcc:
-        print(f"  ΔE(BCC-FCC) = {e_bcc - e_fcc:+.6f} Ry/atom")
-    if e_bcc and e_hcp:
-        print(f"  ΔE(BCC-HCP) = {e_bcc - e_hcp:+.6f} Ry/atom")
+        e_ry = res.get("energy_per_atom_ry")
+        e_ev = res.get("energy_per_atom_ev")
+        if e_ry:
+            print(f"  {struct}: E/atom = {e_ry:.6f} Ry  =  {e_ev:.4f} eV")
+        else:
+            print(f"  {struct}: EOS fit failed")
+    if diff_bcc_fcc_ry is not None:
+        print(f"  ΔE(BCC-FCC) = {diff_bcc_fcc_ry:+.6f} Ry/atom  =  {ry_to_ev(diff_bcc_fcc_ry):+.4f} eV/atom")
+    if diff_bcc_hcp_ry is not None:
+        print(f"  ΔE(BCC-HCP) = {diff_bcc_hcp_ry:+.6f} Ry/atom  =  {ry_to_ev(diff_bcc_hcp_ry):+.4f} eV/atom")
     print(f"  Most stable: {most_stable}")
     print(f"\nSummary written to {json_path}")
     return summary

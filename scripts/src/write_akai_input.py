@@ -81,7 +81,7 @@ def scf_input_hcp(filename, lattice_params, elements, concentrations, ew, xc, re
         file.write(f'go {filename}.pot\n')
         file.write(f'{comment_line}')
         file.write(f'c   brvtyp     a        c/a   b/a   alpha   beta   gamma\n')
-        file.write(f'    hcp    {a0}  {ca} , , , , \n')
+        file.write(f'    hcp    {a0}  {ca} , , , , ,\n')
         file.write(f'{comment_line}')
         file.write(f'c   edelt    ewidth    reltyp   sdftyp   magtyp   record\n')
         file.write(f'    {edelt}    {ew}    {rel}   {xc}      {magtype}      init\n')
