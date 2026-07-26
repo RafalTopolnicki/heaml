@@ -34,14 +34,17 @@ def snapshot_python_code(workdir):
                 shutil.copy2(source_path, os.path.join(target_dir, filename))
 
 
-def read_experiments_from_directory(path):
+def read_experiments_from_directory(paths):
+    if isinstance(paths, str):
+        paths = [paths]
     results = []
-    for entry in os.listdir(path):
-        full_path = os.path.join(path, entry)
-        if os.path.isdir(full_path):  # only directories
-            res = process_kkr(path=path, dirname=entry)
-            if res:
-                results.append(res)
+    for path in paths:
+        for entry in os.listdir(path):
+            full_path = os.path.join(path, entry)
+            if os.path.isdir(full_path):
+                res = process_kkr(path=path, dirname=entry)
+                if res:
+                    results.append(res)
     return results
 
 def compute_min_distances(df_known, df_candidates, columns, metric="euclidean"):
@@ -188,14 +191,20 @@ def filter_known_candidates(df_known, df_candidates, columns, min_dist=0.01, met
 def composition_key(row, columns, ndigits=5):
     return tuple(round(float(row[c]), ndigits) for c in columns)
 
-def write_init_tc_comparison(init_data, initdir, workdir, target=TARGET):
+def write_init_tc_comparison(init_data, initdirs, workdir, target=TARGET):
+    if isinstance(initdirs, str):
+        initdirs = [initdirs]
     rows = []
     for entry in init_data:
         name = entry.get("name", "")
         tc_computed = entry.get(target)
         tc_stored = None
-        results_path = os.path.join(initdir, name, "results.json")
-        if os.path.exists(results_path):
+        results_path = next(
+            (os.path.join(d, name, "results.json") for d in initdirs
+             if os.path.exists(os.path.join(d, name, "results.json"))),
+            None,
+        )
+        if results_path is not None:
             try:
                 with open(results_path) as f:
                     stored = json.load(f)
@@ -227,7 +236,7 @@ def deduplicate_known_data(data, columns, ndigits=5):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--workdir", type=str, required=True)
-    parser.add_argument("--initdir", type=str, required=True)
+    parser.add_argument("--initdir", type=str, nargs='+', required=True)
     parser.add_argument("--errorlog", type=str, required=True)
     parser.add_argument("--iterations", type=int, default=2)
     parser.add_argument("--workers", type=int, default=4)
