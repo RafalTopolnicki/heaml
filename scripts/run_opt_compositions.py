@@ -223,6 +223,14 @@ def write_init_tc_comparison(init_data, initdirs, workdir, target=TARGET):
     print(f"Init Tc comparison written to {out_path} ({len(df)} rows)")
 
 
+def normalize_rows_to_elements(data, elements):
+    """Fill missing element keys with 0.0 so all rows have the same composition columns."""
+    for row in data:
+        for el in elements:
+            if el not in row:
+                row[el] = 0.0
+    return data
+
 def deduplicate_known_data(data, columns, ndigits=5):
     seen = set()
     out = []
@@ -318,6 +326,7 @@ if __name__ == "__main__":
 
     # read initial computations
     init_data = read_experiments_from_directory(args["initdir"])
+    normalize_rows_to_elements(init_data, composition_labels)
     write_init_tc_comparison(init_data, args["initdir"], workdir)
     known_data = init_data.copy()
 
@@ -438,6 +447,7 @@ if __name__ == "__main__":
         # now merge all new KKR results with the intial one
         new_data = [d for d in read_experiments_from_directory(computationdir) if
                     d.get(TARGET) is not None and not pd.isna(d.get(TARGET))]
+        normalize_rows_to_elements(new_data, composition_labels)
 
         # create now list of all known data
         known_data = known_data + new_data
