@@ -344,12 +344,12 @@ if __name__ == "__main__":
             raise ValueError(f"--resume_from path does not exist: {resume_from}")
 
         # Discover iteration dirs in resume_from, sorted by number
-        resume_iters = sorted(
-            int(m.group(1))
-            for name in os.listdir(resume_from)
-            if (m := re.fullmatch(r'iteration_(\d+)', name))
-            and os.path.isdir(os.path.join(resume_from, name))
-        )
+        resume_iters = []
+        for name in os.listdir(resume_from):
+            m = re.fullmatch(r'iteration_(\d+)', name)
+            if m and os.path.isdir(os.path.join(resume_from, name)):
+                resume_iters.append(int(m.group(1)))
+        resume_iters = sorted(resume_iters)
         if not resume_iters:
             raise ValueError(f"--resume_from directory has no iteration_N subdirs: {resume_from}")
 
