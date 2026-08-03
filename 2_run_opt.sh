@@ -1,0 +1,2 @@
+
+python scripts/run_opt_compositions.py  --workdir opt.ratios/${outputdir}/ --initdir random.ratios/sra.TiScNbZrHfTaMoWYReRuLa.kp10.ew0.6 --errorlog opt.ratios/${outputdir}/errorlog.txt --iterations 30 --workers 4 --champions_per_step 4 --seed 100 --number_of_models 10 --acquisition_beta 2 --min_components 8 --min_components_ratio 0.05

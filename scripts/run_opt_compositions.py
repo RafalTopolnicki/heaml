@@ -1,6 +1,7 @@
 import argparse
 import json
 import os
+import re
 import shutil
 import sys
 from concurrent.futures import ProcessPoolExecutor, as_completed
@@ -277,6 +278,11 @@ if __name__ == "__main__":
         "--acquisition_beta", type=float, default=2.0,
         help="Exploration coefficient in UCB acquisition: score = mu + beta * sigma. Default: 2.0.",
     )
+    parser.add_argument(
+        "--resume_from", type=str, default=None,
+        help="Path to a previous optimization workdir to resume from. All iteration_N dirs will be "
+             "copied into --workdir and new iterations start after the last existing one.",
+    )
     args = vars(parser.parse_args())
 
     if args["elements"] is not None:
@@ -330,7 +336,59 @@ if __name__ == "__main__":
     write_init_tc_comparison(init_data, args["initdir"], workdir)
     known_data = init_data.copy()
 
-    for iteration in range(1, iterations+1):
+    # ── Resume from a previous run ────────────────────────────────────────────
+    start_iteration = 1
+    resume_from = args.get("resume_from")
+    if resume_from is not None:
+        if not os.path.isdir(resume_from):
+            raise ValueError(f"--resume_from path does not exist: {resume_from}")
+
+        # Discover iteration dirs in resume_from, sorted by number
+        resume_iters = sorted(
+            int(m.group(1))
+            for name in os.listdir(resume_from)
+            if (m := re.fullmatch(r'iteration_(\d+)', name))
+            and os.path.isdir(os.path.join(resume_from, name))
+        )
+        if not resume_iters:
+            raise ValueError(f"--resume_from directory has no iteration_N subdirs: {resume_from}")
+
+        max_resume_iter = resume_iters[-1]
+        start_iteration = max_resume_iter + 1
+        print(f"Resuming from {resume_from}: found iterations {resume_iters}, starting at {start_iteration}")
+
+        # Copy each iteration dir into workdir
+        for it in resume_iters:
+            src = os.path.join(resume_from, f"iteration_{it}")
+            dst = os.path.join(workdir, f"iteration_{it}")
+            if os.path.exists(dst):
+                print(f"  [skip copy] {dst} already exists")
+            else:
+                shutil.copytree(src, dst)
+                print(f"  Copied iteration_{it} -> {dst}")
+
+        # Prepend the resume_from optimization log so the merged workdir looks continuous
+        resume_log = os.path.join(resume_from, "optimization_log.txt")
+        if os.path.exists(resume_log):
+            existing_log = open(resume_log).read()
+            with open(iteration_log_path, "w") as f:
+                f.write(existing_log)
+            print(f"  Copied optimization log from {resume_from}")
+
+        # Seed known_data with results from the copied iterations (in order)
+        for it in resume_iters:
+            comp_dir = os.path.join(workdir, f"iteration_{it}", "computation")
+            if not os.path.isdir(comp_dir):
+                continue
+            iter_data = read_experiments_from_directory(comp_dir)
+            normalize_rows_to_elements(iter_data, composition_labels)
+            valid = [d for d in iter_data if d.get(TARGET) is not None and not pd.isna(d.get(TARGET))]
+            known_data = known_data + valid
+
+        known_data = deduplicate_known_data(known_data, composition_labels)
+        print(f"After resume: {len(known_data)} known datapoints (init + {max_resume_iter} iterations)")
+
+    for iteration in range(start_iteration, start_iteration + iterations):
         print(f'(IIII) Iteration: ', iteration, datetime.datetime.now(), 'Number of datapoints: ', len(known_data), 'MaxTc:', find_largest_in_data(known_data))
         exit_file = "EXIT"
         if os.path.exists(exit_file):
