@@ -147,16 +147,44 @@ outdir="thermodynamic"
 #    --concentrations 0.122666 0.080679 0.163213 0.540517 0.015006 0.032479 0.023119 0.022322 \
 #    --outdir "${outdir}/sra.TiScNbZrHfTaMoWYReRuLa.kp10.ew0.6.acqbeta2_twoinitials"
 
-# ── sra.TiScNbZrHfTaMoWYReRuLa.kp10.ew0.6.acqbeta2 ─────────────────────────
-# Champion: Tc_mu0.2=28.27 K, lambda=3.91 | 5-element
-python scripts/structure_compare.py \
-    --element_labels Ti Sc Mo Y Ru \
-    --concentrations 0.405461 0.485399 0.057137 0.002149 0.049854 \
-    --outdir "${outdir}/sra.TiScNbZrHfTaMoWYReRuLa.kp10.ew0.6.acqbeta2"
+## ── sra.TiScNbZrHfTaMoWYReRuLa.kp10.ew0.6.acqbeta2 ─────────────────────────
+## Champion: Tc_mu0.2=28.27 K, lambda=3.91 | 5-element
+#python scripts/structure_compare.py \
+#    --element_labels Ti Sc Mo Y Ru \
+#    --concentrations 0.405461 0.485399 0.057137 0.002149 0.049854 \
+#    --outdir "${outdir}/sra.TiScNbZrHfTaMoWYReRuLa.kp10.ew0.6.acqbeta2"
 
-# ── sra.TiScNbZrHfTaMoWYReRuLa.kp10.ew0.6.acqbeta5 ─────────────────────────
-# Champion: Tc_mu0.2=23.49 K, lambda=4.10 | 9-element
+## ── sra.TiScNbZrHfTaMoWYReRuLa.kp10.ew0.6.acqbeta5 ─────────────────────────
+## Champion: Tc_mu0.2=23.49 K, lambda=4.10 | 9-element
+#python scripts/structure_compare.py \
+#    --element_labels Ti Nb Zr Ta Sc Mo W Y Ru \
+#    --concentrations 0.130979 0.030018 0.044129 0.007524 0.544999 0.021983 0.007310 0.183935 0.029122 \
+#    --outdir "${outdir}/sra.TiScNbZrHfTaMoWYReRuLa.kp10.ew0.6.acqbeta5"
+
+## ── sra.TiScNbZrHfTaMoWYRe.kp10.ew0.6.acqbeta2_continued ────────────────────
+## Champion: Tc_mu0.2=28.91 K, lambda=3.72 | 4-element
 python scripts/structure_compare.py \
-    --element_labels Ti Nb Zr Ta Sc Mo W Y Ru \
-    --concentrations 0.130979 0.030018 0.044129 0.007524 0.544999 0.021983 0.007310 0.183935 0.029122 \
-    --outdir "${outdir}/sra.TiScNbZrHfTaMoWYReRuLa.kp10.ew0.6.acqbeta5"
+    --element_labels Ti Hf Sc Mo \
+    --concentrations 0.571975 0.001174 0.316740 0.110111 \
+    --outdir "${outdir}/sra.TiScNbZrHfTaMoWYRe.kp10.ew0.6.acqbeta2_continued"
+
+## ── sra.TiScNbZrHfTaMoWYReRuLa.kp10.ew0.6.acqbeta2_continued ────────────────
+## Champion: Tc_mu0.2=29.96 K, lambda=3.42 | 4-element
+python scripts/structure_compare.py \
+    --element_labels Ti Sc W Ru \
+    --concentrations 0.598403 0.320120 0.000388 0.081088 \
+    --outdir "${outdir}/sra.TiScNbZrHfTaMoWYReRuLa.kp10.ew0.6.acqbeta2_continued"
+
+## ── sra.TiScNbZrHfTaMoWYReRuLa.kp10.ew0.6.acqbeta2_min5 ─────────────────────
+## Champion: Tc_mu0.2=25.07 K, lambda=3.96 | 7-element
+python scripts/structure_compare.py \
+    --element_labels Ti Nb Zr Sc Mo Y Ru \
+    --concentrations 0.233428 0.027166 0.061701 0.502818 0.052754 0.087394 0.034740 \
+    --outdir "${outdir}/sra.TiScNbZrHfTaMoWYReRuLa.kp10.ew0.6.acqbeta2_min5"
+
+## ── sra.TiScNbZrHfTaMoWYReRuLa.kp10.ew0.6.acqbeta2_min6 ─────────────────────
+## Champion: Tc_mu0.2=25.45 K, lambda=3.59 | 7-element
+python scripts/structure_compare.py \
+    --element_labels Ti Nb Zr Ta Sc Mo Y \
+    --concentrations 0.269948 0.067868 0.051423 0.000940 0.465076 0.093765 0.050980 \
+    --outdir "${outdir}/sra.TiScNbZrHfTaMoWYReRuLa.kp10.ew0.6.acqbeta2_min6"
