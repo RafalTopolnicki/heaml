@@ -10,7 +10,7 @@ import math
 from src.process_kkr import process_kkr
 from src.utils import generate_dirname, append_errorlog, save_dict_to_json, log_iteration_summary
 from src.ml import train_cb_model
-from src.consts import composition_labels as ALL_ELEMENTS, ACQUISITION_ALPHA, ACQUISITION_METRIC, TARGET, CANDIDATE_COMPOSITIONS_N, MIN_NOVELTY_DIST, FRESH_FRACTION, LOCAL_TOP_K, LOCAL_NOISE_SCALE, MODEL_SUBSAMPLE_FRACTION
+from src.consts import composition_labels as ALL_ELEMENTS, ACQUISITION_ALPHA, ACQUISITION_METRIC, TARGET, TARGET_DG, CANDIDATE_COMPOSITIONS_N, MIN_NOVELTY_DIST, FRESH_FRACTION, LOCAL_TOP_K, LOCAL_NOISE_SCALE, MODEL_SUBSAMPLE_FRACTION, DG_THRESHOLD_DEFAULT
 from src.sampling import generate_candidates_data
 from process_hea import run_one_hea
 import numpy as np
@@ -112,6 +112,17 @@ def compute_one_composition_task(task):
 def find_largest_in_data(data):
     vals = [d[TARGET] for d in data if TARGET in d and pd.notna(d[TARGET])]
     return np.max(vals)
+
+
+def dg_penalty_factor(mu_dG_array, threshold):
+    """
+    Smooth multiplicative factor in [0, 1] applied to the Tc acquisition score.
+    At dG <= 0: factor = 1 (no penalty).
+    At dG = threshold: factor ~ 0.01 (~100x reduction).
+    Decays exponentially beyond threshold.
+    """
+    clipped = np.clip(mu_dG_array, 0.0, None)
+    return np.exp(-clipped * (np.log(100.0) / threshold))
 
 
 def select_diverse_top_candidates(
@@ -279,6 +290,11 @@ if __name__ == "__main__":
         help="Exploration coefficient in UCB acquisition: score = mu + beta * sigma. Default: 2.0.",
     )
     parser.add_argument(
+        "--dg_threshold", type=float, default=DG_THRESHOLD_DEFAULT,
+        help="dG (eV/atom) at which the thermodynamic penalty reduces the acquisition by ~100x. "
+             f"Default: {DG_THRESHOLD_DEFAULT}. Set very large to effectively disable.",
+    )
+    parser.add_argument(
         "--resume_from", type=str, default=None,
         help="Path to a previous optimization workdir to resume from. All iteration_N dirs will be "
              "copied into --workdir and new iterations start after the last existing one.",
@@ -423,18 +439,44 @@ if __name__ == "__main__":
             k = max(1, int(MODEL_SUBSAMPLE_FRACTION * n))
             indices = rng.choice(n, size=k, replace=False)
             sub_data = [known_data[i] for i in indices]
-            print(f'(II) Training model: {model_id} on {k}/{n} points')
+            print(f'(II) Training Tc model: {model_id} on {k}/{n} points')
             model, metrics, pred_ = train_cb_model(sub_data, seed=100+model_id, predict_df=all_candidates, elements=composition_labels)
             preds.append(pred_)
             model_training_metrics.append({'metrics': metrics})
         preds = np.array(preds)
-        # find acquisition and candidates for the new HAE
         mus = preds.mean(axis=0)
         sigmas = preds.std(axis=0)
-        acquisitions = mus + args["acquisition_beta"] * sigmas
+
+        # train dG ensemble and compute thermodynamic penalty
+        dg_valid = [d for d in known_data if d.get(TARGET_DG) is not None and not pd.isna(d.get(TARGET_DG, float('nan')))]
+        use_dg_penalty = len(dg_valid) >= 20
+        if use_dg_penalty:
+            preds_dg = []
+            for model_id in range(args["number_of_models"]):
+                n_dg = len(dg_valid)
+                k_dg = max(1, int(MODEL_SUBSAMPLE_FRACTION * n_dg))
+                indices_dg = rng.choice(n_dg, size=k_dg, replace=False)
+                sub_data_dg = [dg_valid[i] for i in indices_dg]
+                print(f'(II) Training dG model: {model_id} on {k_dg}/{n_dg} points')
+                _, _, pred_dg_ = train_cb_model(sub_data_dg, seed=200+model_id, predict_df=all_candidates, elements=composition_labels, target=TARGET_DG)
+                preds_dg.append(pred_dg_)
+            preds_dg = np.array(preds_dg)
+            mu_dG = preds_dg.mean(axis=0)
+            penalty = dg_penalty_factor(mu_dG, threshold=args["dg_threshold"])
+            print(f'(II) dG penalty: min={penalty.min():.3f} mean={penalty.mean():.3f} '
+                  f'fraction_penalized={np.mean(penalty < 0.99):.2%}')
+        else:
+            print(f'(II) dG penalty disabled: only {len(dg_valid)} points with dG_eV (need >= 20)')
+            mu_dG = np.zeros(len(all_candidates))
+            penalty = np.ones(len(all_candidates))
+
+        # apply thermodynamic penalty to acquisition
+        acquisitions = (mus + args["acquisition_beta"] * sigmas) * penalty
         df_candidates = all_candidates.copy()
         df_candidates["pred_target"] = mus
         df_candidates["pred_target_std"] = sigmas
+        df_candidates["pred_dG"] = mu_dG
+        df_candidates["dg_penalty"] = penalty
         df_candidates["raw_acquisition"] = acquisitions
 
         # remove already-known or too-close candidates
@@ -474,9 +516,12 @@ if __name__ == "__main__":
             pred_target = float(row.get("pred_target", float("nan")))
             pred_target_std = float(row.get("pred_target_std", float("nan")))
             acq = float(row.get("raw_acquisition", float("nan")))
+            pred_dG = float(row.get("pred_dG", float("nan")))
+            dg_pen = float(row.get("dg_penalty", float("nan")))
             print(
                 f"  {workdirname:50s} | pred_target={pred_target:.4f}"
-                f" | std={pred_target_std:.4f} | acq={acq:.4f} | source={source_label}"
+                f" | std={pred_target_std:.4f} | acq={acq:.4f}"
+                f" | pred_dG={pred_dG:.4f} | dg_penalty={dg_pen:.3f} | source={source_label}"
             )
             comp_dir = os.path.join(computationdir, workdirname)
             os.makedirs(comp_dir, exist_ok=True)
@@ -485,6 +530,8 @@ if __name__ == "__main__":
                 "pred_target": pred_target,
                 "pred_target_std": pred_target_std,
                 "acquisition": acq,
+                "pred_dG": pred_dG,
+                "dg_penalty": dg_pen,
                 "source": source,
                 "source_label": source_label,
                 "target": TARGET,

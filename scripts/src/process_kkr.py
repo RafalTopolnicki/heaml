@@ -3,7 +3,8 @@ import json
 import os
 import pandas as pd
 from src.features import compute_hea_features
-from src.consts import composition_labels, PHYSICAL_CP_MIN_GPA, PHYSICAL_THETA_MIN_K
+from src.consts import composition_labels, PHYSICAL_CP_MIN_GPA, PHYSICAL_THETA_MIN_K, ATOMS_PER_CELL, DG_T_K
+from src.elements import ELEMENTS
 
 
 def normalize_composition(composition):
@@ -14,6 +15,8 @@ def normalize_composition(composition):
     return (composition / total).tolist()
 
 
+_Ry_to_eV = 13.605693123
+_kB_eV = 8.617333262e-5   # eV/K
 _Ry_to_J = 2.1798741e-18
 _Bohr_to_m = 5.29177210903e-11
 _amu_to_kg = 1.66053906660e-27
@@ -147,6 +150,14 @@ def process_kkr(path, dirname):
         data['Tc_mu0.3_nocutoff'] = tc_from_data({**data, 'lambda': _lam_nc}, mu=0.3)
         # add features
         data = {**data, **compute_hea_features(comp_dict=comp_dict, normalize_composition=True)}
+
+        # thermodynamic stability: dG = dE - T*dS_conf  (eV/atom, w.r.t. pure BCC phases)
+        if 'energy0_Ry' in data and 'config_entropy_nat' in data:
+            energy_per_atom_Ry = data['energy0_Ry'] / ATOMS_PER_CELL
+            ebulk_mix = sum(comp_dict.get(el, 0.0) * ELEMENTS[el].ebulk for el in comp_dict if el in ELEMENTS)
+            dE_eV = (energy_per_atom_Ry - ebulk_mix) * _Ry_to_eV
+            data['dG_eV'] = dE_eV - DG_T_K * _kB_eV * data['config_entropy_nat']
+
         return data
     except Exception as e:
          print(f'Error in processing {dirname}: {e}')

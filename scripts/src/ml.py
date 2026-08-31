@@ -4,7 +4,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
 from catboost import CatBoostRegressor
 import numpy as np
-from src.consts import composition_labels, TARGET, MODEL_USE_EARLY_STOPPING
+from src.consts import composition_labels, TARGET, MODEL_USE_EARLY_STOPPING, TARGET_DG
 
 FEATURES_TO_TRAIN_MODEL = composition_labels + ADDITIONAL_FEATURES
 
@@ -32,7 +32,7 @@ def evaluate_predictions(y_true, pred):
     return {"MAE": mae, "RMSE": rmse, "R2": r2}
 
 
-def train_cb_model(kkr_data, predict_df=None, seed=100, valid_size=0.2, elements=None):
+def train_cb_model(kkr_data, predict_df=None, seed=100, valid_size=0.2, elements=None, target=None):
     """
     Train CatBoost for active learning / BO.
 
@@ -47,13 +47,15 @@ def train_cb_model(kkr_data, predict_df=None, seed=100, valid_size=0.2, elements
     -------
     final_model, metrics, y_pred
     """
+    if target is None:
+        target = TARGET
     df_ = pd.DataFrame(kkr_data)
     feature_cols = (elements if elements is not None else composition_labels) + ADDITIONAL_FEATURES
-    data = df_[feature_cols + [TARGET]].copy()
-    data = data.dropna(subset=feature_cols + [TARGET]).reset_index(drop=True)
+    data = df_[feature_cols + [target]].copy()
+    data = data.dropna(subset=feature_cols + [target]).reset_index(drop=True)
 
     X = data[feature_cols]
-    y = data[TARGET]
+    y = data[target]
 
     if len(data) < 20:
         raise ValueError(f"Too little data to train reliably: n={len(data)}")

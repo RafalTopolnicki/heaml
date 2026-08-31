@@ -48,7 +48,12 @@ CANDIDATE_COMPOSITIONS_N = 100_000 # in each iteration new points are generated
 ACQUISITION_METRIC = 'cosine'
 
 TARGET = 'Tc_mu0.2'
+TARGET_DG = 'dG_eV'
 ACQUISITION_ALPHA = 1.0
+
+# Thermodynamic stability
+DG_T_K = 1000            # temperature used in dG = dE - T*dS_conf
+DG_THRESHOLD_DEFAULT = 1000.0  # effectively no penalty; set to ~0.1 to enable thermodynamic constraint
 
 #TARGET = 'lambda'
 #ACQUISITION_ALPHA = 0.2 # smaller value due to different scale of lambda
