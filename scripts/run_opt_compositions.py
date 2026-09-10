@@ -10,7 +10,7 @@ import math
 from src.process_kkr import process_kkr
 from src.utils import generate_dirname, append_errorlog, save_dict_to_json, log_iteration_summary
 from src.ml import train_cb_model
-from src.consts import composition_labels as ALL_ELEMENTS, ACQUISITION_ALPHA, ACQUISITION_METRIC, TARGET, TARGET_DG, CANDIDATE_COMPOSITIONS_N, MIN_NOVELTY_DIST, FRESH_FRACTION, LOCAL_TOP_K, LOCAL_NOISE_SCALE, MODEL_SUBSAMPLE_FRACTION, DG_THRESHOLD_DEFAULT
+from src.consts import composition_labels as ALL_ELEMENTS, ACQUISITION_ALPHA, ACQUISITION_METRIC, TARGET, TARGET_DG, CANDIDATE_COMPOSITIONS_N, MIN_NOVELTY_DIST, FRESH_FRACTION, LOCAL_TOP_K, LOCAL_NOISE_SCALE, MODEL_SUBSAMPLE_FRACTION, DG_THRESHOLD_DEFAULT, STONER_I_EV, STONER_N_EF_APPROX, STONER_BETA, STONER_S_THRESHOLD
 from src.sampling import generate_candidates_data
 from process_hea import run_one_hea
 import numpy as np
@@ -112,6 +112,32 @@ def compute_one_composition_task(task):
 def find_largest_in_data(data):
     vals = [d[TARGET] for d in data if TARGET in d and pd.notna(d[TARGET])]
     return np.max(vals)
+
+
+def stoner_penalty_factor(df_candidates, composition_labels, beta, threshold):
+    """
+    Multiplicative acquisition penalty based on Stoner enhancement S_mix (Option C).
+
+    Uses approximate per-element N(EF) from STONER_N_EF_APPROX (no KKR needed).
+    beta=0 disables the penalty and returns all ones (current default).
+    When enabled: penalty = exp(-beta * max(S_mix - threshold, 0)).
+    """
+    if beta == 0.0:
+        return np.ones(len(df_candidates))
+
+    IN_mix = np.zeros(len(df_candidates))
+    for el in composition_labels:
+        if el not in df_candidates.columns:
+            continue
+        c   = df_candidates[el].values
+        I_i = STONER_I_EV.get(el, 0.40)
+        N_i = STONER_N_EF_APPROX.get(el, 0.55)
+        IN_mix += c * I_i * N_i
+
+    IN_mix = np.clip(IN_mix, 0.0, 0.99)
+    S_mix  = 1.0 / (1.0 - IN_mix)
+    excess = np.maximum(S_mix - threshold, 0.0)
+    return np.exp(-beta * excess)
 
 
 def dg_penalty_factor(mu_dG_array, threshold):
@@ -470,13 +496,22 @@ if __name__ == "__main__":
             mu_dG = np.zeros(len(all_candidates))
             penalty = np.ones(len(all_candidates))
 
-        # apply thermodynamic penalty to acquisition
-        acquisitions = (mus + args["acquisition_beta"] * sigmas) * penalty
+        # Stoner spin-fluctuation penalty (Option C; disabled when STONER_BETA=0)
+        stoner_pen = stoner_penalty_factor(all_candidates, composition_labels, STONER_BETA, STONER_S_THRESHOLD)
+        if STONER_BETA > 0:
+            print(f'(II) Stoner penalty: min={stoner_pen.min():.3f} mean={stoner_pen.mean():.3f} '
+                  f'fraction_penalized={np.mean(stoner_pen < 0.99):.2%}')
+        else:
+            print('(II) Stoner penalty disabled (STONER_BETA=0)')
+
+        # apply thermodynamic and Stoner penalties to acquisition
+        acquisitions = (mus + args["acquisition_beta"] * sigmas) * penalty * stoner_pen
         df_candidates = all_candidates.copy()
         df_candidates["pred_target"] = mus
         df_candidates["pred_target_std"] = sigmas
         df_candidates["pred_dG"] = mu_dG
         df_candidates["dg_penalty"] = penalty
+        df_candidates["stoner_penalty"] = stoner_pen
         df_candidates["raw_acquisition"] = acquisitions
 
         # remove already-known or too-close candidates
@@ -518,10 +553,12 @@ if __name__ == "__main__":
             acq = float(row.get("raw_acquisition", float("nan")))
             pred_dG = float(row.get("pred_dG", float("nan")))
             dg_pen = float(row.get("dg_penalty", float("nan")))
+            stoner_pen_val = float(row.get("stoner_penalty", float("nan")))
             print(
                 f"  {workdirname:50s} | pred_target={pred_target:.4f}"
                 f" | std={pred_target_std:.4f} | acq={acq:.4f}"
-                f" | pred_dG={pred_dG:.4f} | dg_penalty={dg_pen:.3f} | source={source_label}"
+                f" | pred_dG={pred_dG:.4f} | dg_penalty={dg_pen:.3f}"
+                f" | stoner_penalty={stoner_pen_val:.3f} | source={source_label}"
             )
             comp_dir = os.path.join(computationdir, workdirname)
             os.makedirs(comp_dir, exist_ok=True)

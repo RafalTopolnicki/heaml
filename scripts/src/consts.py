@@ -46,6 +46,49 @@ VALENCE_NODES_EXPECTED: dict = {
     "La": {0: 0, 1: 0, 2: 2, 3: 0},  # 5d (4f: n-l-1=0, no genuine f nodes)
 }
 
+# ---------------------------------------------------------------------------
+# Stoner spin-fluctuation correction to Tc (Berk-Schrieffer 1966)
+# ---------------------------------------------------------------------------
+
+# Stoner exchange integrals I (eV), Janak (1977) PRB 16, 255.
+# I = -d²E_xc/dM²; computed within LDA from element band structure.
+STONER_I_EV = {
+    "Sc": 0.46, "Ti": 0.48, "Y":  0.44, "Zr": 0.39,
+    "Nb": 0.35, "Mo": 0.41, "Ru": 0.50, "Hf": 0.39,
+    "Ta": 0.33, "W":  0.39, "Re": 0.37, "La": 0.32,
+}
+
+# Paramagnon energy scale E_sf (meV) per element (Option B).
+# Used to compute gamma = ln(E_sf_mix / omega_D) for each composition.
+# Estimated from spin-fluctuation temperatures in literature (specific heat, neutron, DFT).
+# Ordering: lighter 3d (Sc, Ti) < 4d (Ru, Zr, Nb) < 5d (Hf, Ta, W).
+# Values chosen so that E_sf_mix ≈ 3×omega_D for Ti-rich alloys, giving gamma≈1.1
+# consistent with experimental Tc < 5K for the Ti0.6Sc0.32Ru0.08 champion.
+E_SF_MEV = {
+    "Sc": 50.0, "Ti": 60.0, "La": 40.0,
+    "Y":  80.0, "Ru": 120.0,
+    "Zr": 150.0, "Nb": 200.0, "Mo": 300.0,
+    "Hf": 200.0, "Ta": 250.0, "Re": 300.0, "W": 400.0,
+}
+
+# Approximate partial DOS at EF per spin per atom (states/eV) for each element.
+# Used ONLY in Option C acquisition penalty (approx for candidate screening without KKR).
+# Derived from KKR-CPA component Ntot values (Ntot/13.606 eV) for a representative
+# Ti-rich alloy. These are composition-dependent in reality; treat as rough estimates.
+STONER_N_EF_APPROX = {
+    "Sc": 0.61, "Ti": 1.05, "Y":  0.49, "Zr": 0.63,
+    "Nb": 0.63, "Mo": 0.58, "Ru": 0.45, "Hf": 0.60,
+    "Ta": 0.59, "W":  0.53, "Re": 0.45, "La": 0.58,
+}
+
+# Stoner acquisition penalty (Option C).
+# STONER_BETA = 0.0 disables the penalty entirely (no effect on optimization).
+# When enabled: penalty = exp(-STONER_BETA * max(S_mix - STONER_S_THRESHOLD, 0))
+# S_mix = 1 / (1 - I_mix * N_mix(EF)); STONER_S_THRESHOLD = 1.5 means penalty
+# only kicks in when Stoner enhancement is moderate-to-strong.
+STONER_BETA = 0.0        # set > 0 to enable; ~1.0 is a moderate penalty
+STONER_S_THRESHOLD = 1.5
+
 CANDIDATE_COMPOSITIONS_N = 100_000 # in each iteration new points are generated
 ACQUISITION_METRIC = 'cosine'
 

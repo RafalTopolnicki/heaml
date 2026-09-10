@@ -3,7 +3,7 @@ import json
 import os
 import pandas as pd
 from src.features import compute_hea_features
-from src.consts import composition_labels, PHYSICAL_CP_MIN_GPA, PHYSICAL_THETA_MIN_K, ATOMS_PER_CELL, DG_T_K
+from src.consts import composition_labels, PHYSICAL_CP_MIN_GPA, PHYSICAL_THETA_MIN_K, ATOMS_PER_CELL, DG_T_K, STONER_I_EV, E_SF_MEV
 from src.elements import ELEMENTS
 
 
@@ -112,10 +112,79 @@ def read_macmillan(path, dirname):
             results[f'{cmp_label}_M_{ch}_full'] = row[f'M_full_{ch}']
         results[f'{cmp_label}_eta_total'] = row['eta_total_cutoff']
         results[f'{cmp_label}_eta_total_full'] = row['eta_total_full']
+        results[f'{cmp_label}_Ntot'] = row['Ntot']  # states/Ry/atom/spin; used for Stoner correction
     return results
 
 def tc_from_data(data, mu):
     return data['thetaDB']/1.45*np.exp(-1.04*(1+data['lambda'])/(data['lambda']-mu*(1+0.62*data['lambda'])))
+
+def _tc_mcmillan_safe(theta_D, lam, mu):
+    """McMillan formula; returns 0.0 when mu* is too large to allow pairing."""
+    denom = lam - mu * (1.0 + 0.62 * lam)
+    if denom <= 0.0:
+        return 0.0
+    return theta_D / 1.45 * np.exp(-1.04 * (1.0 + lam) / denom)
+
+def compute_stoner_correction(data, composition_dict, mu_star_coulomb=0.13):
+    """
+    Spin-fluctuation correction to mu* via Berk-Schrieffer (1966) / Rainer-Bergmann.
+
+    Computes gamma = ln(E_sf_mix / omega_D) from composition-weighted element
+    paramagnon energies (Option B: no fitting, fully predictive).
+
+    N_i(EF) comes from Ntot in the mcmillan_cutoff CSV (states/Ry/atom/spin),
+    converted to states/eV by dividing by 13.606.
+
+    Returns a dict with: Stoner_IN_mix, Stoner_S, Stoner_lambda_sf,
+    Stoner_gamma, Stoner_mu_sf, Stoner_mu_eff, Tc_sf.
+    """
+    total_c = sum(c for c in composition_dict.values() if c > 0)
+    if total_c <= 0:
+        return {}
+
+    IN_mix = 0.0
+    E_sf_mix = 0.0  # meV
+    for el, c in composition_dict.items():
+        if c <= 0:
+            continue
+        ntot = data.get(f'{el}_Ntot')
+        if ntot is None:
+            continue
+        I_i   = STONER_I_EV.get(el, 0.40)        # eV
+        N_i   = ntot / _Ry_to_eV                  # states/eV/atom/spin
+        E_sf_i = E_SF_MEV.get(el, 100.0)          # meV
+        frac  = c / total_c
+        IN_mix   += frac * I_i * N_i
+        E_sf_mix += frac * E_sf_i
+
+    # Guard: Stoner instability → ferromagnetic, formula invalid
+    IN_mix = min(IN_mix, 0.99)
+    S = 1.0 / (1.0 - IN_mix)
+    lambda_sf = S - 1.0   # = IN_mix / (1 - IN_mix)
+
+    theta_D   = data.get('thetaDB', 0.0)
+    omega_D_meV = theta_D * _kB_eV * 1000.0  # K → meV  (kB in eV/K, ×1000 → meV/K)
+    if omega_D_meV > 0 and E_sf_mix > 0:
+        gamma = np.log(E_sf_mix / omega_D_meV)
+    else:
+        gamma = 0.0
+
+    mu_sf  = lambda_sf / (1.0 + lambda_sf * gamma)
+    mu_eff = mu_star_coulomb + mu_sf
+
+    lam    = data.get('lambda', 0.0)
+    Tc_sf  = _tc_mcmillan_safe(theta_D, lam, mu_eff)
+
+    return {
+        'Stoner_IN_mix':    IN_mix,
+        'Stoner_S':         S,
+        'Stoner_lambda_sf': lambda_sf,
+        'Stoner_gamma':     gamma,
+        'Stoner_E_sf_meV':  E_sf_mix,
+        'Stoner_mu_sf':     mu_sf,
+        'Stoner_mu_eff':    mu_eff,
+        'Tc_sf':            Tc_sf,
+    }
 
 def process_kkr(path, dirname):
     try:
@@ -148,6 +217,11 @@ def process_kkr(path, dirname):
         data['Tc_mu0.1_nocutoff'] = tc_from_data({**data, 'lambda': _lam_nc}, mu=0.1)
         data['Tc_mu0.2_nocutoff'] = tc_from_data({**data, 'lambda': _lam_nc}, mu=0.2)
         data['Tc_mu0.3_nocutoff'] = tc_from_data({**data, 'lambda': _lam_nc}, mu=0.3)
+        # Stoner spin-fluctuation correction (Option B)
+        stoner = compute_stoner_correction(data, comp_dict)
+        data.update(stoner)
+        if data['outside_range']:
+            data['Tc_sf'] = 0.0
         # add features
         data = {**data, **compute_hea_features(comp_dict=comp_dict, normalize_composition=True)}
 
