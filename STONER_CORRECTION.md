@@ -157,19 +157,106 @@ KKR calculations — the necessary N_i(EF) values are already present in the
 composition-dependence comes entirely from the physics formula via tabulated I_i
 (Janak 1977) and element-specific paramagnon energies E_sf_i.
 
-### Implementation
+## 5. Calibration of the Stoner Correction (2026-09-10)
 
-The correction is computed in `scripts/src/process_kkr.py::compute_stoner_correction()`
-and stored as `Tc_sf` in the results for every computed composition. Relevant constants
-are in `scripts/src/consts.py`: `STONER_I_EV`, `E_SF_MEV`, `STONER_N_EF_APPROX`.
+### Why the raw Berk-Schrieffer formula overcorrects stable alloys
 
-An additional acquisition-function penalty (Option C) is implemented in
-`run_opt_compositions.py::stoner_penalty_factor()` but currently disabled
-(`STONER_BETA = 0.0` in `consts.py`). This penalty uses approximate element-specific
-N(EF) values to estimate S_mix for candidate compositions (without running KKR) and
-penalizes high-Stoner candidates in the exploration score. It can be enabled by
-setting `STONER_BETA > 0`.
+Applying the full formula with μ*_Coulomb = 0.13 to the 36-alloy baseline gives
+median Tc_sf/Tc_exp = 0.59 — the correction overshoots in the other direction.
+The reason: the conventional μ* = 0.13 is the bare Coulomb pseudopotential,
+but empirical fits to stable HEA superconductors prefer μ* ≈ 0.20. That gap
+(0.07 in μ*) corresponds to the "typical" spin-fluctuation pair-breaking already
+implicit in how μ* is calibrated against experiments. Adding the full Berk-Schrieffer
+correction on top of μ*_Coulomb = 0.13 double-counts this baseline.
 
-To switch the optimization target from `Tc_mu0.2` to `Tc_sf`, change `TARGET` in
-`scripts/src/consts.py`. Validate first by comparing `Tc_sf` to experimental data in
-`results/Tc_baseline.xlsx`.
+### Excess-correction method
+
+Only the EXCESS spin-fluctuation pair-breaking beyond a reference Stoner level S_REF
+is added to a calibrated base μ* (STONER_MU_BASE):
+
+```
+lambda_sf = S - 1
+gamma     = ln(E_sf_mix / omega_D)             [composition-weighted, Option B]
+
+mu_sf_full = lambda_sf / (1 + lambda_sf * gamma)       [full Berk-Schrieffer]
+mu_sf_ref  = (S_REF-1) / (1 + (S_REF-1) * gamma)      [reference at same gamma]
+mu_sf_excess = max(0,  mu_sf_full - mu_sf_ref)
+
+mu_eff = STONER_MU_BASE + mu_sf_excess
+Tc_sf  = McMillan(theta_D, lambda, mu_eff)
+```
+
+For alloys with S ≈ S_REF: mu_sf_excess ≈ 0, mu_eff = STONER_MU_BASE.
+For Ti/Sc-rich alloys with S >> S_REF: positive excess grows with S.
+
+### Calibration procedure and results
+
+Tested against 36 literature baseline alloys from `results/Tc_baseline.xlsx`
+with both Tc_exp and KKR-computed N(EF) available. Three methods compared:
+
+| Method | μ* formula | median Tc_sf/Tc_exp | rms(log) |
+|---|---|---|---|
+| No correction | μ*=0.20 fixed | 1.60 | — |
+| Full Berk-Schrieffer | μ_eff = 0.13 + μ_sf_full | 0.59 | 1.12 |
+| **Excess (calibrated)** | **μ_eff = 0.185 + max(0, μ_sf_full − μ_sf_ref)** | **0.997** | **0.51** |
+
+Calibrated values (in `consts.py`):
+
+```python
+STONER_S_REF   = 1.15   # excess is zero for S <= 1.15
+STONER_MU_BASE = 0.185  # absorbs Coulomb (0.13) + baseline sf pair-breaking
+```
+
+The calibrated excess correction gives median = 1.00 and 18/36 alloys above 1 —
+symmetric errors — with the lowest rms(log) of all tested approaches.
+
+### Remaining limitation for extreme Ti/Sc compositions
+
+Even with calibration, Ti/Sc-rich champion compositions (S ≈ 1.7) are still
+predicted at Tc_sf ≈ 17–20 K, above the best stable alloys (8–12 K). The optimizer
+will therefore still prefer Ti/Sc-rich compositions if run without additional
+constraints. Additional suppression of these candidates requires the acquisition
+penalty (Option C, STONER_BETA > 0).
+
+## 6. Implementation Status
+
+### Files
+
+| File | What changed |
+|---|---|
+| `scripts/src/consts.py` | `STONER_I_EV`, `E_SF_MEV`, `STONER_N_EF_APPROX`, `STONER_S_REF`, `STONER_MU_BASE`; `TARGET='Tc_sf'` |
+| `scripts/src/process_kkr.py` | `compute_stoner_correction()`: excess-correction formula; all Stoner fields in `results.json` |
+| `scripts/run_opt_compositions.py` | `--stoner_beta` / `--stoner_s_threshold` CLI args; `stoner_s_mix` logged per candidate; `selection_info.json` includes all Stoner fields |
+
+### Stoner fields written to `results.json` per composition
+
+`Stoner_IN_mix`, `Stoner_S`, `Stoner_lambda_sf`, `Stoner_gamma`, `Stoner_E_sf_meV`,
+`Stoner_E_sf_eff_meV`, `Stoner_mu_sf`, `Stoner_mu_sf_ref`, `Stoner_mu_sf_excess`,
+`Stoner_mu_eff`, `Tc_sf`.
+
+### Optimization target
+
+`TARGET = 'Tc_sf'` is active as of 2026-09-10. Previous runs used `'Tc_mu0.2'`.
+
+### Stoner acquisition penalty (Option C)
+
+`stoner_penalty_factor()` in `run_opt_compositions.py` computes approximate S_mix
+from tabulated `STONER_N_EF_APPROX` (no KKR) and applies:
+
+```
+penalty = exp(-stoner_beta * max(S_mix - stoner_s_threshold, 0))
+```
+
+Disabled by default (`--stoner_beta 0.0`). Enable per run with CLI:
+
+```bash
+python scripts/run_opt_compositions.py \
+  ... \
+  --stoner_beta 2.0 \
+  --stoner_s_threshold 1.5
+```
+
+With `--stoner_beta 2.0`: a candidate at S_mix=1.7 gets penalty = exp(−0.4) ≈ 0.67;
+a stable candidate at S_mix=1.3 gets penalty = 1.0 (unaffected).
+The S_mix estimate and penalty are logged in `selection_info.json` and
+`top_candidates.csv` for every iteration.

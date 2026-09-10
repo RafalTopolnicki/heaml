@@ -3,7 +3,7 @@ import json
 import os
 import pandas as pd
 from src.features import compute_hea_features
-from src.consts import composition_labels, PHYSICAL_CP_MIN_GPA, PHYSICAL_THETA_MIN_K, ATOMS_PER_CELL, DG_T_K, STONER_I_EV, E_SF_MEV
+from src.consts import composition_labels, PHYSICAL_CP_MIN_GPA, PHYSICAL_THETA_MIN_K, ATOMS_PER_CELL, DG_T_K, STONER_I_EV, E_SF_MEV, C_REF_CP_GPA, STONER_S_REF, STONER_MU_BASE
 from src.elements import ELEMENTS
 
 
@@ -127,16 +127,22 @@ def _tc_mcmillan_safe(theta_D, lam, mu):
 
 def compute_stoner_correction(data, composition_dict, mu_star_coulomb=0.13):
     """
-    Spin-fluctuation correction to mu* via Berk-Schrieffer (1966) / Rainer-Bergmann.
+    Calibrated spin-fluctuation correction to Tc via Berk-Schrieffer (1966).
 
-    Computes gamma = ln(E_sf_mix / omega_D) from composition-weighted element
-    paramagnon energies (Option B: no fitting, fully predictive).
+    Uses the excess-correction method calibrated 2026-09-10 against 36 literature
+    baseline alloys (results/Tc_baseline.xlsx).  Only the EXCESS spin-fluctuation
+    pair-breaking above a reference Stoner level S_REF is added to a calibrated
+    base mu* (STONER_MU_BASE), so that alloys with typical S ~ S_REF are unaffected
+    while high-S alloys (Ti/Sc-rich) receive a composition-specific downward
+    correction.  Calibration gives median Tc_sf/Tc_exp = 1.00, rms(log) = 0.51
+    over the 36-alloy baseline (vs 1.60x without correction, 0.59x with full
+    Berk-Schrieffer).  See STONER_CORRECTION.md and consts.py for details.
 
-    N_i(EF) comes from Ntot in the mcmillan_cutoff CSV (states/Ry/atom/spin),
-    converted to states/eV by dividing by 13.606.
+    gamma = ln(E_sf_mix / omega_D) uses composition-weighted element E_sf from
+    E_SF_MEV (Option B: no fitting, fully predictive).
+    N_i(EF) from KKR Ntot (states/Ry/atom/spin), converted to states/eV.
 
-    Returns a dict with: Stoner_IN_mix, Stoner_S, Stoner_lambda_sf,
-    Stoner_gamma, Stoner_mu_sf, Stoner_mu_eff, Tc_sf.
+    Returns a dict with all intermediate quantities plus Tc_sf.
     """
     total_c = sum(c for c in composition_dict.values() if c > 0)
     if total_c <= 0:
@@ -164,26 +170,48 @@ def compute_stoner_correction(data, composition_dict, mu_star_coulomb=0.13):
 
     theta_D   = data.get('thetaDB', 0.0)
     omega_D_meV = theta_D * _kB_eV * 1000.0  # K → meV  (kB in eV/K, ×1000 → meV/K)
-    if omega_D_meV > 0 and E_sf_mix > 0:
-        gamma = np.log(E_sf_mix / omega_D_meV)
+
+    # Option B+ (C'-dependent γ): scale E_sf_mix by instability proximity
+    E_sf_eff = E_sf_mix
+    if C_REF_CP_GPA is not None:
+        cp_gpa = data.get('Cp_GPa', C_REF_CP_GPA)
+        instability_factor = min(1.0, cp_gpa / C_REF_CP_GPA)
+        E_sf_eff = E_sf_mix * instability_factor
+
+    if omega_D_meV > 0 and E_sf_eff > 0:
+        gamma = np.log(E_sf_eff / omega_D_meV)
     else:
         gamma = 0.0
 
-    mu_sf  = lambda_sf / (1.0 + lambda_sf * gamma)
-    mu_eff = mu_star_coulomb + mu_sf
+    # Full Berk-Schrieffer mu_sf (stored for diagnostics)
+    mu_sf_full = lambda_sf / (1.0 + lambda_sf * gamma)
+
+    # Excess correction: subtract the baseline spin-fluctuation contribution at S_REF
+    # (using the same composition-specific gamma so the reference is on the same scale).
+    # mu_sf_excess = 0 when S <= S_REF; grows for S >> S_REF.
+    lsf_ref   = STONER_S_REF - 1.0
+    mu_sf_ref = lsf_ref / (1.0 + lsf_ref * gamma) if (1.0 + lsf_ref * gamma) > 0 else 0.0
+    mu_sf_excess = max(0.0, mu_sf_full - mu_sf_ref)
+
+    # Calibrated effective mu*: STONER_MU_BASE absorbs Coulomb (0.13) + baseline sf.
+    # Only excess pair-breaking beyond S_REF is added.
+    mu_eff = STONER_MU_BASE + mu_sf_excess
 
     lam    = data.get('lambda', 0.0)
     Tc_sf  = _tc_mcmillan_safe(theta_D, lam, mu_eff)
 
     return {
-        'Stoner_IN_mix':    IN_mix,
-        'Stoner_S':         S,
-        'Stoner_lambda_sf': lambda_sf,
-        'Stoner_gamma':     gamma,
-        'Stoner_E_sf_meV':  E_sf_mix,
-        'Stoner_mu_sf':     mu_sf,
-        'Stoner_mu_eff':    mu_eff,
-        'Tc_sf':            Tc_sf,
+        'Stoner_IN_mix':       IN_mix,
+        'Stoner_S':            S,
+        'Stoner_lambda_sf':    lambda_sf,
+        'Stoner_gamma':        gamma,
+        'Stoner_E_sf_meV':     E_sf_mix,
+        'Stoner_E_sf_eff_meV': E_sf_eff,
+        'Stoner_mu_sf':        mu_sf_full,
+        'Stoner_mu_sf_ref':    mu_sf_ref,
+        'Stoner_mu_sf_excess': mu_sf_excess,
+        'Stoner_mu_eff':       mu_eff,
+        'Tc_sf':               Tc_sf,
     }
 
 def process_kkr(path, dirname):

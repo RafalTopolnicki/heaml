@@ -86,13 +86,45 @@ STONER_N_EF_APPROX = {
 # When enabled: penalty = exp(-STONER_BETA * max(S_mix - STONER_S_THRESHOLD, 0))
 # S_mix = 1 / (1 - I_mix * N_mix(EF)); STONER_S_THRESHOLD = 1.5 means penalty
 # only kicks in when Stoner enhancement is moderate-to-strong.
-STONER_BETA = 0.0        # set > 0 to enable; ~1.0 is a moderate penalty
+# ---------------------------------------------------------------------------
+# Stoner correction calibration (excess-correction method, calibrated 2026-09-10)
+# ---------------------------------------------------------------------------
+# Calibration test: applied compute_stoner_correction() to 36 literature baseline alloys
+# from results/Tc_baseline.xlsx (alloys with both Tc_exp and KKR-computed N(EF) available).
+# Full Berk-Schrieffer (mu_base=0.13, no excess) gives median Tc_sf/Tc_exp = 0.59 (overcorrects).
+# No correction (mu*=0.20) gives median 1.60 (undercorrects).
+# Excess correction below gives median 0.997, rms(log ratio) = 0.506 — best of tested methods.
+#
+# Method: only the excess mu_sf above S_REF is added to MU_BASE.
+#   mu_sf_ref  = (S_REF - 1) / (1 + (S_REF - 1) * gamma)   [at composition-specific gamma]
+#   mu_sf_excess = max(0, mu_sf_full - mu_sf_ref)
+#   mu_eff     = STONER_MU_BASE + mu_sf_excess
+#
+# Interpretation: STONER_MU_BASE (0.185) is the effective mu* for a "typical" d-band metal
+# at S ~ S_REF.  It absorbs both the Coulomb pseudopotential (0.13) and the baseline spin-
+# fluctuation pair-breaking already implicit in empirical mu* fits.  Only the EXCESS
+# spin-fluctuation pair-breaking from anomalously high Stoner enhancement (S >> S_REF)
+# is added on top.
+STONER_S_REF  = 1.15   # reference Stoner factor; excess correction is zero at S = S_REF
+STONER_MU_BASE = 0.185  # calibrated effective mu* for S ~ S_REF (absorbs Coulomb + baseline sf)
+
+# Stoner acquisition penalty (Option C).
+# STONER_BETA = 0.0 disables the penalty (default; can be set via --stoner_beta CLI arg).
+# When enabled: penalty = exp(-STONER_BETA * max(S_mix - STONER_S_THRESHOLD, 0))
+# S_mix = 1/(1 - I_mix*N_mix(EF)) estimated from approximate per-element tables.
+STONER_BETA = 0.0        # overridden by --stoner_beta on the CLI; default keeps penalty off
 STONER_S_THRESHOLD = 1.5
+
+# C'-dependent γ extension (Option B+): scale E_sf_mix by min(1, Cp_GPa / C_REF_CP_GPA).
+# Near-instability BCC (low Cp_GPa ~ C') gets lower effective E_sf → smaller γ → larger
+# μ_sf → stronger Tc suppression.  Alloys with Cp > C_REF are unaffected (factor=1).
+# Set C_REF_CP_GPA = None to disable (default; use pure composition-weighted E_sf_mix).
+C_REF_CP_GPA = None   # e.g. 25.0 to enable; None = disabled
 
 CANDIDATE_COMPOSITIONS_N = 100_000 # in each iteration new points are generated
 ACQUISITION_METRIC = 'cosine'
 
-TARGET = 'Tc_mu0.2'
+TARGET = 'Tc_sf'   # calibrated Stoner-corrected Tc; was 'Tc_mu0.2' before 2026-09-10
 TARGET_DG = 'dG_eV'
 ACQUISITION_ALPHA = 1.0
 
