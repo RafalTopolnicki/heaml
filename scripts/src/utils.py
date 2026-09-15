@@ -120,6 +120,8 @@ def log_iteration_summary(
     new_data,
     composition_labels,
     target_col="Tc_mu0.1",
+    min_comp=None,
+    max_comp=None,
 ):
     """
     Append one iteration summary to a text log file.
@@ -138,16 +140,32 @@ def log_iteration_summary(
         Element/composition column names.
     target_col : str
         Name of target column, default 'Tc_mu0.1'
+    min_comp, max_comp : dict or None
+        Composition bounds. When provided, best_known is taken only over rows
+        that satisfy the bounds — out-of-bounds init points are excluded from
+        the reported maximum (but remain in known_data for model training).
     """
-    def valid_rows(rows):
+    def in_bounds(row):
+        if min_comp is None and max_comp is None:
+            return True
+        for el, lo in (min_comp or {}).items():
+            if row.get(el, 0.0) < lo - 1e-9:
+                return False
+        for el, hi in (max_comp or {}).items():
+            if row.get(el, 0.0) > hi + 1e-9:
+                return False
+        return True
+
+    def valid_rows(rows, apply_bounds=False):
         out = []
         for row in rows:
             if target_col in row and row[target_col] is not None:
-                out.append(row)
+                if not apply_bounds or in_bounds(row):
+                    out.append(row)
         return out
 
-    known_valid = valid_rows(known_data)
-    new_valid = valid_rows(new_data)
+    known_valid = valid_rows(known_data, apply_bounds=True)
+    new_valid = valid_rows(new_data)  # new data always satisfies bounds
 
     best_known = max(known_valid, key=lambda r: r[target_col]) if known_valid else None
     best_new = max(new_valid, key=lambda r: r[target_col]) if new_valid else None

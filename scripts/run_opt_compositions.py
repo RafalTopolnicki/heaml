@@ -109,9 +109,26 @@ def compute_one_composition_task(task):
     comp_dict, computation_dir = task
     return compute_one_composition(comp_dict, computation_dir)
 
-def find_largest_in_data(data):
-    vals = [d[TARGET] for d in data if TARGET in d and pd.notna(d[TARGET])]
-    return np.max(vals)
+def satisfies_bounds(row, min_comp, max_comp):
+    """Return True if row composition is within [min_comp, max_comp] for all elements."""
+    for el, lo in min_comp.items():
+        if row.get(el, 0.0) < lo - 1e-9:
+            return False
+    for el, hi in max_comp.items():
+        if row.get(el, 0.0) > hi + 1e-9:
+            return False
+    return True
+
+def find_largest_in_data(data, min_comp=None, max_comp=None):
+    """Return the largest TARGET value among data points that satisfy composition bounds.
+    Points outside the bounds are excluded from the reported maximum (but are still
+    used for model training — only the reporting is filtered)."""
+    vals = [
+        d[TARGET] for d in data
+        if TARGET in d and pd.notna(d[TARGET])
+        and (min_comp is None or satisfies_bounds(d, min_comp, max_comp))
+    ]
+    return np.max(vals) if vals else float('nan')
 
 
 def stoner_penalty_factor(df_candidates, composition_labels, beta, threshold):
@@ -389,6 +406,11 @@ if __name__ == "__main__":
     # read initial computations
     init_data = read_experiments_from_directory(args["initdir"])
     normalize_rows_to_elements(init_data, composition_labels)
+    # Drop init structures that violate composition constraints; they remain on disk.
+    n_init_total = len(init_data)
+    init_data = [d for d in init_data if satisfies_bounds(d, minimal_compositions, maximal_compositions)]
+    print(f"Init data: {len(init_data)}/{n_init_total} structures satisfy composition bounds "
+          f"({n_init_total - len(init_data)} excluded)")
     write_init_tc_comparison(init_data, args["initdir"], workdir)
     known_data = init_data.copy()
 
@@ -445,7 +467,7 @@ if __name__ == "__main__":
         print(f"After resume: {len(known_data)} known datapoints (init + {max_resume_iter} iterations)")
 
     for iteration in range(start_iteration, start_iteration + iterations):
-        print(f'(IIII) Iteration: ', iteration, datetime.datetime.now(), 'Number of datapoints: ', len(known_data), 'MaxTc:', find_largest_in_data(known_data))
+        print(f'(IIII) Iteration: ', iteration, datetime.datetime.now(), 'Number of datapoints: ', len(known_data), 'MaxTc:', find_largest_in_data(known_data, minimal_compositions, maximal_compositions))
         exit_file = "EXIT"
         if os.path.exists(exit_file):
             print("EXIT file detected — stopping all")
@@ -630,4 +652,6 @@ if __name__ == "__main__":
             new_data=new_data,
             composition_labels=composition_labels,
             target_col=TARGET,
+            min_comp=minimal_compositions,
+            max_comp=maximal_compositions,
         )
