@@ -15,12 +15,13 @@ def run_scf(lattice, args):
     base = f"{args['output']}_{lattice:.6f}"
     inp = base + ".inp"
     out = base + ".out"
-    filepath = os.path.join(args['workdir'], inp)
-    inputpath = os.path.join(args['workdir'], inp)
     outputpath = os.path.join(args['workdir'], out)
 
+    cwd = os.getcwd()
+    os.chdir(args['workdir'])  # AkaiKKR writes fort.50/fort.51 to CWD
+    # Write input AFTER chdir so the 'go' pot path is relative to workdir
     scf_input_bcc(
-        filename=filepath,
+        filename=inp,
         lattice_params={"lattice_constant": lattice},
         elements=args['elements'],
         concentrations=args['concentrations'],
@@ -34,9 +35,6 @@ def run_scf(lattice, args):
         magtype=args.get("magtype", "nmag"),
         sym=args.get("sym", "bcc"),
     )
-
-    cwd = os.getcwd()
-    os.chdir(args['workdir'])  # AkaiKKR writes fort.50/fort.51 to CWD
     with open(inp, "r") as fin, open(out, "w") as fout:
         subprocess.run([AKAIBIN], stdin=fin, stdout=fout)
     cleanup_potential_files(base)
