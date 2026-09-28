@@ -35,20 +35,20 @@ def run_scf(lattice, args):
         sym=args.get("sym", "bcc"),
     )
 
-    with open(inputpath, "r") as fin, open(outputpath, "w") as fout:
+    cwd = os.getcwd()
+    os.chdir(args['workdir'])  # AkaiKKR writes fort.50/fort.51 to CWD
+    with open(inp, "r") as fin, open(out, "w") as fout:
         subprocess.run([AKAIBIN], stdin=fin, stdout=fout)
+    cleanup_potential_files(base)
+    cleanup_fortran_files(base)  # removes fort.50/fort.51 while still in workdir
+    os.chdir(cwd)
 
     text = open(outputpath).read()
-
     energy = parse_energy(text)
     conv = converged_info_in_string(text)
 
-    cleanup_potential_files(base)
-    cleanup_fortran_files(base)
-
     if args.get("compress", True):
         gzip_file(outputpath)
-
 
     return lattice, energy, conv
 

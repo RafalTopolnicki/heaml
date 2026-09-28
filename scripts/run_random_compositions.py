@@ -36,6 +36,7 @@ def compute_one_random_composition(task):
         "element_labels": elements,
         "concentrations": composition_ratio,
         "task": args['task'],
+        **( {"ew": args['ew']} if args['ew'] is not None else {} ),
     }
 
     try:
@@ -56,6 +57,8 @@ if __name__ == "__main__":
     parser.add_argument("--workers", type=int, default=1)
     parser.add_argument("--seed", type=int, default=0)
     parser.add_argument("--task", type=str, default="all", choices=["lattice", "all"])
+    parser.add_argument("--ew", type=float, default=None,
+                        help="Ewald parameter (overrides consts.py default if set)")
     parser.add_argument(
         "--elements", type=str, default=None,
         help="Comma-separated subset of elements to use, e.g. Ti,Nb,Zr,Hf,Ta. "

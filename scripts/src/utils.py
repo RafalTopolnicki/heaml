@@ -74,8 +74,7 @@ def cleanup_potential_files(base):
                 pass
 
 def cleanup_fortran_files(base):
-    for suffix in [".50", ".51"]:
-        f = base + suffix
+    for f in [base + ".50", base + ".51", "fort.50", "fort.51"]:
         if os.path.exists(f):
             try:
                 os.remove(f)
