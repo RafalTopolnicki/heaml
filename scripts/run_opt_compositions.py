@@ -7,10 +7,10 @@ import sys
 from concurrent.futures import ProcessPoolExecutor, as_completed
 import pandas as pd
 import math
-from src.process_kkr import process_kkr
+from src.process_kkr import process_kkr, compute_lambda, compute_lambda_nocutoff, tc_from_data, compute_stoner_correction
 from src.utils import generate_dirname, append_errorlog, save_dict_to_json, log_iteration_summary
 from src.ml import train_cb_model
-from src.consts import composition_labels as ALL_ELEMENTS, ACQUISITION_ALPHA, ACQUISITION_METRIC, TARGET, TARGET_DG, CANDIDATE_COMPOSITIONS_N, MIN_NOVELTY_DIST, FRESH_FRACTION, LOCAL_TOP_K, LOCAL_NOISE_SCALE, MODEL_SUBSAMPLE_FRACTION, DG_THRESHOLD_DEFAULT, STONER_I_EV, STONER_N_EF_APPROX, STONER_BETA, STONER_S_THRESHOLD, STONER_S_REF
+from src.consts import composition_labels as ALL_ELEMENTS, ACQUISITION_ALPHA, ACQUISITION_METRIC, TARGET, TARGET_DG, CANDIDATE_COMPOSITIONS_N, MIN_NOVELTY_DIST, FRESH_FRACTION, LOCAL_TOP_K, LOCAL_NOISE_SCALE, MODEL_SUBSAMPLE_FRACTION, DG_THRESHOLD_DEFAULT, STONER_I_EV, STONER_N_EF_APPROX, STONER_BETA, STONER_S_THRESHOLD, STONER_S_REF, PHYSICAL_CP_MIN_GPA, PHYSICAL_THETA_MIN_K
 from src.sampling import generate_candidates_data
 from process_hea import run_one_hea
 import numpy as np
@@ -300,6 +300,84 @@ def deduplicate_known_data(data, columns, ndigits=5):
             out.append(row)
     return out
 
+def recompute_debye_consistent(data_list, target_debye_mode, composition_labels):
+    """
+    Ensure all rows use the same debye_mode as the current run.
+
+    Rows computed with a different debye_mode get their thetaDB, lambda, and all
+    Tc fields recomputed in-place.  Rows already matching target_debye_mode are
+    untouched.  Conversion TO 'kkr' is impossible without running new KKR
+    distortion calculations — those rows are skipped with a warning.
+    """
+    import math
+    _BOHR_M  = 5.29177e-11
+    _HBAR_KB = 7.63823e-12
+    _C_MJS_OPT = 0.778
+
+    n_recomputed = 0
+    n_skipped = 0
+    for row in data_list:
+        row_mode = row.get('debye_mode', 'kkr')
+        if row_mode == target_debye_mode:
+            continue
+
+        if target_debye_mode == 'kkr':
+            # Cannot recompute KKR thetaDB without distortion calculations
+            n_skipped += 1
+            continue
+
+        if target_debye_mode == 'mix':
+            theta = row.get('mixture_debye_temperature')
+            if theta is None:
+                n_skipped += 1
+                continue
+        else:  # mjs_opt
+            a0_bohr = row.get('a0_bohr')
+            B0_GPa  = row.get('B0_GPa')
+            rho     = row.get('density_kg_m3')
+            if not (a0_bohr and B0_GPa and rho):
+                n_skipped += 1
+                continue
+            a0_m = a0_bohr * _BOHR_M
+            Va   = a0_m**3 / 2.0
+            v_B  = math.sqrt(B0_GPa * 1e9 / rho)
+            theta = _C_MJS_OPT * _HBAR_KB * (6.0 * math.pi**2 / Va)**(1.0/3.0) * v_B
+
+        row['thetaDB'] = theta
+        row['debye_mode'] = target_debye_mode
+
+        row['lambda'] = compute_lambda(row)
+        cp_ok    = row.get('Cp_GPa', 0.0) >= PHYSICAL_CP_MIN_GPA
+        theta_ok = theta >= PHYSICAL_THETA_MIN_K
+        row['outside_range'] = not (cp_ok and theta_ok)
+
+        if row['outside_range']:
+            row['lambda_unphysical'] = row['lambda']
+            row['lambda'] = 0.0
+            for mu_tag in ['0.1', '0.2', '0.3']:
+                row[f'Tc_mu{mu_tag}'] = 0.0
+        else:
+            for mu, mu_tag in [(0.1, '0.1'), (0.2, '0.2'), (0.3, '0.3')]:
+                row[f'Tc_mu{mu_tag}'] = tc_from_data(row, mu)
+
+        lam_nc = compute_lambda_nocutoff(row)
+        row['lambda_nocutoff'] = lam_nc
+        tmp = dict(row)
+        tmp['lambda'] = lam_nc
+        for mu, mu_tag in [(0.1, '0.1'), (0.2, '0.2'), (0.3, '0.3')]:
+            row[f'Tc_mu{mu_tag}_nocutoff'] = tc_from_data(tmp, mu)
+
+        comp_dict = {el: row[el] for el in composition_labels if el in row}
+        stoner = compute_stoner_correction(row, comp_dict)
+        row.update(stoner)
+
+        n_recomputed += 1
+
+    if n_recomputed or n_skipped:
+        print(f"Debye consistency: recomputed {n_recomputed} rows to '{target_debye_mode}'"
+              + (f", skipped {n_skipped} (no path back to 'kkr' without new calculations)" if n_skipped else ""))
+
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--workdir", type=str, required=True)
@@ -418,6 +496,7 @@ if __name__ == "__main__":
     init_data = [d for d in init_data if satisfies_bounds(d, minimal_compositions, maximal_compositions)]
     print(f"Init data: {len(init_data)}/{n_init_total} structures satisfy composition bounds "
           f"({n_init_total - len(init_data)} excluded)")
+    recompute_debye_consistent(init_data, args.get('debye_mode', 'kkr'), composition_labels)
     write_init_tc_comparison(init_data, args["initdir"], workdir)
     known_data = init_data.copy()
 
@@ -467,6 +546,7 @@ if __name__ == "__main__":
                 continue
             iter_data = read_experiments_from_directory(comp_dir)
             normalize_rows_to_elements(iter_data, composition_labels)
+            recompute_debye_consistent(iter_data, args.get('debye_mode', 'kkr'), composition_labels)
             valid = [d for d in iter_data if d.get(TARGET) is not None and not pd.isna(d.get(TARGET))]
             known_data = known_data + valid
 
