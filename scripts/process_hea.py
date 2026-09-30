@@ -28,13 +28,14 @@ def run_one_hea(**kwargs):
     KKR_PARAMS_LATTICE_PARAMS = KKR_PARAMS_LATTICE.copy()
     KKR_PARAMS_DEBYE_PARAMS = KKR_PARAMS_DEBYE.copy()
     KKR_PARAMS_FINALSCF_PARAMS = KKR_PARAMS_FINALSCF.copy()
-    if overwrite_params:
-        for param in ["ew", "xc", "rel", "bzqlty", "pmix", "magtype", "edelt", "mxl"]:
-            KKR_PARAMS_LATTICE_PARAMS[param] = kwargs.get(param, KKR_PARAMS_LATTICE[param])
-            KKR_PARAMS_DEBYE_PARAMS[param] = kwargs.get(param, KKR_PARAMS_DEBYE[param])
-            KKR_PARAMS_FINALSCF_PARAMS[param] = kwargs.get(param, KKR_PARAMS_FINALSCF[param])
+    for param in ["ew", "xc", "rel", "bzqlty", "pmix", "magtype", "edelt", "mxl"]:
+        if param in kwargs:
+            KKR_PARAMS_LATTICE_PARAMS[param] = kwargs[param]
+            KKR_PARAMS_DEBYE_PARAMS[param] = kwargs[param]
+            KKR_PARAMS_FINALSCF_PARAMS[param] = kwargs[param]
 
-    use_mixture_debye = bool(KKR_PARAMS_DEBYE_PARAMS.get('use_mixture_debye', False))
+    debye_mode = kwargs.get('debye_mode', KKR_PARAMS_DEBYE_PARAMS.get('debye_mode', 'kkr'))
+    KKR_PARAMS_DEBYE_PARAMS['debye_mode'] = debye_mode
     run_params = {
         'element_labels': kwargs['element_labels'],
         'concentrations': list(kwargs['concentrations']),
@@ -43,7 +44,7 @@ def run_one_hea(**kwargs):
         'mixture_bulk_modulus': hea.mixture_bulk_modulus,
         'mixture_debye_temperature': hea.mixture_debye_temperature,
         'mixture_mass': hea.mass,
-        'use_mixture_debye': use_mixture_debye,
+        'debye_mode': debye_mode,
         'KKR_PARAMS_LATTICE': KKR_PARAMS_LATTICE_PARAMS,
         'KKR_PARAMS_DEBYE': KKR_PARAMS_DEBYE_PARAMS,
         'KKR_PARAMS_FINALSCF': KKR_PARAMS_FINALSCF_PARAMS
@@ -76,14 +77,23 @@ def run_one_hea(**kwargs):
     os.chdir(cwd)
 
     # run Debye
-    if use_mixture_debye:
-        # Skip expensive KKR tetragonal/monoclinic distortions; use composition-weighted
-        # elemental Debye temperatures directly.
+    if debye_mode in ('mix', 'mjs_opt'):
         debye_workdir = os.path.join(workdir, KKR_PARAMS_DEBYE_PARAMS["subdir"])
         os.makedirs(debye_workdir, exist_ok=True)
-        debye_output = {"thetaDB_K": hea.mixture_debye_temperature}
+        if debye_mode == 'mix':
+            theta = hea.mixture_debye_temperature
+        else:  # mjs_opt
+            import math
+            _BOHR_M = 5.29177e-11
+            _HBAR_KB = 7.63823e-12
+            _C_MJS_OPT = 0.778
+            _a0_m = eof_output['lattice_constant_bohr'] * _BOHR_M
+            _Va = _a0_m**3 / 2.0
+            _v_B = math.sqrt(eof_output['bulk_modulus_gpa'] * 1e9 / hea.density)
+            theta = _C_MJS_OPT * _HBAR_KB * (6.0 * math.pi**2 / _Va)**(1.0/3.0) * _v_B
+        debye_output = {"thetaDB_K": theta}
         save_dict_to_json(debye_output, os.path.join(debye_workdir, "debye_summary.json"))
-        print(f"Debye skipped (use_mixture_debye=True): thetaDB_K={hea.mixture_debye_temperature:.2f} K")
+        print(f"Debye skipped (debye_mode={debye_mode}): thetaDB_K={theta:.2f} K")
     else:
         debye_params = KKR_PARAMS_DEBYE_PARAMS.copy()
         debye_params.update(hea_configuration)
@@ -152,6 +162,10 @@ if __name__ == "__main__":
     parser.add_argument("--mxl", type=int, default=KKR_PARAMS_LATTICE['mxl'])
     parser.add_argument("--magtype", choices=["nmag", "mag"], default=KKR_PARAMS_LATTICE['magtype'])
     parser.add_argument("--task", type=str, default="all", choices=["lattice", "all"])
+    parser.add_argument("--debye_mode", type=str, default="kkr", choices=["kkr", "mix", "mjs_opt"],
+                        help="Debye temperature source: 'kkr' (full KKR distortions, default), "
+                             "'mix' (composition-weighted elemental θ_D, no distortions), "
+                             "'mjs_opt' (MJS bulk-modulus formula with C=0.778, no distortions).")
 
     args = vars(parser.parse_args())
 

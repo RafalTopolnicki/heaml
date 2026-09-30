@@ -224,8 +224,6 @@ def process_kkr(path, dirname):
         data.update(read_params(path, dirname))
         data.update(read_debye(path, dirname))
         data.update(read_macmillan(path, dirname))
-        if data.get('use_mixture_debye'):
-            data['thetaDB'] = data['mixture_debye_temperature']
         data['lambda'] = compute_lambda(data)
         cp_ok = data.get('Cp_GPa', 0.0) >= PHYSICAL_CP_MIN_GPA
         theta_ok = data.get('thetaDB', 0.0) >= PHYSICAL_THETA_MIN_K

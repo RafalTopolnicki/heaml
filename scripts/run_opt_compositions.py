@@ -95,6 +95,7 @@ def compute_one_composition(composition_dict, workdir):
         "element_labels": composition_labels,
         "concentrations": composition_ratios,
         "task": 'all',
+        **({"debye_mode": args["debye_mode"]} if args.get("debye_mode", "kkr") != "kkr" else {}),
     }
     try:
         run_one_hea(**run_params)
@@ -355,6 +356,12 @@ if __name__ == "__main__":
         "--stoner_s_threshold", type=float, default=STONER_S_THRESHOLD,
         help=f"Stoner enhancement threshold above which the acquisition penalty kicks in. "
              f"Default: {STONER_S_THRESHOLD}.",
+    )
+    parser.add_argument(
+        "--debye_mode", type=str, default="kkr", choices=["kkr", "mix", "mjs_opt"],
+        help="Debye temperature source during optimization: 'kkr' (full KKR distortions, default), "
+             "'mix' (composition-weighted elemental θ_D, fast), "
+             "'mjs_opt' (MJS bulk-modulus formula with C=0.778, fast).",
     )
     args = vars(parser.parse_args())
 

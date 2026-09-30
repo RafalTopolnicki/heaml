@@ -37,6 +37,7 @@ def compute_one_random_composition(task):
         "concentrations": composition_ratio,
         "task": args['task'],
         **( {"ew": args['ew']} if args['ew'] is not None else {} ),
+        **({"debye_mode": args["debye_mode"]} if args.get("debye_mode", "kkr") != "kkr" else {}),
     }
 
     try:
@@ -59,6 +60,10 @@ if __name__ == "__main__":
     parser.add_argument("--task", type=str, default="all", choices=["lattice", "all"])
     parser.add_argument("--ew", type=float, default=None,
                         help="Ewald parameter (overrides consts.py default if set)")
+    parser.add_argument("--debye_mode", type=str, default="kkr", choices=["kkr", "mix", "mjs_opt"],
+                        help="Debye temperature source: 'kkr' (full KKR distortions, default), "
+                             "'mix' (composition-weighted elemental θ_D, fast), "
+                             "'mjs_opt' (MJS bulk-modulus formula with C=0.778, fast).")
     parser.add_argument(
         "--elements", type=str, default=None,
         help="Comma-separated subset of elements to use, e.g. Ti,Nb,Zr,Hf,Ta. "
