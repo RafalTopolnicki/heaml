@@ -402,6 +402,16 @@ if __name__ == "__main__":
         help="Per-element maximum concentration, e.g. --max_element Sc=0.15. Can be repeated.",
     )
     parser.add_argument(
+        "--max_composition", type=float, default=0.6,
+        help="Global upper bound on every element's fraction (overridden per element by --max_element). "
+             "Default: 0.6. Use 1.0 to remove the cap.",
+    )
+    parser.add_argument(
+        "--face_fraction", type=float, default=0.0,
+        help="Share of candidates sampled exactly on k-faces of the simplex (k nonzero elements, "
+             "k from max(2, min_components) to +3). Taken out of the global share. Default: 0.0.",
+    )
+    parser.add_argument(
         "--min_components", type=int, default=1,
         help="Minimum number of elements that must have composition > min_components_ratio. "
              "Set to 0 or 1 to allow any composition including pure phases. Default: 1.",
@@ -453,7 +463,7 @@ if __name__ == "__main__":
     print(f"Running with elements: {composition_labels}")
 
     minimal_compositions = {e: 0.0 for e in composition_labels}
-    maximal_compositions = {e: 0.6 for e in composition_labels}
+    maximal_compositions = {e: args["max_composition"] for e in composition_labels}
 
     for spec in args["min_element"]:
         el, val = spec.split("=")
@@ -577,6 +587,7 @@ if __name__ == "__main__":
             composition_labels=composition_labels,
             min_components=args["min_components"],
             min_components_ratio=args["min_components_ratio"],
+            face_fraction=args["face_fraction"],
         )
 
         # train multiple models, each on a random subset of known data for ensemble diversity
