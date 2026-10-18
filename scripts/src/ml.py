@@ -4,7 +4,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
 from catboost import CatBoostRegressor
 import numpy as np
-from src.consts import composition_labels, TARGET, MODEL_USE_EARLY_STOPPING, TARGET_DG
+from src.consts import composition_labels, TARGET, MODEL_USE_EARLY_STOPPING, TARGET_DG, MODEL_THREAD_COUNT
 
 FEATURES_TO_TRAIN_MODEL = composition_labels + ADDITIONAL_FEATURES
 
@@ -21,6 +21,7 @@ def make_model(seed=100, iterations=5000):
         bagging_temperature=1.0,
         subsample=0.8,
         random_seed=seed,
+        thread_count=MODEL_THREAD_COUNT,
         verbose=False,
     )
 

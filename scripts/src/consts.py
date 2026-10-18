@@ -151,6 +151,9 @@ MODEL_SUBSAMPLE_FRACTION = 0.5  # fraction of known data each model is trained o
 # subsample. Retraining (False) causes train R²→1 and collapses ensemble σ, turning μ+2σ into pure
 # exploitation. Early-stopping preserves genuine per-model variance and a meaningful uncertainty estimate.
 MODEL_USE_EARLY_STOPPING = True
+# CatBoost threads per model. Default (-1) grabs all cores; with many optimizations running in parallel
+# this oversubscribes the machine and on old kernels (fi, RHEL6) CatBoost can livelock in model.fit.
+MODEL_THREAD_COUNT = 4
 LOCAL_TOP_K = 20           # initial: 5  — number of top compositions used as local-search centers
 LOCAL_NOISE_SCALE = 0.03  # initial: 0.03 — std of Gaussian perturbation for local candidates
 
