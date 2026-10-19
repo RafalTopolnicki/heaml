@@ -38,6 +38,7 @@ def compute_one_random_composition(task):
         "task": args['task'],
         **( {"ew": args['ew']} if args['ew'] is not None else {} ),
         **({"debye_mode": args["debye_mode"]} if args.get("debye_mode", "kkr") != "kkr" else {}),
+        "save_plots": args.get("save_plots", False),
     }
 
     try:
@@ -60,6 +61,8 @@ if __name__ == "__main__":
     parser.add_argument("--task", type=str, default="all", choices=["lattice", "all"])
     parser.add_argument("--ew", type=float, default=None,
                         help="Ewald parameter (overrides consts.py default if set)")
+    parser.add_argument("--save_plots", action="store_true",
+                        help="Save McMillan orbital PNG plots for every composition (off by default; large output)")
     parser.add_argument("--debye_mode", type=str, default="kkr", choices=["kkr", "mix", "mjs_opt"],
                         help="Debye temperature source: 'kkr' (full KKR distortions, default), "
                              "'mix' (composition-weighted elemental θ_D, fast), "

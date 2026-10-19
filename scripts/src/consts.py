@@ -154,6 +154,8 @@ MODEL_USE_EARLY_STOPPING = True
 # CatBoost threads per model. Default (-1) grabs all cores; with many optimizations running in parallel
 # this oversubscribes the machine and on old kernels (fi, RHEL6) CatBoost can livelock in model.fit.
 MODEL_THREAD_COUNT = 4
+# known_data row key: optimization iteration in which the point was computed (0 = init dataset)
+FOUND_ITERATION_KEY = "_found_iteration"
 LOCAL_TOP_K = 20           # initial: 5  — number of top compositions used as local-search centers
 LOCAL_NOISE_SCALE = 0.03  # initial: 0.03 — std of Gaussian perturbation for local candidates
 

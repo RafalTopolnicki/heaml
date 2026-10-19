@@ -502,6 +502,7 @@ def run_mcmillan_cutoff_sweep(
     mixture_mass: Optional[float] = None,
     theta_d: Optional[float] = None,
     save_json: bool = False,
+    save_plots: bool = False,
     manual_r_cut: Optional[float] = None,
     cutoff_mode: str = "max",
     # KKR invocation
@@ -596,10 +597,11 @@ def run_mcmillan_cutoff_sweep(
                     )
                     block_valence_nodes = {}
 
-            plot_radial_functions(
-                block, workdir, output_prefix, manual_r_cut, cutoff_mode, logger,
-                valence_nodes=block_valence_nodes,
-            )
+            if save_plots:
+                plot_radial_functions(
+                    block, workdir, output_prefix, manual_r_cut, cutoff_mode, logger,
+                    valence_nodes=block_valence_nodes,
+                )
             df = sweep_combinations_cutoff(
                 block,
                 manual_r_cut=manual_r_cut,
@@ -714,6 +716,7 @@ def main():
         help="Debye temperature in K. Required with --mixture-mass to compute λ.",
     )
     ap.add_argument("--save-json", action="store_true", help="Also save JSON output")
+    ap.add_argument("--save-plots", action="store_true", help="Save orbital radial-function PNG plots")
     ap.add_argument(
         "--r-cut",
         type=float,
@@ -769,6 +772,7 @@ def main():
         mixture_mass=args.mixture_mass,
         theta_d=args.theta_d,
         save_json=args.save_json,
+        save_plots=args.save_plots,
         manual_r_cut=args.r_cut,
         cutoff_mode=args.cutoff_mode,
         run_kkr=args.run_kkr,

@@ -5,6 +5,7 @@ import shutil
 import os
 import json
 from datetime import datetime
+from src.consts import FOUND_ITERATION_KEY
 
 TOTAL_ENERGY_RE = re.compile(r"total energy\s*=\s*([-+0-9.Ee]+)")
 AKAI_COMMAND_RE = re.compile(r"^\s*go=(\S+)\s+file=", re.MULTILINE)
@@ -180,6 +181,8 @@ def log_iteration_summary(
             comp_known = {el: best_known.get(el, 0.0) for el in composition_labels}
             f.write(f"best_known_{target_col}: {best_known[target_col]:.8f}\n")
             f.write(f"best_known_composition: {format_composition(comp_known)}\n")
+            found_it = best_known.get(FOUND_ITERATION_KEY)
+            f.write(f"best_known_found_in_iteration: {'NA' if found_it is None else found_it}\n")
         else:
             f.write(f"best_known_{target_col}: NA\n")
 

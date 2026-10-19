@@ -133,6 +133,7 @@ def run_one_hea(**kwargs):
         theta_d=theta_d_for_log,
         cutoff_mode=KKR_PARAMS_FINALSCF_PARAMS.get('mcmillan_cutoff_mode', 'max'),
         elements=kwargs['element_labels'],
+        save_plots=kwargs.get('save_plots', False),
     )
 
     # make all final computations
@@ -162,6 +163,7 @@ if __name__ == "__main__":
     parser.add_argument("--mxl", type=int, default=KKR_PARAMS_LATTICE['mxl'])
     parser.add_argument("--magtype", choices=["nmag", "mag"], default=KKR_PARAMS_LATTICE['magtype'])
     parser.add_argument("--task", type=str, default="all", choices=["lattice", "all"])
+    parser.add_argument("--save_plots", action="store_true", help="Save McMillan orbital PNG plots (off by default)")
     parser.add_argument("--debye_mode", type=str, default="kkr", choices=["kkr", "mix", "mjs_opt"],
                         help="Debye temperature source: 'kkr' (full KKR distortions, default), "
                              "'mix' (composition-weighted elemental θ_D, no distortions), "

@@ -10,7 +10,7 @@ import math
 from src.process_kkr import process_kkr, compute_lambda, compute_lambda_nocutoff, tc_from_data, compute_stoner_correction
 from src.utils import generate_dirname, append_errorlog, save_dict_to_json, log_iteration_summary
 from src.ml import train_cb_model
-from src.consts import composition_labels as ALL_ELEMENTS, ACQUISITION_ALPHA, ACQUISITION_METRIC, TARGET, TARGET_DG, CANDIDATE_COMPOSITIONS_N, MIN_NOVELTY_DIST, FRESH_FRACTION, LOCAL_TOP_K, LOCAL_NOISE_SCALE, MODEL_SUBSAMPLE_FRACTION, DG_THRESHOLD_DEFAULT, STONER_I_EV, STONER_N_EF_APPROX, STONER_BETA, STONER_S_THRESHOLD, STONER_S_REF, PHYSICAL_CP_MIN_GPA, PHYSICAL_THETA_MIN_K
+from src.consts import composition_labels as ALL_ELEMENTS, ACQUISITION_ALPHA, ACQUISITION_METRIC, TARGET, TARGET_DG, CANDIDATE_COMPOSITIONS_N, MIN_NOVELTY_DIST, FRESH_FRACTION, LOCAL_TOP_K, LOCAL_NOISE_SCALE, MODEL_SUBSAMPLE_FRACTION, DG_THRESHOLD_DEFAULT, STONER_I_EV, STONER_N_EF_APPROX, STONER_BETA, STONER_S_THRESHOLD, STONER_S_REF, PHYSICAL_CP_MIN_GPA, PHYSICAL_THETA_MIN_K, FOUND_ITERATION_KEY
 from src.sampling import generate_candidates_data
 from process_hea import run_one_hea
 import numpy as np
@@ -96,6 +96,7 @@ def compute_one_composition(composition_dict, workdir):
         "concentrations": composition_ratios,
         "task": 'all',
         **({"debye_mode": args["debye_mode"]} if args.get("debye_mode", "kkr") != "kkr" else {}),
+        "save_plots": args.get("save_plots", False),
     }
     try:
         run_one_hea(**run_params)
@@ -445,6 +446,8 @@ if __name__ == "__main__":
         help=f"Stoner enhancement threshold above which the acquisition penalty kicks in. "
              f"Default: {STONER_S_THRESHOLD}.",
     )
+    parser.add_argument("--save_plots", action="store_true",
+                        help="Save McMillan orbital PNG plots for every composition (off by default; large output)")
     parser.add_argument(
         "--debye_mode", type=str, default="kkr", choices=["kkr", "mix", "mjs_opt"],
         help="Debye temperature source during optimization: 'kkr' (full KKR distortions, default), "
@@ -508,6 +511,8 @@ if __name__ == "__main__":
           f"({n_init_total - len(init_data)} excluded)")
     recompute_debye_consistent(init_data, args.get('debye_mode', 'kkr'), composition_labels)
     write_init_tc_comparison(init_data, args["initdir"], workdir)
+    for d in init_data:
+        d[FOUND_ITERATION_KEY] = 0  # 0 = init dataset
     known_data = init_data.copy()
 
     # ── Resume from a previous run ────────────────────────────────────────────
@@ -558,6 +563,8 @@ if __name__ == "__main__":
             normalize_rows_to_elements(iter_data, composition_labels)
             recompute_debye_consistent(iter_data, args.get('debye_mode', 'kkr'), composition_labels)
             valid = [d for d in iter_data if d.get(TARGET) is not None and not pd.isna(d.get(TARGET))]
+            for d in valid:
+                d[FOUND_ITERATION_KEY] = it
             known_data = known_data + valid
 
         known_data = deduplicate_known_data(known_data, composition_labels)
@@ -737,6 +744,8 @@ if __name__ == "__main__":
         new_data = [d for d in read_experiments_from_directory(computationdir) if
                     d.get(TARGET) is not None and not pd.isna(d.get(TARGET))]
         normalize_rows_to_elements(new_data, composition_labels)
+        for d in new_data:
+            d[FOUND_ITERATION_KEY] = iteration
 
         # create now list of all known data
         known_data = known_data + new_data
