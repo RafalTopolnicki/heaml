@@ -1,4 +1,5 @@
 import argparse
+import itertools
 import os
 from concurrent.futures import ProcessPoolExecutor, as_completed
 import numpy as np
@@ -13,6 +14,38 @@ def generate_random_composition(elements, seed=None):
     return rng.dirichlet(np.ones(len(elements)))
 
 
+def face_subset(n_elements, n_nonzero, sample_id, base_seed):
+    """Element subset (indices) for sample_id on the n_nonzero-faces of the simplex.
+
+    All C(n, k) subsets are visited in a fixed random order (seeded by base_seed) before any
+    is repeated, so e.g. 60 binaries over 10 elements cover all 45 pairs at least once.
+    """
+    subsets = list(itertools.combinations(range(n_elements), n_nonzero))
+    order = np.random.default_rng(base_seed).permutation(len(subsets))
+    return subsets[order[sample_id % len(subsets)]]
+
+
+def generate_face_composition(n_elements, subset, min_nonzero_fraction=0.0, seed=None, max_tries=10000):
+    """Flat Dirichlet on the elements in subset, the rest exactly 0.
+
+    Draws with any nonzero fraction below min_nonzero_fraction are rejected, so a k-face point
+    really has k components (same idea as --min_components_ratio in run_opt_compositions.py).
+    """
+    rng = np.random.default_rng(seed)
+    k = len(subset)
+    if min_nonzero_fraction * k >= 1.0:
+        raise ValueError(f"min_nonzero_fraction={min_nonzero_fraction} impossible for {k} components")
+    for _ in range(max_tries):
+        x = rng.dirichlet(np.ones(k))
+        if x.min() >= min_nonzero_fraction:
+            break
+    else:
+        raise RuntimeError(f"no composition with all fractions >= {min_nonzero_fraction} after {max_tries} tries")
+    composition = np.zeros(n_elements)
+    composition[list(subset)] = x
+    return composition
+
+
 def compute_one_random_composition(task):
     args, sample_id, seed = task
     elements = args["elements"]
@@ -22,7 +55,12 @@ def compute_one_random_composition(task):
         print("EXIT file detected — stopping worker")
         return {"ok": False, "stopped": True}
 
-    composition_ratio = generate_random_composition(elements, seed=seed)
+    if args.get("n_nonzero") is None:
+        composition_ratio = generate_random_composition(elements, seed=seed)
+    else:
+        subset = face_subset(len(elements), args["n_nonzero"], sample_id, args["seed"])
+        composition_ratio = generate_face_composition(len(elements), subset,
+                                                      args["min_nonzero_fraction"], seed=seed)
 
     workdirname = generate_dirname(elements, composition_ratio)
     full_workdir = os.path.join(args["workdir"], workdirname)
@@ -72,6 +110,12 @@ if __name__ == "__main__":
         help="Comma-separated subset of elements to use, e.g. Ti,Nb,Zr,Hf,Ta. "
              f"Must be a subset of: {','.join(ALL_ELEMENTS)}. Defaults to all elements.",
     )
+    parser.add_argument("--n_nonzero", type=int, default=None,
+                        help="Sample on the k-faces of the simplex: exactly k elements nonzero (flat Dirichlet "
+                             "on them), the rest 0. Subsets are cycled so all C(n,k) are covered before repeats. "
+                             "Default: None = flat Dirichlet on all elements.")
+    parser.add_argument("--min_nonzero_fraction", type=float, default=0.05,
+                        help="With --n_nonzero: reject draws where a nonzero fraction is below this value.")
     args = vars(parser.parse_args())
 
     if args["elements"] is not None:
@@ -82,10 +126,16 @@ if __name__ == "__main__":
     else:
         elements = list(ALL_ELEMENTS)
     args["elements"] = elements
+    if args["n_nonzero"] is not None and not 1 <= args["n_nonzero"] <= len(elements):
+        raise ValueError(f"--n_nonzero must be in [1, {len(elements)}]")
 
     print(f"Running with elements: {elements}")
     os.makedirs(args["workdir"], exist_ok=True)
-    save_dict_to_json(args, os.path.join(args["workdir"], "parameters.json"))
+    params_name = "parameters.json" if args["n_nonzero"] is None else f"parameters.face{args['n_nonzero']}.json"
+    if os.path.exists(os.path.join(args["workdir"], params_name)):
+        # extending an existing dataset: keep the original parameters, record this batch separately
+        params_name = params_name.replace(".json", f".seed{args['seed']}.json")
+    save_dict_to_json(args, os.path.join(args["workdir"], params_name))
 
     tasks = [(args, i, i + args["seed"]) for i in range(args["number_of_samples"])]
 

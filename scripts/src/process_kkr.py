@@ -116,7 +116,8 @@ def read_macmillan(path, dirname):
     return results
 
 def tc_from_data(data, mu):
-    return data['thetaDB']/1.45*np.exp(-1.04*(1+data['lambda'])/(data['lambda']-mu*(1+0.62*data['lambda'])))
+    # lambda <= mu*/(1-0.62mu*) → no pairing; the raw formula would give exp(+large) instead of 0
+    return _tc_mcmillan_safe(data['thetaDB'], data['lambda'], mu)
 
 def _tc_mcmillan_safe(theta_D, lam, mu):
     """McMillan formula; returns 0.0 when mu* is too large to allow pairing."""

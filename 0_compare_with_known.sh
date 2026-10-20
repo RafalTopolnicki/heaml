@@ -85,43 +85,44 @@ outputdir="results/comparison.sra.ew${ew}"
 #python scripts/process_hea.py --element_labels Ti Hf Nb Ta Mo --concentrations 20 20 20 20 20 --workdir ${outputdir}/TiHfNbTaMo ${params}
 #
 #
+## ── ACTIVATED 2026-10-19: entries below (Motla … von Rohr 2018 Sc/Mo) were never computed ──
 ### Motla 2022, Phys. Rev. B 105, 144501 | doi:10.1103/PhysRevB.105.144501
 ## Nb60Re10Zr10Hf10Ti10 | Tc=5.7 K (bulk, muSR+resistivity+magnetization) | single centrosymmetric BCC (Im-3m)
 ## CAVEAT: Nb=60 at.% is outside strict HEA definition (5-35 at.% per element); included for methodology testing
-#python scripts/process_hea.py --element_labels Nb Re Zr Hf Ti --concentrations 60 10 10 10 10 --workdir ${outputdir}/Nb60Re10Zr10Hf10Ti10 ${params}
+python scripts/process_hea.py --element_labels Nb Re Zr Hf Ti --concentrations 60 10 10 10 10 --workdir ${outputdir}/Nb60Re10Zr10Hf10Ti10 ${params}
 #
 #
 ### Chakrabarty 2025, J. Appl. Phys. 137, 215901 | doi:10.1063/5.0265943
 ## (NbTa)0.55(HfTiZr)0.45 | Tc=7.2 K ambient pressure (max 10.1 K at 23.6 GPa) | single-phase BCC
-#python scripts/process_hea.py --element_labels Nb Ta Hf Ti Zr --concentrations 27.5 27.5 15 15 15 --workdir ${outputdir}/NbTa55HfTiZr45 ${params}
+python scripts/process_hea.py --element_labels Nb Ta Hf Ti Zr --concentrations 27.5 27.5 15 15 15 --workdir ${outputdir}/NbTa55HfTiZr45 ${params}
 
 
 ## Hattori 2023, J. Alloys Metall. Syst. 3, 100020 | arXiv:2307.01958
 ## Ti-Hf-Nb-Ta-Re composition series | Tc from specific heat
 ## RE-001: Ti35Hf25Nb25Ta5Re10 | Tc=3.95 K | single BCC phase
-#python scripts/process_hea.py --element_labels Ti Hf Nb Ta Re --concentrations 35 25 25 5 10 --workdir ${outputdir}/Ti35Hf25Nb25Ta5Re10 ${params}
+python scripts/process_hea.py --element_labels Ti Hf Nb Ta Re --concentrations 35 25 25 5 10 --workdir ${outputdir}/Ti35Hf25Nb25Ta5Re10 ${params}
 ## RE-002: Ti30Hf20Nb35Ta5Re10 | Tc=4.38 K | CAVEAT: weak segregation into two BCC phases
-#python scripts/process_hea.py --element_labels Ti Hf Nb Ta Re --concentrations 30 20 35 5 10 --workdir ${outputdir}/Ti30Hf20Nb35Ta5Re10 ${params}
+python scripts/process_hea.py --element_labels Ti Hf Nb Ta Re --concentrations 30 20 35 5 10 --workdir ${outputdir}/Ti30Hf20Nb35Ta5Re10 ${params}
 ## RE-003: Ti25Hf15Nb35Ta15Re10 | Tc=4.1 K | CAVEAT: weak segregation into two BCC phases
-#python scripts/process_hea.py --element_labels Ti Hf Nb Ta Re --concentrations 25 15 35 15 10 --workdir ${outputdir}/Ti25Hf15Nb35Ta15Re10 ${params}
+python scripts/process_hea.py --element_labels Ti Hf Nb Ta Re --concentrations 25 15 35 15 10 --workdir ${outputdir}/Ti25Hf15Nb35Ta15Re10 ${params}
 ## RE-004: Ti20Hf10Nb35Ta25Re10 | Tc=3.62 K | CAVEAT: two compositionally distinct BCC phases
-#python scripts/process_hea.py --element_labels Ti Hf Nb Ta Re --concentrations 20 10 35 25 10 --workdir ${outputdir}/Ti20Hf10Nb35Ta25Re10 ${params}
+python scripts/process_hea.py --element_labels Ti Hf Nb Ta Re --concentrations 20 10 35 25 10 --workdir ${outputdir}/Ti20Hf10Nb35Ta25Re10 ${params}
 ## RE-005: Ti15Hf5Nb35Ta35Re10 | Tc=3.25 K | CAVEAT: two compositionally distinct BCC phases
-#python scripts/process_hea.py --element_labels Ti Hf Nb Ta Re --concentrations 15 5 35 35 10 --workdir ${outputdir}/Ti15Hf5Nb35Ta35Re10 ${params}
+python scripts/process_hea.py --element_labels Ti Hf Nb Ta Re --concentrations 15 5 35 35 10 --workdir ${outputdir}/Ti15Hf5Nb35Ta35Re10 ${params}
 
 
 ## von Rohr 2018, Phys. Rev. Mater. 2, 034801 | doi:10.1103/PhysRevMaterials.2.034801
 ## Sc/Mo isoelectronic substitutions in TaNbHfZrTi (same paper as Y/Mo above)
 # SUB-006: [{Sc0.33Mo0.67}Nb]0.67(HfZrTi)0.33 — Sc0.33Mo0.67 replaces Ta | Tc=4.4 K
-#python scripts/process_hea.py --element_labels Sc Mo Nb Hf Zr Ti --concentrations 11.055 22.445 33.5 11 11 11 --workdir ${outputdir}/NbSc0.33Mo0.67HfZrTi ${params}
+python scripts/process_hea.py --element_labels Sc Mo Nb Hf Zr Ti --concentrations 11.055 22.445 33.5 11 11 11 --workdir ${outputdir}/NbSc0.33Mo0.67HfZrTi ${params}
 ## SUB-007: [Ta{Sc0.33Mo0.67}]0.67(HfZrTi)0.33 — Sc0.33Mo0.67 replaces Nb | Tc=2.9 K
-#python scripts/process_hea.py --element_labels Ta Sc Mo Hf Zr Ti --concentrations 33.5 11.055 22.445 11 11 11 --workdir ${outputdir}/TaSc0.33Mo0.67HfZrTi ${params}
+python scripts/process_hea.py --element_labels Ta Sc Mo Hf Zr Ti --concentrations 33.5 11.055 22.445 11 11 11 --workdir ${outputdir}/TaSc0.33Mo0.67HfZrTi ${params}
 ## SUB-008: [TaNb]0.67({Sc0.67Mo0.33}ZrTi)0.33 — Sc0.67Mo0.33 replaces Hf | Tc=7.5 K
-#python scripts/process_hea.py --element_labels Ta Nb Sc Mo Zr Ti --concentrations 33.5 33.5 7.37 3.63 11 11 --workdir ${outputdir}/TaNbSc0.67Mo0.33ZrTi ${params}
+python scripts/process_hea.py --element_labels Ta Nb Sc Mo Zr Ti --concentrations 33.5 33.5 7.37 3.63 11 11 --workdir ${outputdir}/TaNbSc0.67Mo0.33ZrTi ${params}
 ## SUB-009: [TaNb]0.67(Hf{Sc0.67Mo0.33}Ti)0.33 — Sc0.67Mo0.33 replaces Zr | Tc=6.6 K
-#python scripts/process_hea.py --element_labels Ta Nb Hf Sc Mo Ti --concentrations 33.5 33.5 11 7.37 3.63 11 --workdir ${outputdir}/TaNbHfSc0.67Mo0.33Ti ${params}
+python scripts/process_hea.py --element_labels Ta Nb Hf Sc Mo Ti --concentrations 33.5 33.5 11 7.37 3.63 11 --workdir ${outputdir}/TaNbHfSc0.67Mo0.33Ti ${params}
 ## SUB-010: [TaNb]0.67(HfZr{Sc0.67Mo0.33})0.33 — Sc0.67Mo0.33 replaces Ti | Tc=7.5 K
-#python scripts/process_hea.py --element_labels Ta Nb Hf Zr Sc Mo --concentrations 33.5 33.5 11 11 7.37 3.63 --workdir ${outputdir}/TaNbHfZrSc0.67Mo0.33 ${params}
+python scripts/process_hea.py --element_labels Ta Nb Hf Zr Sc Mo --concentrations 33.5 33.5 11 11 7.37 3.63 --workdir ${outputdir}/TaNbHfZrSc0.67Mo0.33 ${params}
 
 
 ## ── FROM: "High-Entropy Superconducting Materials" (IntechOpen review) ────────
@@ -153,9 +154,111 @@ outputdir="results/comparison.sra.ew${ew}"
 ## Equimolar Sc-substituted pentenary series (Sc replaces one element of TaNbHfZrTi)
 ## Ta20Nb20Hf20Sc20Ti20 (Zr→Sc) | Tc=6.60 K | Bc2(0)=13.1 T | BCC
 #python scripts/process_hea.py --element_labels Ta Nb Hf Sc Ti --concentrations 20 20 20 20 20 --workdir ${outputdir}/TaNbHfScTi ${params}
-## Ta20Nb20Hf20Zr20Sc20 (Ti→Sc) | Tc=7.70 K | Bc2(0)=12.4 T | BCC
+## Ta20Nb20Hf20Zr20Sc20 (Ti→Sc) | Tc=7.40 K (ρ, Krnel Table 4; 7.70 was wrong) | Bc2(0)=12.4 T | BCC
 #python scripts/process_hea.py --element_labels Ta Nb Hf Zr Sc --concentrations 20 20 20 20 20 --workdir ${outputdir}/TaNbHfZrSc ${params}
 ## Ta20Nb20Sc20Zr20Ti20 (Hf→Sc) | Tc=7.90 K | Bc2(0)=19.3 T | BCC
 #python scripts/process_hea.py --element_labels Ta Nb Sc Zr Ti --concentrations 20 20 20 20 20 --workdir ${outputdir}/TaNbScZrTi ${params}
 ## Ta16.67Nb16.67Hf16.67Zr16.67Ti16.67Sc16.67 equimolar senary | Tc=7.20 K | Bc2(0)=14.1 T | BCC
 #python scripts/process_hea.py --element_labels Ta Nb Hf Zr Ti Sc --concentrations 16.6667 16.6667 16.6667 16.6667 16.6667 16.6667 --workdir ${outputdir}/TaNbHfZrTiSc ${params}
+
+## ════════════════════════════════════════════════════════════════════════════
+## ADDED 2026-10-19 — HEAs from results/Tc_literature.xlsx without KKR results
+## Matched by composition against results/comparison.sra.ew0.6/*/results.json.
+## Identical compositions reported by several papers are computed once (all rows listed).
+## ════════════════════════════════════════════════════════════════════════════
+
+## ── single-phase bcc candidates ──
+## xlsx row 56: TaNb80ZrHfTi20 (von Rohr, 10.1073/pnas.1615926113, Tc=7.55 K, FIG-VEC (Fig. 4 marker coordinates; ±0.02 K), candidate)
+python scripts/process_hea.py --element_labels Ti Zr Nb Hf Ta --concentrations 6.6667 6.6667 40 6.6667 40 --workdir ${outputdir}/TaNb80ZrHfTi20 ${params}
+## xlsx row 57: TaNb75ZrHfTi25 (von Rohr, 10.1073/pnas.1615926113, Tc=7.79 K, FIG-VEC (Fig. 4 marker coordinates; ±0.02 K), candidate)
+python scripts/process_hea.py --element_labels Ti Zr Nb Hf Ta --concentrations 8.3333 8.3333 37.5 8.3333 37.5 --workdir ${outputdir}/TaNb75ZrHfTi25 ${params}
+## xlsx row 58: TaNb65ZrHfTi35 (von Rohr, 10.1073/pnas.1615926113, Tc=7.48 K, FIG-VEC (Fig. 4 marker coordinates; ±0.02 K), candidate)
+python scripts/process_hea.py --element_labels Ti Zr Nb Hf Ta --concentrations 11.6667 11.6667 32.5 11.6667 32.5 --workdir ${outputdir}/TaNb65ZrHfTi35 ${params}
+## xlsx row 61: TaNb30ZrHfTi70 (von Rohr, 10.1073/pnas.1615926113, Tc=5.2 K, FIG-VEC (Fig. 4 marker coordinates; ±0.02 K), candidate)
+python scripts/process_hea.py --element_labels Ti Zr Nb Hf Ta --concentrations 23.3333 23.3333 15 23.3333 15 --workdir ${outputdir}/TaNb30ZrHfTi70 ${params}
+## xlsx row 62: TaNb20ZrHfTi80 (von Rohr, 10.1073/pnas.1615926113, Tc=4.64 K, FIG-VEC (Fig. 4 marker coordinates; ±0.02 K), candidate)
+python scripts/process_hea.py --element_labels Ti Zr Nb Hf Ta --concentrations 26.6667 26.6667 10 26.6667 10 --workdir ${outputdir}/TaNb20ZrHfTi80 ${params}
+## xlsx row 63, 101: Nb67HfZrTi33 (von Rohr, 10.1073/pnas.1615926113, Tc=9.36 K, FIG-VEC (Fig. 6 M(T) curve points; method check on x=0.33 gives +0.06 K vs Fig. 4), candidate); Nb67TiZrHf33_MA (Sobota, 10.3390/ma19112321, Tc=7 K, TAB (verified, PMC), caution – mechanically alloyed)
+python scripts/process_hea.py --element_labels Ti Zr Nb Hf --concentrations 11 11 67 11 --workdir ${outputdir}/Nb67HfZrTi33 ${params}
+## xlsx row 64: TaNb67Hf33 (von Rohr, 10.1073/pnas.1615926113, Tc=7.42 K, FIG-VEC (Fig. 6 M(T) curve points; method check on x=0.33 gives +0.06 K vs Fig. 4), candidate)
+python scripts/process_hea.py --element_labels Nb Hf Ta --concentrations 33.5 33 33.5 --workdir ${outputdir}/TaNb67Hf33 ${params}
+## xlsx row 65: TaNb67HfZr33 (von Rohr, 10.1073/pnas.1615926113, Tc=7.07 K, FIG-VEC (Fig. 6 M(T) curve points; method check on x=0.33 gives +0.06 K vs Fig. 4), candidate)
+python scripts/process_hea.py --element_labels Zr Nb Hf Ta --concentrations 16.5 33.5 16.5 33.5 --workdir ${outputdir}/TaNb67HfZr33 ${params}
+## xlsx row 66, 92: NbTiZr (Senga, 10.1088/1361-6668/ae37e4, Tc=7.98 K, TAB (verified, arXiv 2602.19376), candidate); TiZrNb_Kosuth (Košuth, 10.1063/10.0027922, Tc=8.2 K, ABS, candidate)
+python scripts/process_hea.py --element_labels Ti Zr Nb --concentrations 33.333 33.333 33.333 --workdir ${outputdir}/NbTiZr ${params}
+## xlsx row 67: HfNbTi (Senga, 10.1088/1361-6668/ae37e4, Tc=6.47 K, TAB (verified, arXiv 2602.19376), candidate)
+python scripts/process_hea.py --element_labels Ti Nb Hf --concentrations 33.333 33.333 33.333 --workdir ${outputdir}/HfNbTi ${params}
+## xlsx row 68: HfNbZr (Senga, 10.1088/1361-6668/ae37e4, Tc=7.07 K, TAB (verified, arXiv 2602.19376), candidate)
+python scripts/process_hea.py --element_labels Zr Nb Hf --concentrations 33.333 33.333 33.333 --workdir ${outputdir}/HfNbZr ${params}
+## xlsx row 69: HfNbTa (Senga, 10.1088/1361-6668/ae37e4, Tc=7.11 K, TAB (verified, arXiv 2602.19376), candidate)
+python scripts/process_hea.py --element_labels Nb Hf Ta --concentrations 33.333 33.333 33.333 --workdir ${outputdir}/HfNbTa ${params}
+## xlsx row 70: (TiHfTa)1-xNbx_x0 (Li, 10.1088/1361-6668/ad9fa8, Tc=5.31 K, TAB (verified, arXiv 2501.02455), candidate)
+python scripts/process_hea.py --element_labels Ti Hf Ta --concentrations 33.3333 33.3333 33.3333 --workdir ${outputdir}/TiHfTa1-xNbx_x0 ${params}
+## xlsx row 71: (TiHfTa)1-xNbx_x0.035 (Li, 10.1088/1361-6668/ad9fa8, Tc=5.61 K, TAB (verified, arXiv 2501.02455), candidate)
+python scripts/process_hea.py --element_labels Ti Nb Hf Ta --concentrations 32.1667 3.5 32.1667 32.1667 --workdir ${outputdir}/TiHfTa1-xNbx_x0.035 ${params}
+## xlsx row 72: (TiHfTa)1-xNbx_x0.125 (Li, 10.1088/1361-6668/ad9fa8, Tc=5.82 K, TAB (verified, arXiv 2501.02455), candidate)
+python scripts/process_hea.py --element_labels Ti Nb Hf Ta --concentrations 29.1667 12.5 29.1667 29.1667 --workdir ${outputdir}/TiHfTa1-xNbx_x0.125 ${params}
+## xlsx row 73: (TiHfTa)1-xNbx_x0.33 (Li, 10.1088/1361-6668/ad9fa8, Tc=7.06 K, TAB (verified, arXiv 2501.02455), candidate)
+python scripts/process_hea.py --element_labels Ti Nb Hf Ta --concentrations 22.3333 33 22.3333 22.3333 --workdir ${outputdir}/TiHfTa1-xNbx_x0.33 ${params}
+## xlsx row 74: (TiHfTa)1-xNbx_x0.44 (Li, 10.1088/1361-6668/ad9fa8, Tc=7.41 K, TAB (verified, arXiv 2501.02455), candidate)
+python scripts/process_hea.py --element_labels Ti Nb Hf Ta --concentrations 18.6667 44 18.6667 18.6667 --workdir ${outputdir}/TiHfTa1-xNbx_x0.44 ${params}
+## xlsx row 75: (TiHfTa)1-xNbx_x0.57 (Li, 10.1088/1361-6668/ad9fa8, Tc=8.19 K, TAB (verified, arXiv 2501.02455), candidate)
+python scripts/process_hea.py --element_labels Ti Nb Hf Ta --concentrations 14.3333 57 14.3333 14.3333 --workdir ${outputdir}/TiHfTa1-xNbx_x0.57 ${params}
+## xlsx row 76: (TiHfTa)1-xNbx_x0.75 (Li, 10.1088/1361-6668/ad9fa8, Tc=8.82 K, TAB (verified, arXiv 2501.02455), candidate)
+python scripts/process_hea.py --element_labels Ti Nb Hf Ta --concentrations 8.3333 75 8.3333 8.3333 --workdir ${outputdir}/TiHfTa1-xNbx_x0.75 ${params}
+## xlsx row 77: (TiHfTa)1-xNbx_x0.9 (Li, 10.1088/1361-6668/ad9fa8, Tc=9.11 K, TAB (verified, arXiv 2501.02455), candidate)
+python scripts/process_hea.py --element_labels Ti Nb Hf Ta --concentrations 3.3333 90 3.3333 3.3333 --workdir ${outputdir}/TiHfTa1-xNbx_x0.9 ${params}
+## xlsx row 78: Ti25Hf25Nb25Ta25 (Zeng, 10.1007/s11433-023-2113-6, Tc=6.3 K, TAB (verified, arXiv 2308.14612), candidate)
+python scripts/process_hea.py --element_labels Ti Nb Hf Ta --concentrations 25 25 25 25 --workdir ${outputdir}/Ti25Hf25Nb25Ta25 ${params}
+## xlsx row 79: Ti15Zr15Nb35Ta35 (Yuan, 10.3389/fmats.2018.00072, Tc=8 K, TAB (verified, full text), candidate)
+python scripts/process_hea.py --element_labels Ti Zr Nb Ta --concentrations 15 15 35 35 --workdir ${outputdir}/Ti15Zr15Nb35Ta35 ${params}
+## xlsx row 80, 82: Nb25Ta25Ti25Zr25 (Sharma, 10.1103/8m3w-xc5x, Tc=7.75 K, TAB (verified, arXiv 2508.19584), candidate); TaNbZrTi_Krishnan (Krishnan, 10.1016/j.jallcom.2025.181813, Tc=8.12 K, ABS, candidate)
+python scripts/process_hea.py --element_labels Ti Zr Nb Ta --concentrations 25 25 25 25 --workdir ${outputdir}/Nb25Ta25Ti25Zr25 ${params}
+## xlsx row 83, 84: TaNbHfZr_Krishnan (Krishnan, 10.1016/j.jallcom.2025.181813, Tc=7.64 K, ABS (Tc); SEC (Cp data), caution – θD suspicious); TaNbHfZr_Wu2024 (Wu, 10.1103/PhysRevLett.132.166002, Tc=8.1 K, SEC, candidate)
+python scripts/process_hea.py --element_labels Zr Nb Hf Ta --concentrations 25 25 25 25 --workdir ${outputdir}/TaNbHfZr ${params}
+## xlsx row 85: Nb40Hf20Zr20Ti20 (Hidayati, 10.1016/j.actamat.2023.119420, Tc=7.99 K, SEC, candidate)
+python scripts/process_hea.py --element_labels Ti Zr Nb Hf --concentrations 20 20 40 20 --workdir ${outputdir}/Nb40Hf20Zr20Ti20 ${params}
+## xlsx row 86: Ti50ZrNbHfTa50 (Sobota, 10.1016/j.actamat.2024.120666, Tc=6 K, SEC (PDF in papers_data/, not re-read), candidate)
+python scripts/process_hea.py --element_labels Ti Zr Nb Hf Ta --concentrations 50 12.5 12.5 12.5 12.5 --workdir ${outputdir}/Ti50ZrNbHfTa50 ${params}
+## xlsx row 87: Ta20Nb21Hf20Zr20Ti19 (Vrtnik, 10.1016/j.jallcom.2016.11.417, Tc=6 K, SEC (two compilations agree), candidate)
+python scripts/process_hea.py --element_labels Ti Zr Nb Hf Ta --concentrations 19 20 21 20 20 --workdir ${outputdir}/Ta20Nb21Hf20Zr20Ti19 ${params}
+## xlsx row 88: TaNb70HfZrTi50_Gao (Gao, 10.1063/5.0083365, Tc=7.13 K, SEC, candidate)
+python scripts/process_hea.py --element_labels Ti Zr Nb Hf Ta --concentrations 13.8889 13.8889 29.1667 13.8889 29.1667 --workdir ${outputdir}/TaNb70HfZrTi50_Gao ${params}
+## xlsx row 89, 90, 91: HfNbZrTi_crystal (Sang, 10.1088/1361-6668/add097, Tc=6 K, SEC / ABS, caution – θD/γ suspicious); TiZrHfNb_Uporov (Uporov, 10.1016/j.intermet.2021.107394, Tc=6.3 K, SEC, candidate); TiZrNbHf_Kosuth (Košuth, 10.1063/10.0027922, Tc=6.3 K, ABS, candidate)
+python scripts/process_hea.py --element_labels Ti Zr Nb Hf --concentrations 25 25 25 25 --workdir ${outputdir}/TiZrHfNb ${params}
+## xlsx row 93: Hf35Nb10Ta35Mo10W10 (Krishnan, 10.1088/1361-6668/ae01e7, Tc=4.06 K, SEC, candidate)
+python scripts/process_hea.py --element_labels Nb Mo Hf Ta W --concentrations 10 10 35 35 10 --workdir ${outputdir}/Hf35Nb10Ta35Mo10W10 ${params}
+## xlsx row 94: Hf35Nb22Ta23Mo10W10 (Krishnan, 10.1088/1361-6668/ae01e7, Tc=4.82 K, SEC, candidate)
+python scripts/process_hea.py --element_labels Nb Mo Hf Ta W --concentrations 22 10 35 23 10 --workdir ${outputdir}/Hf35Nb22Ta23Mo10W10 ${params}
+## xlsx row 95: Hf35Nb35Ta10Mo10W10 (Krishnan, 10.1088/1361-6668/ae01e7, Tc=5.91 K, SEC, candidate)
+python scripts/process_hea.py --element_labels Nb Mo Hf Ta W --concentrations 35 10 35 10 10 --workdir ${outputdir}/Hf35Nb35Ta10Mo10W10 ${params}
+## xlsx row 96: Nb50Ti25W25 (Li, 10.1088/0256-307X/42/1/017401, Tc=4.2 K, TAB (verified, arXiv 2412.08361), candidate)
+python scripts/process_hea.py --element_labels Ti Nb W --concentrations 25 50 25 --workdir ${outputdir}/Nb50Ti25W25 ${params}
+## xlsx row 97: Nb50Ti25Mo25 (Li, 10.1088/0256-307X/42/1/017401, Tc=2.8 K, TAB (verified, arXiv 2412.08361), candidate)
+python scripts/process_hea.py --element_labels Ti Nb Mo --concentrations 25 50 25 --workdir ${outputdir}/Nb50Ti25Mo25 ${params}
+## xlsx row 98: Nb57Re10HfZrTi33 (Maran, arXiv:2607.23056, Tc=5.42 K, TAB (preprint), candidate – preprint)
+python scripts/process_hea.py --element_labels Ti Zr Nb Hf Re --concentrations 11 11 57 11 10 --workdir ${outputdir}/Nb57Re10HfZrTi33 ${params}
+## xlsx row 99: Nb47Re20HfZrTi33 (Maran, arXiv:2607.23056, Tc=5.42 K, TAB (preprint), candidate – preprint)
+python scripts/process_hea.py --element_labels Ti Zr Nb Hf Re --concentrations 11 11 47 11 20 --workdir ${outputdir}/Nb47Re20HfZrTi33 ${params}
+
+## ── caution: multiphase / inhomogeneous (see Status column in xlsx) ──
+## xlsx row 81: NbTaTiZr_Wu2018 (Wu, 10.4236/ns.2018.103012, Tc=8.29 K, TAB (verified), caution – inhomogeneous)
+python scripts/process_hea.py --element_labels Ti Zr Nb Ta --concentrations 21.3 22.8 25.2 30.7 --workdir ${outputdir}/NbTaTiZr_Wu2018 ${params}
+## xlsx row 100: YNbTiZrHf (Idczak, 10.1103/k1yr-t59z, Tc=6.1 K, ABS, caution – minor second phase)
+python scripts/process_hea.py --element_labels Ti Y Zr Nb Hf --concentrations 20 20 20 20 20 --workdir ${outputdir}/YNbTiZrHf ${params}
+## xlsx row 102: ScHfNbTi_nominal (Krnel, 10.3390/ma15031122, Tc=6.6 K, TAB (Table 4), caution – multiphase)
+python scripts/process_hea.py --element_labels Sc Ti Nb Hf --concentrations 25 25 25 25 --workdir ${outputdir}/ScHfNbTi_nominal ${params}
+## xlsx row 103: ScHfNbZr_nominal (Krnel, 10.3390/ma15031122, Tc=6.8 K, TAB (Table 4), caution – multiphase)
+python scripts/process_hea.py --element_labels Sc Zr Nb Hf --concentrations 25 25 25 25 --workdir ${outputdir}/ScHfNbZr_nominal ${params}
+## xlsx row 104: ScHfTaTi_nominal (Krnel, 10.3390/ma15031122, Tc=6.4 K, TAB (Table 4), caution – multiphase)
+python scripts/process_hea.py --element_labels Sc Ti Hf Ta --concentrations 25 25 25 25 --workdir ${outputdir}/ScHfTaTi_nominal ${params}
+## xlsx row 105, 107, 108: ScNbTiZr_nominal (Krnel, 10.3390/ma15031122, Tc=8.4 K, TAB (Table 4), caution – multiphase); NbScTiZr_Kitagawa (Kitagawa, 10.1016/j.mtcomm.2024.109690, Tc=8.11 K, TAB (verified), caution – multiphase eutectic); NbScTiZr_Seki (Seki, 10.1007/s10948-023-06643-z, Tc=7.9 K, TAB (verified), caution – multiphase eutectic)
+python scripts/process_hea.py --element_labels Sc Ti Zr Nb --concentrations 25 25 25 25 --workdir ${outputdir}/ScNbTiZr_nominal ${params}
+## xlsx row 106: ScTaTiZr_nominal (Krnel, 10.3390/ma15031122, Tc=7.4 K, TAB (Table 4), caution – multiphase)
+python scripts/process_hea.py --element_labels Sc Ti Zr Ta --concentrations 25 25 25 25 --workdir ${outputdir}/ScTaTiZr_nominal ${params}
+## xlsx row 109: Hf10Nb25Sc25Ti20Zr20 (Kubo, 10.1016/j.jallcom.2025.184531, Tc=6.83 K, TAB (verified), caution – multiphase eutectic)
+python scripts/process_hea.py --element_labels Sc Ti Zr Nb Hf --concentrations 25 20 20 25 10 --workdir ${outputdir}/Hf10Nb25Sc25Ti20Zr20 ${params}
+## xlsx row 110: Hf5Nb45Sc20Ti15Zr15 (Kubo, 10.1016/j.jallcom.2025.184531, Tc=7.69 K, TAB (verified), caution – multiphase eutectic)
+python scripts/process_hea.py --element_labels Sc Ti Zr Nb Hf --concentrations 20 15 15 45 5 --workdir ${outputdir}/Hf5Nb45Sc20Ti15Zr15 ${params}
+## xlsx row 111: Hf5Nb45Sc10Ti5Zr35 (Kubo, 10.1016/j.jallcom.2025.184531, Tc=7.73 K, TAB (verified), caution – multiphase eutectic)
+python scripts/process_hea.py --element_labels Sc Ti Zr Nb Hf --concentrations 10 5 35 45 5 --workdir ${outputdir}/Hf5Nb45Sc10Ti5Zr35 ${params}

@@ -6,8 +6,37 @@ from src.consts import composition_labels, CANDIDATE_COMPOSITIONS_N, TARGET
 from src.features import compute_hea_features
 
 
+_SOBOL_V = None
+
+
+def sobol_generate_fast(dim_num, n, skip=0):
+    """Same points as sobol_seq.i4_sobol_generate(dim_num, n, skip), vectorized.
+
+    sobol_seq is pure Python: one point per call, and the first call with a large skip
+    walks all preceding points (the optimizer uses skip ~ 3e7) — minutes on one core.
+    Point for seed k = XOR of direction numbers over the set bits of gray(k).
+    Direction numbers are taken from sobol_seq itself, so the sequence is identical.
+    """
+    global _SOBOL_V
+    if _SOBOL_V is None or _SOBOL_V[0].shape[0] < dim_num:
+        sobol_seq.sobol_seq.i4_sobol(40, 0)  # initialise direction numbers for all 40 dims
+        _SOBOL_V = (sobol_seq.sobol_seq.v[:, :sobol_seq.sobol_seq.maxcol].astype(np.int64),
+                    sobol_seq.sobol_seq.recipd)
+    v, recipd = _SOBOL_V
+    if 1 + skip + n > 2 ** v.shape[1]:
+        # sobol_seq stops here ("Too many calls"); without this check the sequence would silently wrap
+        raise ValueError(f"Sobol index {1 + skip + n} exceeds 2^{v.shape[1]}: --seed too large "
+                         f"(skip = (seed + iteration) * 3 * n_candidates)")
+    k = np.arange(1 + skip, 1 + skip + n, dtype=np.int64)
+    gray = k ^ (k >> 1)
+    q = np.zeros((n, dim_num), dtype=np.int64)
+    for b in range(v.shape[1]):
+        q[((gray >> b) & 1).astype(bool)] ^= v[:dim_num, b]
+    return q * recipd
+
+
 def generate_simplex_sobol(n_components, n_points, skip=0, eps=1e-12):
-    u = sobol_seq.i4_sobol_generate(n_components, n_points, skip)
+    u = sobol_generate_fast(n_components, n_points, skip)
     u = np.clip(u, eps, 1.0)
     x = -np.log(u)
     x = x / x.sum(axis=1, keepdims=True)

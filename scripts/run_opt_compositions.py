@@ -454,7 +454,26 @@ if __name__ == "__main__":
              "'mix' (composition-weighted elemental θ_D, fast), "
              "'mjs_opt' (MJS bulk-modulus formula with C=0.778, fast).",
     )
+    parser.add_argument(
+        "--model_threads", type=int, default=None,
+        help="CatBoost thread_count per model (default: MODEL_THREAD_COUNT from consts.py). "
+             "Keep modest on oversubscribed nodes (64 threads livelocked CatBoost on RHEL6).",
+    )
+    parser.add_argument(
+        "--target", type=str, default=TARGET,
+        help=f"Quantity being maximized, e.g. Tc_sf (Stoner-corrected) or Tc_mu0.2 (McMillan, mu*=0.2). "
+             f"Default: {TARGET} (from consts.py).",
+    )
     args = vars(parser.parse_args())
+
+    # --target overrides consts.TARGET everywhere it is read at call time
+    TARGET = args["target"]
+    import src.ml, src.sampling
+    src.ml.TARGET = src.sampling.TARGET = TARGET
+    if args["model_threads"] is not None:
+        src.ml.MODEL_THREAD_COUNT = args["model_threads"]
+    print(f"CatBoost thread_count: {src.ml.MODEL_THREAD_COUNT}")
+    print(f"Optimization target: {TARGET}")
 
     if args["elements"] is not None:
         composition_labels = [e.strip() for e in args["elements"].split(",")]
@@ -510,7 +529,7 @@ if __name__ == "__main__":
     print(f"Init data: {len(init_data)}/{n_init_total} structures satisfy composition bounds "
           f"({n_init_total - len(init_data)} excluded)")
     recompute_debye_consistent(init_data, args.get('debye_mode', 'kkr'), composition_labels)
-    write_init_tc_comparison(init_data, args["initdir"], workdir)
+    write_init_tc_comparison(init_data, args["initdir"], workdir, target=TARGET)
     for d in init_data:
         d[FOUND_ITERATION_KEY] = 0  # 0 = init dataset
     known_data = init_data.copy()
@@ -694,7 +713,8 @@ if __name__ == "__main__":
             comp_dict = dict(zip(composition_labels, row[composition_labels].values))
             workdirname = generate_dirname(composition_labels, list(comp_dict.values()))
             source = row.get("_source", "unknown")
-            source_label = "local (top-K neighborhood)" if source == "local" else "global (random Sobol)"
+            source_label = {"local": "local (top-K neighborhood)",
+                            "face": "face (k-face Dirichlet)"}.get(source, "global (random Sobol)")
             pred_target = float(row.get("pred_target", float("nan")))
             pred_target_std = float(row.get("pred_target_std", float("nan")))
             acq = float(row.get("raw_acquisition", float("nan")))
