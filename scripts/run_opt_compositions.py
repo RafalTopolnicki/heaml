@@ -10,7 +10,7 @@ import math
 from src.process_kkr import process_kkr, compute_lambda, compute_lambda_nocutoff, tc_from_data, compute_stoner_correction
 from src.utils import generate_dirname, append_errorlog, save_dict_to_json, log_iteration_summary
 from src.ml import train_cb_model
-from src.consts import composition_labels as ALL_ELEMENTS, ACQUISITION_ALPHA, ACQUISITION_METRIC, TARGET, TARGET_DG, CANDIDATE_COMPOSITIONS_N, MIN_NOVELTY_DIST, FRESH_FRACTION, LOCAL_TOP_K, LOCAL_NOISE_SCALE, MODEL_SUBSAMPLE_FRACTION, DG_THRESHOLD_DEFAULT, STONER_I_EV, STONER_N_EF_APPROX, STONER_BETA, STONER_S_THRESHOLD, STONER_S_REF, PHYSICAL_CP_MIN_GPA, PHYSICAL_THETA_MIN_K, FOUND_ITERATION_KEY
+from src.consts import composition_labels as ALL_ELEMENTS, ACQUISITION_ALPHA, ACQUISITION_METRIC, TARGET, TARGET_DG, CANDIDATE_COMPOSITIONS_N, MIN_NOVELTY_DIST, FRESH_FRACTION, LOCAL_TOP_K, LOCAL_NOISE_SCALE, MODEL_SUBSAMPLE_FRACTION, DG_THRESHOLD_DEFAULT, STONER_I_EV, STONER_N_EF_APPROX, STONER_BETA, STONER_S_THRESHOLD, STONER_S_REF, PHYSICAL_CP_MIN_GPA, PHYSICAL_THETA_MIN_K, FOUND_ITERATION_KEY, EARLY_STOP_PATIENCE
 from src.sampling import generate_candidates_data
 from process_hea import run_one_hea
 import numpy as np
@@ -111,24 +111,30 @@ def compute_one_composition_task(task):
     comp_dict, computation_dir = task
     return compute_one_composition(comp_dict, computation_dir)
 
-def satisfies_bounds(row, min_comp, max_comp):
-    """Return True if row composition is within [min_comp, max_comp] for all elements."""
+def satisfies_bounds(row, min_comp, max_comp, min_components=1, min_components_ratio=0.0):
+    """Return True if row composition is within [min_comp, max_comp] for all elements and has
+    at least min_components elements with fraction > min_components_ratio (same rule as the
+    candidate sampler, src.sampling.is_valid_composition)."""
     for el, lo in min_comp.items():
         if row.get(el, 0.0) < lo - 1e-9:
             return False
     for el, hi in max_comp.items():
         if row.get(el, 0.0) > hi + 1e-9:
             return False
+    if min_components > 1:
+        n_above = sum(1 for el in max_comp if row.get(el, 0.0) > min_components_ratio)
+        if n_above < min_components:
+            return False
     return True
 
-def find_largest_in_data(data, min_comp=None, max_comp=None):
-    """Return the largest TARGET value among data points that satisfy composition bounds.
-    Points outside the bounds are excluded from the reported maximum (but are still
-    used for model training — only the reporting is filtered)."""
+def find_largest_in_data(data, min_comp=None, max_comp=None, min_components=1, min_components_ratio=0.0):
+    """Return the largest TARGET value among data points that satisfy composition bounds and
+    min_components. Points violating min_components are excluded from the reported maximum
+    (but are still used for model training — only the reporting is filtered)."""
     vals = [
         d[TARGET] for d in data
         if TARGET in d and pd.notna(d[TARGET])
-        and (min_comp is None or satisfies_bounds(d, min_comp, max_comp))
+        and (min_comp is None or satisfies_bounds(d, min_comp, max_comp, min_components, min_components_ratio))
     ]
     return np.max(vals) if vals else float('nan')
 
@@ -525,8 +531,14 @@ if __name__ == "__main__":
     normalize_rows_to_elements(init_data, composition_labels)
     # Drop init structures that violate composition constraints; they remain on disk.
     n_init_total = len(init_data)
+    # min_components is NOT applied here: such rows stay for model training, but are excluded from
+    # local-search centers (sampling) and from the reported best / early stop.
     init_data = [d for d in init_data if satisfies_bounds(d, minimal_compositions, maximal_compositions)]
+    n_mincomp = sum(satisfies_bounds(d, minimal_compositions, maximal_compositions,
+                                     args["min_components"], args["min_components_ratio"]) for d in init_data)
     print(f"Init data: {len(init_data)}/{n_init_total} structures satisfy composition bounds "
+          f"(used for training); {n_mincomp} of them also satisfy min_components={args['min_components']} "
+          f"(>{args['min_components_ratio']}) (eligible as best / local-search centers) "
           f"({n_init_total - len(init_data)} excluded)")
     recompute_debye_consistent(init_data, args.get('debye_mode', 'kkr'), composition_labels)
     write_init_tc_comparison(init_data, args["initdir"], workdir, target=TARGET)
@@ -590,7 +602,8 @@ if __name__ == "__main__":
         print(f"After resume: {len(known_data)} known datapoints (init + {max_resume_iter} iterations)")
 
     for iteration in range(start_iteration, start_iteration + iterations):
-        print(f'(IIII) Iteration: ', iteration, datetime.datetime.now(), 'Number of datapoints: ', len(known_data), 'MaxTc:', find_largest_in_data(known_data, minimal_compositions, maximal_compositions))
+        print(f'(IIII) Iteration: ', iteration, datetime.datetime.now(), 'Number of datapoints: ', len(known_data), 'MaxTc:', find_largest_in_data(known_data, minimal_compositions, maximal_compositions,
+                                                                                                                       args["min_components"], args["min_components_ratio"]))
         exit_file = "EXIT"
         if os.path.exists(exit_file):
             print("EXIT file detected — stopping all")
@@ -781,4 +794,24 @@ if __name__ == "__main__":
             target_col=TARGET,
             min_comp=minimal_compositions,
             max_comp=maximal_compositions,
+            min_components=args["min_components"],
+            min_components_ratio=args["min_components_ratio"],
         )
+
+        # early stop: no improvement of the best in-bounds TARGET for EARLY_STOP_PATIENCE iterations
+        if EARLY_STOP_PATIENCE:
+            in_bounds = [d for d in known_data
+                         if d.get(TARGET) is not None and pd.notna(d.get(TARGET))
+                         and satisfies_bounds(d, minimal_compositions, maximal_compositions,
+                                              args["min_components"], args["min_components_ratio"])]
+            if in_bounds:
+                best = max(in_bounds, key=lambda d: d[TARGET])
+                best_it = best.get(FOUND_ITERATION_KEY, 0)
+                if iteration - best_it >= EARLY_STOP_PATIENCE:
+                    msg = (f"EARLY STOP after iteration {iteration}: best {TARGET}={best[TARGET]:.4f} "
+                           f"found in iteration {best_it}, no improvement for {iteration - best_it} "
+                           f"iterations (EARLY_STOP_PATIENCE={EARLY_STOP_PATIENCE})")
+                    print(msg)
+                    with open(iteration_log_path, "a") as f:
+                        f.write(f"\n{'=' * 80}\n{msg}\n")
+                    break

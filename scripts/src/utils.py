@@ -57,18 +57,24 @@ def converged_go_in_string(text):
     return converged_info_in_string(go_text) and "*** no convergence" not in go_text.lower()
 
 def gzip_file(path):
-    if not os.path.exists(path):
+    if not os.path.isfile(path):
         return None
     gz = path + ".gz"
-    with open(path, "rb") as f_in, gzip.open(gz, "wb") as f_out:
+    # write to a temp name and rename, so a crash never leaves a truncated .gz next to a deleted original
+    tmp = gz + ".tmp"
+    with open(path, "rb") as f_in, gzip.open(tmp, "wb") as f_out:
         shutil.copyfileobj(f_in, f_out)
+    os.replace(tmp, gz)
     os.remove(path)
     return gz
 
 def cleanup_potential_files(base):
-    for suffix in [".pot", ".pot.info"]:
+    # The input written for "<base>.inp" says "go <base>.inp.pot", so AkaiKKR names the potential
+    # <base>.inp.pot(.info). Until 2026-10-21 only <base>.pot was tried, which never exists, and every
+    # potential (~0.4 MB each, ~7 per composition) stayed on disk. Exact names only, no globbing.
+    for suffix in [".inp.pot", ".inp.pot.info", ".pot", ".pot.info"]:
         f = base + suffix
-        if os.path.exists(f):
+        if os.path.isfile(f):
             try:
                 os.remove(f)
             except Exception:
@@ -122,6 +128,8 @@ def log_iteration_summary(
     target_col="Tc_mu0.1",
     min_comp=None,
     max_comp=None,
+    min_components=1,
+    min_components_ratio=0.0,
 ):
     """
     Append one iteration summary to a text log file.
@@ -144,15 +152,19 @@ def log_iteration_summary(
         Composition bounds. When provided, best_known is taken only over rows
         that satisfy the bounds — out-of-bounds init points are excluded from
         the reported maximum (but remain in known_data for model training).
+    min_components, min_components_ratio : int, float
+        Rows with fewer than min_components elements above min_components_ratio are
+        likewise excluded from best_known (they stay in known_data for training).
     """
     def in_bounds(row):
-        if min_comp is None and max_comp is None:
-            return True
         for el, lo in (min_comp or {}).items():
             if row.get(el, 0.0) < lo - 1e-9:
                 return False
         for el, hi in (max_comp or {}).items():
             if row.get(el, 0.0) > hi + 1e-9:
+                return False
+        if min_components > 1:
+            if sum(1 for el in composition_labels if row.get(el, 0.0) > min_components_ratio) < min_components:
                 return False
         return True
 

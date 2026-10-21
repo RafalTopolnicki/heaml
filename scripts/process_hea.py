@@ -1,7 +1,7 @@
 import argparse
 import os
 from src.elements import HEAClass
-from src.utils import save_dict_to_json
+from src.utils import save_dict_to_json, gzip_file
 from src.consts import KKR_PARAMS_LATTICE, KKR_PARAMS_DEBYE, KKR_PARAMS_FINALSCF
 from lattice import run_kkr_eos
 from finalscf import run_kkr_finalscf
@@ -135,6 +135,13 @@ def run_one_hea(**kwargs):
         elements=kwargs['element_labels'],
         save_plots=kwargs.get('save_plots', False),
     )
+
+    # fort.50/fort.51 (~3.7 MB) are needed only by the McMillan step above; gzip rather than delete
+    # so eta can still be recomputed (other cutoff, macmillan_opw.py) after `gunzip fort.51.gz`.
+    # Only reached when the sweep succeeded; on failure the files stay as they are for debugging.
+    if kwargs.get('compress', True):
+        for name in ['fort.50', 'fort.51', f"{scf_params['output']}_{scf_params['a0']:.6f}.out"]:
+            gzip_file(os.path.join(scf_params['workdir'], name))
 
     # make all final computations
     allresults = process_kkr(path=workdir, dirname='')

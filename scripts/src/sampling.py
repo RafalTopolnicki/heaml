@@ -134,6 +134,12 @@ def generate_local_candidates(
 
     df_known = pd.DataFrame(known_data).copy()
     df_known = df_known[pd.notna(df_known[TARGET])]
+    # centers only from rows that satisfy the run's constraints (e.g. a binary must not seed a
+    # min_components=8 search); rows violating them are still used for model training
+    ok = [is_valid_composition({el: r[el] for el in composition_labels}, min_comp=min_comp, max_comp=max_comp,
+                               min_components=min_components, min_components_ratio=min_components_ratio)
+          for _, r in df_known.iterrows()]
+    df_known = df_known[ok]
     df_known = df_known.sort_values(TARGET, ascending=False).head(top_k)
 
     if len(df_known) == 0:
