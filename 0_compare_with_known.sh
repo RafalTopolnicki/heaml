@@ -1,7 +1,7 @@
 #!/bin/bash
 ew=0.6
-params="--overwrite_params --ew ${ew} --rel sra --bzqlty 10"
-outputdir="results/comparison.sra.ew${ew}"
+params="--overwrite_params --ew ${ew} --rel sra --debye_mode kkr"  # k-points from consts (10/10/20); old runs used --bzqlty 10 (final SCF 10, not converged)
+outputdir="results/comparison.sra.ew${ew}.bz10-10-20"
 
 # Jaskiewicz 2019
 #python scripts/process_hea.py --element_labels Ta Nb Hf Zr Ti --concentrations 0.335 0.335 0.11 0.11 0.11 --workdir ${outputdir}/TaNb67HfZrTi33 ${params}

@@ -215,7 +215,11 @@ def compute_stoner_correction(data, composition_dict, mu_star_coulomb=0.13):
         'Tc_sf':               Tc_sf,
     }
 
-def process_kkr(path, dirname):
+def process_kkr(path, dirname, allow_missing_theta=False):
+    """allow_missing_theta: KKR thetaDB is None when C' < 0 (mechanically unstable BCC).
+    False (default, used by the optimizer loader) → such rows return None and are dropped, as before.
+    True (process_hea) → the row is kept with outside_range=True and Tc=0, so results.json still holds
+    eta, energies and elastic constants (lambda with theta_mix can be recomputed from eta_mix)."""
     try:
         composition, elements = get_composition(path, dirname)
         comp_dict = dict(zip(elements, composition))
@@ -225,6 +229,10 @@ def process_kkr(path, dirname):
         data.update(read_params(path, dirname))
         data.update(read_debye(path, dirname))
         data.update(read_macmillan(path, dirname))
+        # composition-weighted eta [Ry/Bohr²]; lambda = eta_mix * C / (M_mix * theta_D²) for any theta_D
+        data['eta_mix'] = float(np.sum([data[e] * data[f'{e}_eta_total'] for e in composition_labels if e in data]))
+        if data.get('thetaDB') is None and allow_missing_theta:
+            return _process_missing_theta(data, comp_dict)
         data['lambda'] = compute_lambda(data)
         cp_ok = data.get('Cp_GPa', 0.0) >= PHYSICAL_CP_MIN_GPA
         theta_ok = data.get('thetaDB', 0.0) >= PHYSICAL_THETA_MIN_K
@@ -252,17 +260,35 @@ def process_kkr(path, dirname):
         # add features
         data = {**data, **compute_hea_features(comp_dict=comp_dict, normalize_composition=True)}
 
-        # thermodynamic stability: dG = dE - T*dS_conf  (eV/atom, w.r.t. pure BCC phases)
-        if 'energy0_Ry' in data and 'config_entropy_nat' in data:
-            energy_per_atom_Ry = data['energy0_Ry'] / ATOMS_PER_CELL
-            ebulk_mix = sum(comp_dict.get(el, 0.0) * ELEMENTS[el].ebulk for el in comp_dict if el in ELEMENTS)
-            dE_eV = (energy_per_atom_Ry - ebulk_mix) * _Ry_to_eV
-            data['dG_eV'] = dE_eV - DG_T_K * _kB_eV * data['config_entropy_nat']
+        _add_dG(data, comp_dict)
 
         return data
     except Exception as e:
          print(f'Error in processing {dirname}: {e}')
          return None
+
+def _add_dG(data, comp_dict):
+    # thermodynamic stability: dG = dE - T*dS_conf  (eV/atom, w.r.t. pure BCC phases)
+    if data.get('energy0_Ry') is not None and 'config_entropy_nat' in data:
+        energy_per_atom_Ry = data['energy0_Ry'] / ATOMS_PER_CELL
+        ebulk_mix = sum(comp_dict.get(el, 0.0) * ELEMENTS[el].ebulk for el in comp_dict if el in ELEMENTS)
+        dE_eV = (energy_per_atom_Ry - ebulk_mix) * _Ry_to_eV
+        data['dG_eV'] = dE_eV - DG_T_K * _kB_eV * data['config_entropy_nat']
+
+def _process_missing_theta(data, comp_dict):
+    """Row without KKR thetaDB (C' < 0): unphysical BCC → lambda/Tc set to 0, everything else kept."""
+    data['outside_range'] = True
+    data['lambda'] = 0.0
+    data['lambda_unphysical'] = None
+    data['lambda_nocutoff'] = None
+    for mu_tag in ['0.1', '0.2', '0.3']:
+        data[f'Tc_mu{mu_tag}'] = 0.0
+        data[f'Tc_mu{mu_tag}_nocutoff'] = 0.0
+    data.update(compute_stoner_correction({**data, 'thetaDB': 0.0}, comp_dict))
+    data['Tc_sf'] = 0.0
+    data = {**data, **compute_hea_features(comp_dict=comp_dict, normalize_composition=True)}
+    _add_dG(data, comp_dict)
+    return data
 
 #out = process_kkr(path='/home/rafal/WORK/HEA/ML/random.ratios/sra.kp10.ew0.6/', dirname='Ti0.0008Nb0.3225Zr0.0191Hf0.4401Ta0.0272Sc0.0316Mo0.0243W0.0594Y0.0584La0.0165')
 #out = process_kkr(path='/home/rafal/WORK/HEA/', dirname='TEMP')

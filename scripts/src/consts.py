@@ -130,7 +130,7 @@ TARGET_DG = 'dG_eV'
 ACQUISITION_ALPHA = 1.0
 
 # Thermodynamic stability
-DG_T_K = 1000            # temperature used in dG = dE - T*dS_conf
+DG_T_K = 1500            # temperature used in dG = dE - T*dS_conf (≈ as-cast freezing T, see Tc_literature synthesis survey)
 DG_THRESHOLD_DEFAULT = 1000.0  # effectively no penalty; set to ~0.1 to enable thermodynamic constraint
 
 #TARGET = 'lambda'

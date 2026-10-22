@@ -1,5 +1,7 @@
 import argparse
+import json
 import os
+import shutil
 from src.elements import HEAClass
 from src.utils import save_dict_to_json, gzip_file
 from src.consts import KKR_PARAMS_LATTICE, KKR_PARAMS_DEBYE, KKR_PARAMS_FINALSCF
@@ -8,6 +10,80 @@ from finalscf import run_kkr_finalscf
 from debye import run_kkr_elastic_debye
 from macmillan_cutoff import run_mcmillan_cutoff_sweep
 from src.process_kkr import process_kkr
+
+
+# =========================
+# --reuse_from: take lattice (+ KKR Debye) from an earlier run, recompute only the final SCF
+# =========================
+def _read_lattice_summary(path):
+    # lattice_summary.txt written by lattice.run_kkr_eos: "a0 = ...", "E0 = ...", "B0 = ..."
+    vals = {}
+    with open(path) as f:
+        for line in f:
+            if '=' in line:
+                k, v = line.split('=', 1)
+                vals[k.strip()] = float(v)
+    return {"lattice_constant_bohr": vals["a0"],
+            "minimum_energy_ev": vals["E0"],
+            "bulk_modulus_gpa": vals["B0"]}
+
+
+def _same_params(old, new, skip=()):
+    old = dict(old)
+    # older runs stored the Debye source as use_mixture_debye (False = KKR distortions) instead of debye_mode
+    if 'use_mixture_debye' in old:
+        old.setdefault('debye_mode', 'mix' if old.pop('use_mixture_debye') else 'kkr')
+    keys = (set(old) | set(new)) - set(skip)
+    return {k: (old.get(k), new.get(k)) for k in keys if old.get(k) != new.get(k)}
+
+
+def prepare_reuse(reuse_from, workdir, run_params, reuse_debye):
+    """Check that `reuse_from` was computed with the same composition and lattice (and Debye) parameters,
+    bring its lattice/ (and debye/) into `workdir` and move an existing workdir/finalscf to finalscf.copy,
+    so the directory layout after the rerun is the same as after a full run.
+    Must be called BEFORE run_params.json is written (in-place reuse overwrites it)."""
+    old_params = json.load(open(os.path.join(reuse_from, 'run_params.json')))
+
+    if old_params['element_labels'] != run_params['element_labels'] or \
+            [float(x) for x in old_params['concentrations']] != [float(x) for x in run_params['concentrations']]:
+        raise ValueError(f"--reuse_from {reuse_from}: different composition "
+                         f"({old_params['element_labels']} {old_params['concentrations']})")
+    steps = ['KKR_PARAMS_LATTICE'] + (['KKR_PARAMS_DEBYE'] if reuse_debye else [])
+    for step in steps:
+        diff = _same_params(old_params[step], run_params[step])
+        if diff:
+            raise ValueError(f"--reuse_from {reuse_from}: {step} differs (old, new): {diff}")
+
+    subdirs = [run_params['KKR_PARAMS_LATTICE']['subdir']]
+    if reuse_debye:
+        subdirs.append(run_params['KKR_PARAMS_DEBYE']['subdir'])
+    in_place = os.path.realpath(reuse_from) == os.path.realpath(workdir)
+    for sub in subdirs:
+        if not in_place:
+            # .pot files are SCF restart data, not needed for anything downstream
+            shutil.copytree(os.path.join(reuse_from, sub), os.path.join(workdir, sub), dirs_exist_ok=True,
+                            ignore=shutil.ignore_patterns('*.pot', '*.pot.info'))
+
+    # keep the previous final SCF; if finalscf.copy already exists it holds the original one
+    # (earlier reuse attempt), so the current finalscf is just a leftover of that attempt
+    fs = os.path.join(workdir, run_params['KKR_PARAMS_FINALSCF']['subdir'])
+    if os.path.isdir(fs):
+        if os.path.exists(fs + '.copy'):
+            shutil.rmtree(fs)
+        else:
+            os.rename(fs, fs + '.copy')
+    if in_place:
+        for name in ['run_params.json', 'results.json']:
+            f = os.path.join(workdir, name)
+            if os.path.exists(f) and not os.path.exists(f + '.copy'):
+                shutil.copy2(f, f + '.copy')
+
+    eof_output = _read_lattice_summary(os.path.join(workdir, subdirs[0], 'lattice_summary.txt'))
+    debye_output = None
+    if reuse_debye:
+        debye_output = json.load(open(os.path.join(workdir, subdirs[1], 'debye_summary.json')))
+    print(f"Reusing lattice{' + Debye' if reuse_debye else ''} from {reuse_from}: {eof_output}")
+    return eof_output, debye_output
 
 
 # =========================
@@ -29,10 +105,13 @@ def run_one_hea(**kwargs):
     KKR_PARAMS_DEBYE_PARAMS = KKR_PARAMS_DEBYE.copy()
     KKR_PARAMS_FINALSCF_PARAMS = KKR_PARAMS_FINALSCF.copy()
     for param in ["ew", "xc", "rel", "bzqlty", "pmix", "magtype", "edelt", "mxl"]:
-        if param in kwargs:
+        if kwargs.get(param) is not None:
             KKR_PARAMS_LATTICE_PARAMS[param] = kwargs[param]
             KKR_PARAMS_DEBYE_PARAMS[param] = kwargs[param]
             KKR_PARAMS_FINALSCF_PARAMS[param] = kwargs[param]
+    # final SCF (eta, N(EF)) only; production default is 20 while lattice/Debye use 10
+    if kwargs.get("bzqlty_finalscf") is not None:
+        KKR_PARAMS_FINALSCF_PARAMS["bzqlty"] = kwargs["bzqlty_finalscf"]
 
     debye_mode = kwargs.get('debye_mode', KKR_PARAMS_DEBYE_PARAMS.get('debye_mode', 'kkr'))
     KKR_PARAMS_DEBYE_PARAMS['debye_mode'] = debye_mode
@@ -49,19 +128,25 @@ def run_one_hea(**kwargs):
         'KKR_PARAMS_DEBYE': KKR_PARAMS_DEBYE_PARAMS,
         'KKR_PARAMS_FINALSCF': KKR_PARAMS_FINALSCF_PARAMS
                 }
+    reuse_from = kwargs.get('reuse_from')
+    reuse_debye = debye_mode == 'kkr'  # mix / mjs_opt θ_D needs no KKR run, it is recomputed below
+    reused_debye = None
+    if reuse_from:
+        eof_output, reused_debye = prepare_reuse(reuse_from, workdir, run_params, reuse_debye)
     save_dict_to_json(run_params, os.path.join(workdir, 'run_params.json'))
-    # optimize lattice
-    lattice_params = KKR_PARAMS_LATTICE_PARAMS
-    lattice_params.update(hea_configuration)
-    lattice_params['min_lattice'] = hea.mixture_lattice * lattice_params['min_lattice_prop']
-    lattice_params['max_lattice'] = hea.mixture_lattice * lattice_params['max_lattice_prop']
-    latt_step = (lattice_params['max_lattice'] - lattice_params['min_lattice'])/lattice_params['lattice_steps']
-    lattice_params['step'] = latt_step
-    lattice_params['workdir'] = os.path.join(workdir, lattice_params['subdir'])
-    eof_output = run_kkr_eos(**lattice_params)
-    print('Lattice computations DONE')
-    print(eof_output)
-    os.chdir(cwd)
+    if not reuse_from:
+        # optimize lattice
+        lattice_params = KKR_PARAMS_LATTICE_PARAMS
+        lattice_params.update(hea_configuration)
+        lattice_params['min_lattice'] = hea.mixture_lattice * lattice_params['min_lattice_prop']
+        lattice_params['max_lattice'] = hea.mixture_lattice * lattice_params['max_lattice_prop']
+        latt_step = (lattice_params['max_lattice'] - lattice_params['min_lattice'])/lattice_params['lattice_steps']
+        lattice_params['step'] = latt_step
+        lattice_params['workdir'] = os.path.join(workdir, lattice_params['subdir'])
+        eof_output = run_kkr_eos(**lattice_params)
+        print('Lattice computations DONE')
+        print(eof_output)
+        os.chdir(cwd)
     if kwargs['task'] == 'lattice':
         return
 
@@ -94,6 +179,9 @@ def run_one_hea(**kwargs):
         debye_output = {"thetaDB_K": theta}
         save_dict_to_json(debye_output, os.path.join(debye_workdir, "debye_summary.json"))
         print(f"Debye skipped (debye_mode={debye_mode}): thetaDB_K={theta:.2f} K")
+    elif reused_debye is not None:
+        debye_output = reused_debye
+        print(f"Debye reused: thetaDB_K={debye_output.get('thetaDB_K')}")
     else:
         debye_params = KKR_PARAMS_DEBYE_PARAMS.copy()
         debye_params.update(hea_configuration)
@@ -144,7 +232,7 @@ def run_one_hea(**kwargs):
             gzip_file(os.path.join(scf_params['workdir'], name))
 
     # make all final computations
-    allresults = process_kkr(path=workdir, dirname='')
+    allresults = process_kkr(path=workdir, dirname='', allow_missing_theta=True)
     save_dict_to_json(allresults, os.path.join(workdir, "results.json"))
 
 
@@ -164,12 +252,22 @@ if __name__ == "__main__":
     parser.add_argument("--ew", type=float, default=KKR_PARAMS_LATTICE['ew'])
     parser.add_argument("--xc", type=str, default=KKR_PARAMS_LATTICE['xc'])
     parser.add_argument("--rel", type=str, choices=["nrl", "sra", "srals"], default=KKR_PARAMS_LATTICE['rel'])
-    parser.add_argument("--bzqlty", type=float, default=KKR_PARAMS_LATTICE['bzqlty'])
+    # None → per-step defaults from consts (lattice 10, Debye 10, final SCF 20), same as the
+    # random/opt pipelines. Until 2026-10-22 the default was 10 and overrode ALL steps (final SCF too).
+    parser.add_argument("--bzqlty", type=float, default=None,
+                        help="k-point quality for ALL steps (lattice, Debye, final SCF); default: per-step consts")
+    parser.add_argument("--bzqlty_finalscf", type=float, default=None,
+                        help="k-point quality for the final SCF only (applied after --bzqlty)")
     parser.add_argument("--pmix", type=float, default=KKR_PARAMS_LATTICE['pmix'])
     parser.add_argument("--edelt", type=float, default=KKR_PARAMS_LATTICE['edelt'])
     parser.add_argument("--mxl", type=int, default=KKR_PARAMS_LATTICE['mxl'])
     parser.add_argument("--magtype", choices=["nmag", "mag"], default=KKR_PARAMS_LATTICE['magtype'])
     parser.add_argument("--task", type=str, default="all", choices=["lattice", "all"])
+    parser.add_argument("--reuse_from", type=str, default=None,
+                        help="Earlier workdir of the same composition: take its lattice/ (and, with --debye_mode kkr, "
+                             "debye/) instead of recomputing them; only the final SCF + McMillan run. Lattice/Debye "
+                             "KKR params must match. Can equal --workdir (in place). An existing workdir/finalscf "
+                             "is moved to finalscf.copy (in place also run_params.json/results.json → *.copy).")
     parser.add_argument("--save_plots", action="store_true", help="Save McMillan orbital PNG plots (off by default)")
     parser.add_argument("--debye_mode", type=str, default="kkr", choices=["kkr", "mix", "mjs_opt"],
                         help="Debye temperature source: 'kkr' (full KKR distortions, default), "
