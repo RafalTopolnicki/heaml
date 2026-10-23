@@ -14,7 +14,18 @@ Rationale:
   The "last node" is the outermost zero of u_l(r) — beyond it the wavefunction
   is in its valence outer lobe and the potential is smooth/screened.
 
-  Five cutoff modes are supported (--cutoff-mode):
+  Six cutoff modes are supported (--cutoff-mode):
+    gg                'surface' + (0 - v(R_MT^-)) u_l(R) u_{l+1}(R): the potential step at the sphere boundary
+                      (delta function in dV/dr) that moves rigidly with the atom. Equals the GG phase-shift
+                      formula with phase shifts referred to the true MT zero (see README in eta_rmta_tests).
+    surface           No volume integral at all: M is evaluated from the Gaspari-Gyorffy
+                      identity as a boundary term at R_MT (u, u', V at R_MT and E_F),
+                        M = u_{l+1}(R)[(V(R)-E+l(l+1)/R^2)u_l(R) + (l+1)u_l(R)/R^2 - (l+1)u_l'(R)/R]
+                            - u_{l+1}'(R)[u_l'(R) - (l+1)u_l(R)/R].
+                      Exact for solutions of the non-relativistic radial equation (where it
+                      equals the full integral from 0); for the SRA functions written by
+                      AkaiKKR the volume integral is ill-defined near the nucleus and this is the
+                      only parameter-free form. See scripts/eta_rmta_tests/README.md.
     max     (default) r_cut = max(r_last_l, r_last_{l+1})
                       Removes core contamination from whichever wavefunction
                       extends furthest.  sp→r_last_p, pd→r_last_p, df→r_last_f
@@ -151,11 +162,34 @@ def compute_M_from_cutoff(
     return compute_M(u1[idx:], u2[idx:], dVdr[idx:], x[idx:], integral_mode)
 
 
+def compute_M_surface(u1: np.ndarray, u2: np.ndarray, x: np.ndarray, v: np.ndarray, ef: float, l: int) -> float:
+    """Gaspari-Gyorffy boundary form of M_{l,l+1} at R = x[-1] (u = r*R_l, normalized to int u^2 dr = 1).
+    Derivatives from a cubic spline in ln r (the mesh is logarithmic)."""
+    from scipy.interpolate import CubicSpline
+    lnx = np.log(x)
+    R = x[-1]
+    k = l + 1
+    u1R, u2R = u1[-1], u2[-1]
+    u1p = CubicSpline(lnx, u1)(lnx[-1], 1) / R
+    u2p = CubicSpline(lnx, u2)(lnx[-1], 1) / R
+    return float(u2R * ((v[-1] - ef + l * (l + 1) / R**2) * u1R + k * u1R / R**2 - k * u1p / R)
+                 - u2p * (u1p - k * u1R / R))
+
+
+def compute_M_gg(u1: np.ndarray, u2: np.ndarray, x: np.ndarray, v: np.ndarray, ef: float, l: int, v_mtz: float = 0.0) -> float:
+    """Full rigid-muffin-tin (Gaspari-Gyorffy) matrix element: interior boundary term + the contribution of the potential step
+    at R_MT (v(R^-) -> v_mtz outside; a delta function in dV/dr that moves rigidly with the atom):
+        M = M_surface + (v_mtz - v(R^-)) * u_l(R) * u_{l+1}(R).
+    Equals the GG phase-shift form with phase shifts defined against the true MT zero (verified numerically,
+    scripts/eta_rmta_tests/11_gg_mtz0.py). AkaiKKR references v3 to the MT zero, so v_mtz = 0."""
+    return compute_M_surface(u1, u2, x, v, ef, l) + (v_mtz - v[-1]) * u1[-1] * u2[-1]
+
+
 # ---------------------------------------------------------------------------
 # Per-block computation
 # ---------------------------------------------------------------------------
 
-_CUTOFF_MODES = ("none", "max", "min", "lower", "upper", "valence")
+_CUTOFF_MODES = ("none", "max", "min", "lower", "upper", "valence", "surface", "gg")
 
 
 def _resolve_r_cut(
@@ -172,7 +206,7 @@ def _resolve_r_cut(
     """Return the integration lower limit for one channel pair (a=lower-l, b=upper-l)."""
     if manual_r_cut is not None:
         return manual_r_cut
-    if cutoff_mode == "none":
+    if cutoff_mode in ("none", "surface", "gg"):
         return 0.0
     if cutoff_mode == "max":
         return max(r_last_a, r_last_b)
@@ -285,8 +319,13 @@ def compute_one_combination_cutoff(
         eta_full = prefactor * M_full ** 2
         eta_total_full += eta_full
 
-        # Cutoff integral
-        M_cutoff = compute_M_from_cutoff(u1, u2, dVdr, x, integral_mode, r_cut)
+        # Cutoff integral (or boundary term for cutoff_mode="surface"; needs E_F in block["ef"])
+        if cutoff_mode == "surface":
+            M_cutoff = compute_M_surface(u1, u2, x, v, float(block["ef"]), l)
+        elif cutoff_mode == "gg":
+            M_cutoff = compute_M_gg(u1, u2, x, v, float(block["ef"]), l)
+        else:
+            M_cutoff = compute_M_from_cutoff(u1, u2, dVdr, x, integral_mode, r_cut)
         eta_cutoff = prefactor * M_cutoff ** 2
         eta_total_cutoff += eta_cutoff
 
@@ -565,9 +604,11 @@ def run_mcmillan_cutoff_sweep(
             raise FileNotFoundError(f"fort.51 not found: {fort51_path}")
 
         data = parse_fort51(fort51_path)
+        ef_value = float(np.atleast_1d(data["ef"])[0])
 
         selected = []
         for block in data["components"]:
+            block["ef"] = ef_value   # used by cutoff_mode="surface"
             if component is not None and block["component"] != component:
                 continue
             if spin is not None and block["spin"] != spin:
@@ -733,6 +774,8 @@ def main():
             "'min': min of the two. "
             "'lower': r_last_l only (lower angular momentum wavefunction). "
             "'upper': r_last_{l+1} only (higher-l wavefunction). "
+            "'surface': no cutoff; M from the Gaspari-Gyorffy boundary term at R_MT. "
+            "'gg': 'surface' plus the muffin-tin potential-step term at R_MT (= GG phase-shift form with the true MT zero). "
             "'valence': apply cutoff only when n_actual_nodes > expected valence nodes "
             "(from VALENCE_NODES_EXPECTED in src/consts.py); otherwise no cutoff. "
             "Requires --elements to identify each component. "

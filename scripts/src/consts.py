@@ -24,7 +24,7 @@ ATOMS_PER_CELL = 2
 
 # Maximal set of elements considered across all experiments.
 # Individual runs may use a subset via the --elements CLI argument.
-composition_labels = ["Ti", "Nb", "Zr", "Hf", "Ta", "Sc", "Mo", "W", "Y", "La", "Re", "Ru"]
+composition_labels = ["Ti", "Nb", "Zr", "Hf", "Ta", "Sc", "Mo", "W", "Y", "La", "Re", "Ru", "V"]
 
 # Expected number of genuine radial nodes for the valence orbital of each element and l.
 # Used by cutoff_mode="valence" in macmillan_cutoff.py: apply last-node cutoff only when
@@ -35,6 +35,7 @@ composition_labels = ["Ti", "Nb", "Zr", "Hf", "Ta", "Sc", "Mo", "W", "Y", "La", 
 VALENCE_NODES_EXPECTED: dict = {
     "Sc": {0: 0, 1: 0, 2: 0, 3: 0},  # 3d
     "Ti": {0: 0, 1: 0, 2: 0, 3: 0},  # 3d
+    "V":  {0: 0, 1: 0, 2: 0, 3: 0},  # 3d
     "Y":  {0: 0, 1: 0, 2: 1, 3: 0},  # 4d
     "Zr": {0: 0, 1: 0, 2: 1, 3: 0},  # 4d
     "Nb": {0: 0, 1: 0, 2: 1, 3: 0},  # 4d
@@ -57,6 +58,7 @@ STONER_I_EV = {
     "Sc": 0.46, "Ti": 0.48, "Y":  0.44, "Zr": 0.39,
     "Nb": 0.35, "Mo": 0.41, "Ru": 0.50, "Hf": 0.39,
     "Ta": 0.33, "W":  0.39, "Re": 0.37, "La": 0.32,
+    "V":  0.50,  # Janak 1977 (3d, between Ti and Cr); added 2026-10-23, verify before any Stoner run
 }
 
 # Paramagnon energy scale E_sf (meV) per element (Option B).
@@ -70,6 +72,7 @@ E_SF_MEV = {
     "Y":  80.0, "Ru": 120.0,
     "Zr": 150.0, "Nb": 200.0, "Mo": 300.0,
     "Hf": 200.0, "Ta": 250.0, "Re": 300.0, "W": 400.0,
+    "V": 100.0,  # 3d, rough (added 2026-10-23 with element V; Stoner correction is off in production)
 }
 
 # Approximate partial DOS at EF per spin per atom (states/eV) for each element.
@@ -80,6 +83,7 @@ STONER_N_EF_APPROX = {
     "Sc": 0.61, "Ti": 1.05, "Y":  0.49, "Zr": 0.63,
     "Nb": 0.63, "Mo": 0.58, "Ru": 0.45, "Hf": 0.60,
     "Ta": 0.59, "W":  0.53, "Re": 0.45, "La": 0.58,
+    "V":  0.90,  # rough (bcc V has a high N(EF)); added 2026-10-23
 }
 
 # Stoner acquisition penalty (Option C).

@@ -3,6 +3,7 @@ import numpy as np
 ATOMIC_FEATURES = {
     "atomic_radius_pm": {
         "Ti": 147,
+        "V": 135,
         "Nb": 145,
         "Zr": 155,
         "Hf": 155,
@@ -17,6 +18,7 @@ ATOMIC_FEATURES = {
     },
     "electronegativity_pauling": {
         "Ti": 1.54,
+        "V": 1.63,
         "Nb": 1.60,
         "Zr": 1.33,
         "Hf": 1.30,
@@ -31,6 +33,7 @@ ATOMIC_FEATURES = {
     },
     "valence_electron_count": {
         "Ti": 4,
+        "V": 5,
         "Nb": 5,
         "Zr": 4,
         "Hf": 4,
@@ -45,6 +48,7 @@ ATOMIC_FEATURES = {
     },
     "vec": {
         "Ti": 4,
+        "V": 5,
         "Nb": 5,
         "Zr": 4,
         "Hf": 4,
@@ -59,6 +63,7 @@ ATOMIC_FEATURES = {
     },
     "d_electron_count": {
         "Ti": 2,   # [Ar] 3d2 4s2
+        "V": 3,    # [Ar] 3d3 4s2
         "Nb": 4,   # [Kr] 4d4 5s1
         "Zr": 2,   # [Kr] 4d2 5s2
         "Hf": 2,   # [Xe] 4f14 5d2 6s2
@@ -73,6 +78,7 @@ ATOMIC_FEATURES = {
     },
     "vdw_radius_pm": {
         "Ti": 246,
+        "V": 242,
         "Nb": 207,
         "Zr": 252,
         "Hf": 212,
@@ -104,6 +110,7 @@ class Element:
 # NRL EW=0.7 BZ=10 PBE
 ELEMENTS = {
     'Ti': Element(atomic_nuber=22, lattice=6.15, bulk_modulus=110, debye_temperature=420, density=4510, mass=47.87, ebulk=-1707.612764), # beta-ti
+    'V':  Element(atomic_nuber=23, lattice=5.66, bulk_modulus=160, debye_temperature=380, density=6110, mass=50.94, ebulk=-1898.622013099),  # bcc; a0 and ebulk (E0 per atom) from results/comparison.sra.ew0.6.bz10-10-20/V (SRA PBE EW0.6, 2026-10-23); exp a 5.715 bohr
     'Nb': Element(atomic_nuber=41, lattice=6.25, bulk_modulus=170, debye_temperature=275, density=8570, mass=92.9, ebulk=-7639.952493), #
     'Zr': Element(atomic_nuber=40, lattice=6.73, bulk_modulus=95, debye_temperature=270, density=6520, mass=91.2, ebulk=-7197.582394), # beta-Zr
     'Hf': Element(atomic_nuber=72, lattice=6.83, bulk_modulus=110, debye_temperature=250, density=13070, mass=178.5, ebulk=-30156.28394), # 1.12*3.2A # hcp
