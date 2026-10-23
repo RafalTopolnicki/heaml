@@ -4,7 +4,8 @@ paths = [
     "/home/rafal/WORK/HEA/RKKY/cpa2002v010.potential2026/specx",
     "/home/rto/HEAML/AkaiKKR/cpa2002v010.potential2026/specx",
     "/home/amber/HEAML/AkaiKKR/cpa2002v010.potential2026/specx",
-    "/home/rtopolnicki/HEAML/AkaiKKR/cpa2002v010.potential2026/specx"
+    "/home/rtopolnicki/HEAML/AkaiKKR/cpa2002v010.potential2026/specx",
+    "/lu/topola/home/rtop/heaml/cpa2002v010.potential2026/specx"
 ]
 
 AKAIMODBIN = None
