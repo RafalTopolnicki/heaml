@@ -16,6 +16,8 @@ Handles both random.ratios dirs (flat composition subdirs) and
 opt.ratios dirs (iteration_N/computation/ structure).
 """
 
+from __future__ import annotations  # `dict | None` annotations on Python 3.9 (Topola)
+
 import argparse
 import json
 import re

@@ -1,13 +1,15 @@
-# Python dependencies of the HEA-ML pipeline (Python 3.12; versions = local setup 2026-10-23).
+# Python dependencies of the HEA-ML pipeline.  Works on Python 3.9–3.12 (local: 3.12 with
+# numpy 1.26.4 / scipy 1.13.1 / pandas 2.2.2 / scikit-learn 1.8.0 / catboost 1.2.10; Topola venv has an
+# older Python + pip 21.3, hence the loose lower bounds).  Upgrade pip first: python -m pip install -U pip
 # Core KKR pipeline (process_hea.py, structure_compare.py, lattice/debye/finalscf, macmillan_cutoff.py):
-numpy==1.26.4
-scipy==1.13.1
-pandas==2.2.2
+numpy>=1.24,<2
+scipy>=1.10
+pandas>=2.0
 # Active-learning optimisation (run_opt_compositions.py, src/ml.py, src/sampling.py):
-scikit-learn==1.8.0
-catboost==1.2.10
+scikit-learn>=1.3
+catboost>=1.2
 sobol_seq
 # Plots (macmillan_cutoff.py --plot) and xlsx baseline (results/Tc_literature.xlsx):
-matplotlib==3.8.4
-openpyxl==3.1.5
+matplotlib>=3.7
+openpyxl>=3.1
 # External, not pip: AkaiKKR binary `specx` (gfortran, OpenMP) on PATH.
