@@ -1,14 +1,14 @@
 #!/bin/bash
 # Submit the pending entries of a 0_compare_with_known*.sh script to Topola as a SLURM job array
 # (slurm/topola_compare_array.sbatch).  Each array task runs PER_TASK alloys concurrently on CPUS cores
-# (specx does not saturate the cores, so 2-3 concurrent runs per core set pay off).
+# (specx uses ~3.6 of 14 cores even alone; 3 alloys took only ~30 % longer than 1 -> pack 5).
 #
-#   slurm/submit_compare.sh                                   # 0_compare_with_known_V.sh, 14 cpus, 3 alloys/task
+#   slurm/submit_compare.sh                                   # 0_compare_with_known_V.sh, 14 cpus, 5 alloys/task
 #   slurm/submit_compare.sh 0_compare_with_known_bz10-10-20.sh 14
-#   PER_TASK=2 slurm/submit_compare.sh                        # 2 alloys per task
-#   BINARIES=1 slurm/submit_compare.sh                        # also the V binaries (env is passed through)
-#   MAXPAR=6 slurm/submit_compare.sh                          # at most 6 array tasks running at once
-#   ACCOUNT=G12-34 slurm/submit_compare.sh                    # override #SBATCH --account in the .sbatch
+#   env PER_TASK=3 slurm/submit_compare.sh                    # 3 alloys per task (tcsh: use env VAR=.. cmd)
+#   env BINARIES=1 slurm/submit_compare.sh                    # also the V binaries (env is passed through)
+#   env MAXPAR=6 slurm/submit_compare.sh                      # at most 6 array tasks running at once
+#   env ACCOUNT=G12-34 slurm/submit_compare.sh                # override #SBATCH --account in the .sbatch
 #
 # Entries with an existing results.json are not submitted (LIST=1 mode of the script).
 set -euo pipefail
@@ -16,7 +16,7 @@ ROOT=/lu/topola/home/rtop/heaml
 cd "${ROOT}"
 SCRIPT=${1:-0_compare_with_known_V.sh}
 CPUS=${2:-14}
-PER_TASK=${PER_TASK:-3}
+PER_TASK=${PER_TASK:-5}
 MAXPAR=${MAXPAR:-20}
 [ -x "${SCRIPT}" ] || { echo "no such script: ${SCRIPT}"; exit 1; }
 mkdir -p slurm/logs
