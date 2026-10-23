@@ -1,0 +1,13 @@
+# Python dependencies of the HEA-ML pipeline (Python 3.12; versions = local setup 2026-10-23).
+# Core KKR pipeline (process_hea.py, structure_compare.py, lattice/debye/finalscf, macmillan_cutoff.py):
+numpy==1.26.4
+scipy==1.13.1
+pandas==2.2.2
+# Active-learning optimisation (run_opt_compositions.py, src/ml.py, src/sampling.py):
+scikit-learn==1.8.0
+catboost==1.2.10
+sobol_seq
+# Plots (macmillan_cutoff.py --plot) and xlsx baseline (results/Tc_literature.xlsx):
+matplotlib==3.8.4
+openpyxl==3.1.5
+# External, not pip: AkaiKKR binary `specx` (gfortran, OpenMP) on PATH.
