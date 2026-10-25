@@ -78,28 +78,41 @@ rsync -av topola:/lu/topola/home/rtop/heaml/results/test.kconv/ /home/rafal/WORK
 python scripts/eta_rmta_tests/17_kconv_table.py results/test.kconv/TNHZT_a3.36_sra_pbe   # workstation, repo root
 ```
 
-## New random dataset for the GL re-optimisation (TiNbZrHfTaMoWYReRu)
+## New random datasets for the GL re-optimisation
 
-`slurm/submit_random_gl_TiNbZrHfTaMoWYReRu.sh` submits one job array of `topola_random_array.sbatch` per family into
-`random.ratios/sra.TiNbZrHfTaMoWYReRu.kp10.ew0.6.gl` (full pipeline: lattice scan, Debye, final SCF, McMillan;
-the eta variant does not matter here, it is recomputed in GL by `scripts/make_slim_dataset.py` afterwards):
+`slurm/submit_random_gl_<elements>.sh` (one per element set, each defines `WORKDIR`, `ELEMENTS` and a
+`FAMILIES` table, then sources the shared loop `slurm/submit_random_families.sh`) submits one job array of
+`topola_random_array.sbatch` per family.  Full pipeline (lattice scan, Debye, final SCF, McMillan in the
+variant set in `consts.py`, GL since 2026-10-25); `scripts/make_slim_dataset.py` recomputes eta in GL anyway.
+**QOS counts every array task as a submitted job** (`QOSMaxSubmitJobPerUserLimit` hit with a 200-task array), so a
+task is `ROUNDS` (default 6) sequential rounds of `CONCURRENT` compositions (4 for k ≥ 7, 5 for k ≤ 6) with a
+2-day wall time; a round takes ~3–6 h, i.e. 18–36 h per task.  Samples with `results.json` are skipped, so a
+task killed by the wall time is resubmitted as is.  `env ROUNDS=8` halves the job count again (24–48 h per task);
+`env MAXPAR=n` throttles running tasks per array; `env DRYRUN=1` prints the plan; `env CALIB=1` submits task 1
+only of three families with a single round (calibration, 3–6 h) — read the elapsed time in
+`slurm/logs/rnd_*_<jobid>_1.out` before the full submission (calibrated samples are then skipped).
 
-| family | samples | seed base | per task | tasks |
+`submit_random_gl_TiNbZrHfTaMoWYReRu.sh` → `random.ratios/sra.TiNbZrHfTaMoWYReRu.kp10.ew0.6.gl`, 1308
+compositions, **58 array tasks** (ROUNDS=6):
+
+| family | samples | seed base | concurrent × rounds | tasks |
 |---|---|---|---|---|
-| full simplex (k=10) | 800 | 2000 (old set: 100..1099) | 4 | 200 |
-| k = 9 / 8 / 7 faces | 100 each | 49000 / 48000 / 47000 | 4 | 25 each |
-| k = 6 / 5 / 4 / 3 / 2 faces (top-up to 100 with the 32/55/70/75/60 old GL-converted points) | 68 / 45 / 30 / 25 / 40 | 46000 … 42000 (old: 20000+1000k) | 5 | 14 / 9 / 6 / 5 / 8 |
+| full simplex (k=10) | 800 | 2000 (old set: 100..1099) | 4 × 6 = 24 | 34 |
+| k = 9 / 8 / 7 faces | 100 each | 49000 / 48000 / 47000 | 4 × 6 = 24 | 5 each |
+| k = 6 / 5 / 4 / 3 / 2 faces (top-up to 100 with the 32/55/70/75/60 old GL-converted points) | 68 / 45 / 30 / 25 / 40 | 46000 … 42000 (old: 20000+1000k) | 5 × 6 = 30 | 3 / 2 / 1 / 1 / 2 |
+
+`submit_random_gl_TiScNbZrHfTaMoWYReRuLa.sh` → `random.ratios/sra.TiScNbZrHfTaMoWYReRuLa.kp10.ew0.6.gl`, 1001
+compositions, **46 array tasks**: +1 full-simplex sample (seed 3000; old set 999 entries, seeds 100..1099) and
+100 faces for every k = 11 … 2 (seeds 50000+1000k, 4 × 6 per task for k ≥ 7 → 5 tasks each, 5 × 6 for k ≤ 6 → 4
+tasks each).  Calibration families there: k11, k5, k2.
 
 Seeds: every task of a family shares `SEED`; sample j (global index, `--sample_offset`) uses seed `SEED+j`, so
-parallel tasks never repeat a composition and the k-face subset order is common to all tasks (full C(10,k)
-coverage).  All new seed ranges are disjoint from the ones used for the old dataset.
-Cost: a 14-cpu task of 4–5 compositions takes ~3–6 h (10-component alloys ≈ 2× a 5-component one; 12 h limit);
-≈ 1300 compositions = ~300 tasks ≈ 15–20 k core-h.  Wall time < 2 days needs ≥ 30 tasks running at once
-(`MAXPAR`, default 15 per array × 9 arrays).  Run `env CALIB=1 slurm/submit_random_gl_TiNbZrHfTaMoWYReRu.sh` first (task 1 of the
-k=10, k=5, k=2 arrays) and read the elapsed time in `slurm/logs/rnd_*_<jobid>_1.out` before the full submission.
-Afterwards (workstation): rsync the `.gl` directory back and
-`python scripts/make_slim_dataset.py random.ratios/sra.TiNbZrHfTaMoWYReRu.kp10.ew0.6.gl random.ratios/sra.TiNbZrHfTaMoWYReRu.kp10.ew0.6.slim.gl`
-(merges with the 492 entries already converted from the old set; `slim_info.json` lists both sources).
+parallel tasks never repeat a composition and the k-face subset order is common to all tasks (full C(n,k)
+coverage).  All new seed ranges are disjoint from the ones used for the old datasets.
+Cost: ≈ 2300 compositions × 9–12 core-h ≈ 25 k core-h; with ~30 tasks running at once each dataset finishes in
+~2 days.  Afterwards (workstation): rsync the `.gl` directory back and
+`python scripts/make_slim_dataset.py random.ratios/<set>.gl random.ratios/<set>.slim.gl`
+(merges with the entries already converted from the old set; `slim_info.json` lists both sources).
 
 ## Status log
 
