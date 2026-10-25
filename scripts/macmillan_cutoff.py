@@ -108,6 +108,8 @@ from macmillan import (
     reduce_l_block_radials,
     derivative_nonuniform,
     compute_M,
+    parse_scf_lloyd_dos,
+    find_finalscf_out,
 )
 
 try:
@@ -232,12 +234,17 @@ def compute_one_combination_cutoff(
     manual_r_cut: Optional[float] = None,
     cutoff_mode: str = "max",
     valence_nodes: Optional[Dict[int, int]] = None,
+    total_dos: Optional[float] = None,
 ) -> Dict[str, Any]:
     """
     Compute both full and last-node-cutoff eta for one (block, mode) combination.
 
     valence_nodes: mapping {l: expected_node_count} for the element in this block,
                    used only when cutoff_mode="valence".  If None, treated as all zeros.
+    total_dos:     N(E_F) for the 1/N denominator of the Gaspari-Gyorffy prefactor (states/Ry/cell/spin).
+                   None (default) -> this component's own site DOS sum Ntot (historical behaviour).
+                   Pass the Lloyd total DOS (`def=` of the last SCF iteration, macmillan.parse_scf_lloyd_dos)
+                   for the normalisation used by Papaconstantopoulos / Jaskiewicz (eta_i = X_i / N_total).
     """
     x_full = np.array(block["xr"], dtype=float)
     v_full = np.array(block["v3"], dtype=float)
@@ -266,6 +273,7 @@ def compute_one_combination_cutoff(
     radials = reduce_l_block_radials(raw_rstr, mxlcmp, x, reduce_mode, norm_mode)
 
     Ntot = float(np.sum(dosef))
+    N_denom = float(total_dos) if total_dos is not None else Ntot
 
     labels = ["s", "p", "d", "f", "g", "h"]
     channel_names = ["sp", "pd", "df", "fg", "gh"]
@@ -279,6 +287,7 @@ def compute_one_combination_cutoff(
         "reduce_mode": reduce_mode,
         "cutoff_mode": cutoff_mode,
         "Ntot": Ntot,
+        "N_denom": N_denom,
         "Ns": grouped_dos.get("s", np.nan),
         "Np": grouped_dos.get("p", np.nan),
         "Nd": grouped_dos.get("d", np.nan),
@@ -312,7 +321,7 @@ def compute_one_combination_cutoff(
 
         nl = float(grouped_dos[a])
         nlp1 = float(grouped_dos[b])
-        prefactor = 2.0 * (l + 1) / ((2 * l + 1) * (2 * l + 3)) * (nl * nlp1 / Ntot)
+        prefactor = 2.0 * (l + 1) / ((2 * l + 1) * (2 * l + 3)) * (nl * nlp1 / N_denom)
 
         # Full integral
         M_full = compute_M(u1, u2, dVdr, x, integral_mode)
@@ -492,6 +501,7 @@ def sweep_combinations_cutoff(
     manual_r_cut: Optional[float] = None,
     cutoff_mode: str = "max",
     valence_nodes: Optional[Dict[int, int]] = None,
+    total_dos: Optional[float] = None,
 ) -> pd.DataFrame:
     integral_modes = ["plain", "r2"]
     norm_modes = ["none", "u2", "r2u2"]
@@ -509,6 +519,7 @@ def sweep_combinations_cutoff(
                     manual_r_cut=manual_r_cut,
                     cutoff_mode=cutoff_mode,
                     valence_nodes=valence_nodes,
+                    total_dos=total_dos,
                 )
                 rows.append(row)
     return pd.DataFrame(rows)
@@ -544,6 +555,7 @@ def run_mcmillan_cutoff_sweep(
     save_plots: bool = False,
     manual_r_cut: Optional[float] = None,
     cutoff_mode: str = "max",
+    dos_normalization: str = "site",
     # KKR invocation
     run_kkr: bool = True,
     elements: Optional[List[str]] = None,
@@ -606,6 +618,18 @@ def run_mcmillan_cutoff_sweep(
         data = parse_fort51(fort51_path)
         ef_value = float(np.atleast_1d(data["ef"])[0])
 
+        # 1/N denominator: 'site' = each component's own site DOS sum (historical);
+        # 'lloyd' = total DOS from the Lloyd formula (`def=` of the last SCF iteration of the finalscf output).
+        if dos_normalization not in ("site", "lloyd"):
+            raise ValueError(f"dos_normalization must be 'site' or 'lloyd', got {dos_normalization!r}")
+        lloyd_dos: Optional[List[float]] = None
+        if dos_normalization == "lloyd":
+            out_path = find_finalscf_out(workdir)
+            lloyd = parse_scf_lloyd_dos(out_path)
+            lloyd_dos = lloyd["def"]
+            logger.info("Lloyd total DOS at E_F from %s: %s states/Ry/cell/spin (E_F %s)", os.path.basename(out_path), lloyd_dos, lloyd["ef"])
+        logger.info("DOS normalisation of 1/N: %s", dos_normalization)
+
         selected = []
         for block in data["components"]:
             block["ef"] = ef_value   # used by cutoff_mode="surface"
@@ -648,8 +672,10 @@ def run_mcmillan_cutoff_sweep(
                 manual_r_cut=manual_r_cut,
                 cutoff_mode=cutoff_mode,
                 valence_nodes=block_valence_nodes,
+                total_dos=None if lloyd_dos is None else lloyd_dos[int(block["spin"]) - 1],
             )
             df.insert(0, "fort51_path", fort51_path)
+            df["dos_normalization"] = dos_normalization
             if elem_label is not None:
                 df.insert(1, "element", elem_label)
             dfs.append(df)

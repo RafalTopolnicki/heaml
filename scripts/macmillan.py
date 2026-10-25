@@ -2,10 +2,12 @@
 from __future__ import annotations
 
 import argparse
+import gzip
 import json
 import logging
 import math
 import os
+import re
 from typing import Dict, List, Any
 
 import numpy as np
@@ -168,6 +170,38 @@ def parse_fort51(path: str) -> Dict[str, Any]:
         data["components"].append(block)
 
     return data
+
+
+def parse_scf_lloyd_dos(path: str) -> Dict[str, Any]:
+    """Total DOS at E_F from the Lloyd formula, as printed by AkaiKKR in every SCF iteration:
+        ef=   0.6565344   0.6565344  def=  11.4149675  11.4149675
+    `def` (spmain.f) = Im[(detl(E_mse) - detl(E_mse-1)) / (E_mse - E_mse-1)] with detl the (CPA-generalised)
+    Lloyd integrated DOS on the complex contour, i.e. the total DOS per cell per spin at E_F — the N(E_F) that the
+    Gaspari-Gyorffy formula wants in its 1/N denominator (APW total DOS in Papaconstantopoulos, Lloyd DOS in
+    Jaskiewicz/Wiendlocha).  Only the LAST SCF iteration of the first (go=) block is used: the `def` printed in the
+    go=dos block is a finite difference on the real-axis mesh and is meaningless.
+    `path` may be a plain or gzipped AkaiKKR output.  Returns {'ef': [per spin], 'def': [per spin], 'n_scf_lines'}
+    (states/Ry/cell/spin), or raises ValueError when no SCF line is found."""
+    opener = gzip.open if path.endswith(".gz") else open
+    with opener(path, "rt") as f:
+        text = f.read()
+    scf_part = re.split(r"^\s*(?:go|dos)=dos\b|^\s*dos\s+\S+\.pot", text, maxsplit=1, flags=re.M)[0]
+    lines = re.findall(r"^\s*ef=\s*([-\d.]+)\s+([-\d.]+)\s+def=\s*([-\d.]+)\s+([-\d.]+)", scf_part, flags=re.M)
+    if not lines:
+        raise ValueError(f"no 'ef= ... def= ...' SCF line in {path}")
+    ef1, ef2, d1, d2 = (float(v) for v in lines[-1])
+    return {"ef": [ef1, ef2], "def": [d1, d2], "n_scf_lines": len(lines)}
+
+
+def find_finalscf_out(workdir: str, output_prefix: str = "finalscf") -> str:
+    """Path of the AkaiKKR output of the final-SCF run in `workdir` (<prefix>_<a0>.out or .out.gz)."""
+    cands = sorted(
+        f for f in os.listdir(workdir)
+        if f.startswith(output_prefix + "_") and (f.endswith(".out") or f.endswith(".out.gz"))
+    )
+    if not cands:
+        raise FileNotFoundError(f"no {output_prefix}_*.out[.gz] in {workdir}")
+    return os.path.join(workdir, cands[0])
 
 
 def parse_fort52_detl(path: str) -> Dict[str, Any]:

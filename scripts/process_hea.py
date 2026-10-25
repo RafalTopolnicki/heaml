@@ -220,6 +220,7 @@ def run_one_hea(**kwargs):
         mixture_mass=run_params['mixture_mass'],
         theta_d=theta_d_for_log,
         cutoff_mode=KKR_PARAMS_FINALSCF_PARAMS.get('mcmillan_cutoff_mode', 'max'),
+        dos_normalization=KKR_PARAMS_FINALSCF_PARAMS.get('mcmillan_dos_normalization', 'site'),
         elements=kwargs['element_labels'],
         save_plots=kwargs.get('save_plots', False),
     )
