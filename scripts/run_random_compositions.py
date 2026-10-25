@@ -55,7 +55,9 @@ def compute_one_random_composition(task):
         print("EXIT file detected — stopping worker")
         return {"ok": False, "stopped": True}
 
-    if args.get("n_nonzero") is None:
+    if args.get("composition_file"):
+        composition_ratio = np.array(args["compositions"][sample_id])      # row sample_id of the list
+    elif args.get("n_nonzero") is None:
         composition_ratio = generate_random_composition(elements, seed=seed)
     else:
         subset = face_subset(len(elements), args["n_nonzero"], sample_id, args["seed"])
@@ -68,6 +70,9 @@ def compute_one_random_composition(task):
     if os.path.exists(os.path.join(full_workdir, "results.json")):
         print(f"Skipping {workdirname} — results.json already exists")
         return {"ok": True, "workdirname": workdirname, "skipped": True}
+    if args.get("dry_run"):
+        print(f"[dry run] sample {sample_id} seed {seed} -> {workdirname}")
+        return {"ok": True, "workdirname": workdirname, "dry_run": True}
 
     run_params = {
         "workdir": full_workdir,
@@ -93,7 +98,8 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--workdir", type=str, required=True)
     parser.add_argument("--errorlog", type=str, required=True)
-    parser.add_argument("--number_of_samples", type=int, default=2)
+    parser.add_argument("--number_of_samples", type=int, default=0,
+                        help="Samples to compute (required without --composition_file; 0 = all rows with it)")
     parser.add_argument("--workers", type=int, default=1)
     parser.add_argument("--seed", type=int, default=0)
     parser.add_argument("--sample_offset", type=int, default=0,
@@ -120,7 +126,26 @@ if __name__ == "__main__":
                              "Default: None = flat Dirichlet on all elements.")
     parser.add_argument("--min_nonzero_fraction", type=float, default=0.05,
                         help="With --n_nonzero: reject draws where a nonzero fraction is below this value.")
+    parser.add_argument("--composition_file", type=str, default=None,
+                        help="CSV from scripts/composition_list.py: compute its rows instead of sampling. "
+                             "--sample_offset is the first row and --number_of_samples the row count "
+                             "(default: all remaining rows); --elements/--seed/--n_nonzero are ignored.")
+    parser.add_argument("--dry_run", action="store_true", help="Print the sample -> directory mapping, compute nothing")
     args = vars(parser.parse_args())
+
+    if args["composition_file"]:
+        from composition_list import read_list, row_composition
+        file_elements, rows = read_list(args["composition_file"])
+        args["elements"] = ",".join(file_elements)
+        args["compositions"] = {int(r["idx"]): row_composition(r, file_elements).tolist() for r in rows}
+        args["row_seeds"] = {int(r["idx"]): int(r["seed"]) for r in rows}
+        if args["sample_offset"] >= len(rows):
+            raise SystemExit(f"--sample_offset {args['sample_offset']} >= {len(rows)} rows: nothing to do")
+        args["number_of_samples"] = min(args["number_of_samples"] if args["number_of_samples"] > 0 else len(rows),
+                                        len(rows) - args["sample_offset"])
+        args["n_nonzero"] = None
+    elif args["number_of_samples"] <= 0:
+        raise SystemExit("--number_of_samples must be > 0 without --composition_file")
 
     if args["elements"] is not None:
         elements = [e.strip() for e in args["elements"].split(",")]
@@ -135,16 +160,20 @@ if __name__ == "__main__":
 
     print(f"Running with elements: {elements}")
     os.makedirs(args["workdir"], exist_ok=True)
-    params_name = "parameters.json" if args["n_nonzero"] is None else f"parameters.face{args['n_nonzero']}.json"
+    if args["composition_file"]:
+        params_name = f"parameters.{os.path.splitext(os.path.basename(args['composition_file']))[0]}.json"
+    else:
+        params_name = "parameters.json" if args["n_nonzero"] is None else f"parameters.face{args['n_nonzero']}.json"
     if os.path.exists(os.path.join(args["workdir"], params_name)):
         # extending an existing dataset: keep the original parameters, record this batch separately
         params_name = params_name.replace(".json", f".seed{args['seed']}.json")
     if args["sample_offset"]:
         params_name = params_name.replace(".json", f".off{args['sample_offset']}.json")
-    save_dict_to_json(args, os.path.join(args["workdir"], params_name))
+    save_dict_to_json({k: v for k, v in args.items() if k not in ("compositions", "row_seeds")}, os.path.join(args["workdir"], params_name))
 
     first = args["sample_offset"]
-    tasks = [(args, i, i + args["seed"]) for i in range(first, first + args["number_of_samples"])]
+    tasks = [(args, i, args["row_seeds"][i] if args["composition_file"] else i + args["seed"])
+             for i in range(first, first + args["number_of_samples"])]
 
     if args["workers"] == 1:
         for task in tasks:
