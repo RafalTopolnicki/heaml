@@ -64,7 +64,7 @@ def generate(args):
                          **{e: f"{v:.8f}" for e, v in zip(elements, x)}})
     os.makedirs(os.path.dirname(os.path.abspath(args.out)), exist_ok=True)
     with open(args.out, "w", newline="") as f:
-        w = csv.DictWriter(f, fieldnames=["idx", "family", "seed", "dirname"] + elements)
+        w = csv.DictWriter(f, fieldnames=["idx", "family", "seed", "dirname"] + elements, lineterminator="\n")
         w.writeheader(); w.writerows(rows)
     counts = {}
     for r in rows:
@@ -83,7 +83,7 @@ def split_done(path, workdir):
 def missing(args):
     elements, rows, done, todo = split_done(args.list, args.workdir)
     with open(args.out, "w", newline="") as f:
-        w = csv.DictWriter(f, fieldnames=["idx", "family", "seed", "dirname"] + elements)
+        w = csv.DictWriter(f, fieldnames=["idx", "family", "seed", "dirname"] + elements, lineterminator="\n")
         w.writeheader(); w.writerows(todo)
     print(f"{args.out}: {len(todo)} missing of {len(rows)} ({len(done)} done in {args.workdir})")
 
