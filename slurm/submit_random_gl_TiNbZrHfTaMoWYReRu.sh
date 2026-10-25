@@ -5,6 +5,7 @@
 # slurm/README.md).  Full pipeline; eta recomputed in GL by scripts/make_slim_dataset.py and merged afterwards.
 #   slurm/submit_random_gl_TiNbZrHfTaMoWYReRu.sh                     55 tasks x 24 rows, 4 concurrent
 #   env NTASKS=30 slurm/submit_random_gl_TiNbZrHfTaMoWYReRu.sh       (tcsh: env VAR=x cmd)
+#   env OFFSET=888 NTASKS=35 slurm/submit_random_gl_TiNbZrHfTaMoWYReRu.sh   rows 888..1307 in 35 tasks x 12 rows (3 rounds)
 #   env FILE=slurm/compositions/TiNbZrHfTaMoWYReRu_gl.missing.csv NTASKS=5 slurm/submit_random_gl_TiNbZrHfTaMoWYReRu.sh
 FILE=${FILE:-slurm/compositions/TiNbZrHfTaMoWYReRu_gl.csv}
 WORKDIR=${WORKDIR:-random.ratios/sra.TiNbZrHfTaMoWYReRu.kp10.ew0.6.gl}

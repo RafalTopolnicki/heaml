@@ -94,8 +94,11 @@ python scripts/composition_list.py missing slurm/compositions/TiNbZrHfTaMoWYReRu
 
 `slurm/submit_random_gl_<elements>.sh` (sets FILE, WORKDIR, NTASKS, CONCURRENT; shared step
 `slurm/submit_complist.sh`) submits one array of `topola_complist_array.sbatch`: NTASKS tasks × ceil(rows/NTASKS)
-rows, CONCURRENT=4 alloys at a time per 14-cpu task (a round of 10–12-component alloys ≈ 3–6 h, 24 rows = 6 rounds
-= 18–36 h), 2-day wall time.  Variables go through the environment (`--export=ALL`): a comma-separated value inside
+rows (fixed row ranges, deliberately no dynamic claiming over the network file system), CONCURRENT=4 alloys at a
+time per 14-cpu task (a round of 10–12-component alloys ≈ 3–6 h, 24 rows = 6 rounds = 18–36 h), 2-day wall time.
+Only ~37 tasks run at once (cpu cap), so plan the split so that no second wave idles: e.g. 37 tasks for a whole
+list, or `OFFSET=n NTASKS=m` to split the rows ≥ n left over from an earlier array into m shorter tasks (array
+9386076: tasks 38–55 cancelled and rows 888..1307 resubmitted as 35 tasks × 12 rows = 3 rounds).  Variables go through the environment (`--export=ALL`): a comma-separated value inside
 `--export=ALL,VAR=a,b` is split by sbatch (that bug sampled pure Ti on 2026-10-25).  QOS: 128 submitted / 64 running
 jobs per user, ~512 cpus (37 tasks); every array task is one job.  Full pipeline (lattice scan, Debye, final SCF,
 McMillan in the `consts.py` variant, GL since 2026-10-25); `scripts/make_slim_dataset.py` recomputes eta in GL anyway.
