@@ -3,7 +3,7 @@
 # SCF + McMillan) as a SLURM job array.  Task i computes the global samples [(i-1)*PER_TASK, i*PER_TASK) of one
 # family (full simplex, or the k-faces with N_NONZERO=k), concurrently on its 14 cpus.  All tasks share SEED:
 # sample j uses seed SEED+j, so seeds are unique across tasks and, for faces, the C(n,k) subset order is common.
-# Submit with slurm/submit_random_gl.sh (sets WORKDIR, ELEMENTS, SEED, NSAMPLES, PER_TASK, N_NONZERO, MIN_FRAC).
+# Submit with slurm/submit_random_gl_TiNbZrHfTaMoWYReRu.sh (sets WORKDIR, ELEMENTS, SEED, NSAMPLES, PER_TASK, N_NONZERO, MIN_FRAC).
 #SBATCH --job-name=hea_rnd
 #SBATCH --account=g107-2962
 #SBATCH --partition=topola

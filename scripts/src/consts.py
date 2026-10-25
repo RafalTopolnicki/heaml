@@ -212,7 +212,7 @@ KKR_PARAMS_FINALSCF = {
     #   'valence' per-wavefunction cutoff only when n_actual_nodes > expected valence nodes
     #             (see VALENCE_NODES_EXPECTED above). Fixes La df anomaly: La 5d has 2 genuine
     #             valence nodes so no cutoff is applied there, preserving the physical inner lobe.
-    'mcmillan_cutoff_mode': 'valence',
+    'mcmillan_cutoff_mode': 'gg',        # since 2026-10-25 (variant GL); 'valence' = old production variant A
     #   'gg'      Gaspari-Gyorffy surface formula with the MT step (phase-shift form), parameter-free;
     #             insensitive to the near-nucleus behaviour of the SRA functions (variant G of the eta study).
     # 1/N denominator of the GG prefactor:
@@ -220,7 +220,7 @@ KKR_PARAMS_FINALSCF = {
     #   'lloyd'   total DOS from the Lloyd formula (`def=` of the last SCF iteration in finalscf_*.out[.gz]),
     #             the N(E_F) of Papaconstantopoulos / Jaskiewicz; N_lloyd/N_site = 1.26 +- 0.02 in the baseline.
     #             'gg' + 'lloyd' = variant GL (eta_mix of Ta34Nb33Hf8Zr14Ti11 158 vs Jaskiewicz 157, V 145 vs 142-148).
-    'mcmillan_dos_normalization': 'site',
+    'mcmillan_dos_normalization': 'lloyd',   # since 2026-10-25 (variant GL); 'site' = old production
 }
 # MONOCLINIC
 # RMT: 0.42723 for delta=0.020

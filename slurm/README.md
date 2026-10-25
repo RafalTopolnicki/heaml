@@ -80,7 +80,7 @@ python scripts/eta_rmta_tests/17_kconv_table.py results/test.kconv/TNHZT_a3.36_s
 
 ## New random dataset for the GL re-optimisation (TiNbZrHfTaMoWYReRu)
 
-`slurm/submit_random_gl.sh` submits one job array of `topola_random_array.sbatch` per family into
+`slurm/submit_random_gl_TiNbZrHfTaMoWYReRu.sh` submits one job array of `topola_random_array.sbatch` per family into
 `random.ratios/sra.TiNbZrHfTaMoWYReRu.kp10.ew0.6.gl` (full pipeline: lattice scan, Debye, final SCF, McMillan;
 the eta variant does not matter here, it is recomputed in GL by `scripts/make_slim_dataset.py` afterwards):
 
@@ -95,7 +95,7 @@ parallel tasks never repeat a composition and the k-face subset order is common 
 coverage).  All new seed ranges are disjoint from the ones used for the old dataset.
 Cost: a 14-cpu task of 4–5 compositions takes ~3–6 h (10-component alloys ≈ 2× a 5-component one; 12 h limit);
 ≈ 1300 compositions = ~300 tasks ≈ 15–20 k core-h.  Wall time < 2 days needs ≥ 30 tasks running at once
-(`MAXPAR`, default 15 per array × 9 arrays).  Run `env CALIB=1 slurm/submit_random_gl.sh` first (task 1 of the
+(`MAXPAR`, default 15 per array × 9 arrays).  Run `env CALIB=1 slurm/submit_random_gl_TiNbZrHfTaMoWYReRu.sh` first (task 1 of the
 k=10, k=5, k=2 arrays) and read the elapsed time in `slurm/logs/rnd_*_<jobid>_1.out` before the full submission.
 Afterwards (workstation): rsync the `.gl` directory back and
 `python scripts/make_slim_dataset.py random.ratios/sra.TiNbZrHfTaMoWYReRu.kp10.ew0.6.gl random.ratios/sra.TiNbZrHfTaMoWYReRu.kp10.ew0.6.slim.gl`

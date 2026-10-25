@@ -1,6 +1,6 @@
 """k-point convergence table: N_site (sum of site DOS at E_F), N_Lloyd (AkaiKKR 'def=' of the LAST SCF iteration, before the
 go=dos block whose finite-difference def is meaningless), eta_A (valence cutoff), eta_G (GG surface formula) per element and
-eta_mix, and eta_GL = eta_G * N_site / N_Lloyd, as a function of bzqlty.  N both spins in 1/Ry, eta in mRy/a0^2.
+eta_mix, and eta_GL (per element X_i/N_Lloyd = eta_G_i * N_i/N_Lloyd, script 18 convention), as a function of bzqlty.  N both spins in 1/Ry, eta in mRy/a0^2.
 Usage (repo root):
   python scripts/eta_rmta_tests/17_kconv_table.py                                   # pure V series (local + results/test.kconv)
   python scripts/eta_rmta_tests/17_kconv_table.py results/test.kconv/TNHZT_a3.36_sra_pbe   # dirs <prefix>_bz<N> from slurm/topola_kconv.sbatch
@@ -47,16 +47,17 @@ for tag, wd in runs:
     d = parse_fort51(f51); ef = float(np.atleast_1d(d['ef'])[0])
     if not hdr_done:
         print(REFS.get(name, f'composition {name}'))
-        print(f'{"run":10s} {"nk":>6s} {"EF":>7s} {"N_site":>7s} {"N_Lloyd":>8s} {"Ns/NL":>6s} | per element: N  eta_G sp/pd/df/tot  eta_A | eta_mix_G  eta_mix_GL  eta_mix_A')
+        print(f'{"run":10s} {"nk":>6s} {"EF":>7s} {"N_site":>7s} {"N_Lloyd":>8s} {"Ns/NL":>6s} | per element: N  eta_G sp/pd/df/tot  eta_GL  eta_A | eta_mix_G  eta_mix_GL  eta_mix_A')
         hdr_done = True
-    Ns = eG = eA = 0.0; cols = []
+    Ns = eG = eA = eGL = 0.0; cols = []
     for b in d['components']:
         if b['spin'] != 1: continue
         b['ef'] = ef; i = b['component'] - 1; el = labels[i]
         rg = compute_one_combination_cutoff(b, 'plain', 'none', 'mean', cutoff_mode='gg', valence_nodes=VALENCE_NODES_EXPECTED.get(el))
         ra = compute_one_combination_cutoff(b, 'plain', 'none', 'mean', cutoff_mode='valence', valence_nodes=VALENCE_NODES_EXPECTED.get(el))
         e = [1e3 * rg[f'eta_cutoff_{ch}'] for ch in ('sp', 'pd', 'df')]; g = sum(e); a = 1e3 * ra['eta_total_cutoff']
-        Ns += conc[i] * 2 * rg['Ntot']; eG += conc[i] * g; eA += conc[i] * a
-        cols.append(f'{el} N={2*rg["Ntot"]:5.2f} G {e[0]:4.1f}/{e[1]:5.1f}/{e[2]:5.1f}/{g:5.1f} A {a:5.1f}')
+        gl = g * 2 * rg['Ntot'] / NL if NL == NL else np.nan
+        Ns += conc[i] * 2 * rg['Ntot']; eG += conc[i] * g; eA += conc[i] * a; eGL += conc[i] * gl
+        cols.append(f'{el} N={2*rg["Ntot"]:5.2f} G {e[0]:4.1f}/{e[1]:5.1f}/{e[2]:5.1f}/{g:5.1f} GL {gl:5.1f} A {a:5.1f}')
     f = Ns / NL if NL == NL else np.nan
-    print(f'{tag:10s} {nk:>6s} {ef:7.4f} {Ns:7.2f} {NL:8.2f} {f:6.3f} | ' + '  '.join(cols) + f' | {eG:6.1f} {eG*f:6.1f} {eA:6.1f}')
+    print(f'{tag:10s} {nk:>6s} {ef:7.4f} {Ns:7.2f} {NL:8.2f} {f:6.3f} | ' + '  '.join(cols) + f' | {eG:6.1f} {eGL:6.1f} {eA:6.1f}')

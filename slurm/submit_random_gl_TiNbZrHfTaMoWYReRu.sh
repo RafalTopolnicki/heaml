@@ -5,9 +5,9 @@
 #   k-faces, k = 2..9              : top-up to 100 per k      (old faces used 20000+1000k+i -> new base 40000+1000k)
 # Edit FAMILIES below to change counts.  Every array task computes PER_TASK compositions concurrently on 14 cpus
 # (10-component alloys are ~2x a 5-component one; PER_TASK=4 for k>=7, 5 otherwise), 12 h limit per task.
-#   slurm/submit_random_gl.sh                 # submit everything (MAXPAR tasks of each array at once, default 15)
-#   env CALIB=1 slurm/submit_random_gl.sh     # calibration: only task 1 of the k=10, k=5 and k=2 arrays
-#   env MAXPAR=30 slurm/submit_random_gl.sh   # tcsh: env VAR=x cmd
+#   slurm/submit_random_gl_TiNbZrHfTaMoWYReRu.sh                 # submit everything (MAXPAR tasks of each array at once, default 15)
+#   env CALIB=1 slurm/submit_random_gl_TiNbZrHfTaMoWYReRu.sh     # calibration: only task 1 of the k=10, k=5 and k=2 arrays
+#   env MAXPAR=30 slurm/submit_random_gl_TiNbZrHfTaMoWYReRu.sh   # tcsh: env VAR=x cmd
 set -euo pipefail
 ROOT=/lu/topola/home/rtop/heaml
 cd "${ROOT}"
