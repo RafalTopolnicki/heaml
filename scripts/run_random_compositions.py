@@ -94,6 +94,41 @@ def compute_one_random_composition(task):
         return {"ok": False, "workdirname": workdirname, "mixtureerror": str(exc)}
 
 
+def claim_loop(args):
+    """Worker for --claim: take the next unclaimed row of the composition list, compute it, repeat.
+
+    A row is claimed by creating its directory (atomic mkdir on a shared file system), so any number of SLURM
+    tasks and workers can drain one list together and all finish at about the same time (no idle second wave).
+    Rows whose directory exists are skipped: done (results.json) or being computed by someone else.  With
+    --reclaim, directories without results.json are taken over (only when no other task works on the list).
+    """
+    elements = args["elements"]
+    done = 0
+    for idx in sorted(args["compositions"]):
+        if idx < args["sample_offset"]:
+            continue
+        ratio = np.array(args["compositions"][idx])
+        workdirname = generate_dirname(elements, ratio)
+        full_workdir = os.path.join(args["workdir"], workdirname)
+        if os.path.exists(os.path.join(full_workdir, "results.json")):
+            continue
+        if args.get("dry_run"):
+            if not os.path.exists(full_workdir) or args.get("reclaim"):
+                print(f"[dry run] would claim row {idx} -> {workdirname}")
+            continue
+        try:
+            os.mkdir(full_workdir)
+        except FileExistsError:
+            if not args.get("reclaim"):
+                continue
+        print(f"claimed row {idx} -> {workdirname}", flush=True)
+        compute_one_random_composition((args, idx, args["row_seeds"][idx]))
+        done += 1
+        if os.path.exists("EXIT"):   # same stop file as the workers
+            break
+    return done
+
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--workdir", type=str, required=True)
@@ -131,6 +166,13 @@ if __name__ == "__main__":
                              "--sample_offset is the first row and --number_of_samples the row count "
                              "(default: all remaining rows); --elements/--seed/--n_nonzero are ignored.")
     parser.add_argument("--dry_run", action="store_true", help="Print the sample -> directory mapping, compute nothing")
+    parser.add_argument("--claim", action="store_true",
+                        help="With --composition_file: workers claim rows dynamically (atomic mkdir of the composition "
+                             "directory) instead of a fixed range, so many SLURM tasks drain the list together. "
+                             "--sample_offset = first row considered; --number_of_samples is ignored.")
+    parser.add_argument("--reclaim", action="store_true",
+                        help="With --claim: also take rows whose directory exists but has no results.json (stale claims "
+                             "of killed tasks). Use only when no other task is working on the list.")
     args = vars(parser.parse_args())
 
     if args["composition_file"]:
@@ -172,6 +214,16 @@ if __name__ == "__main__":
     save_dict_to_json({k: v for k, v in args.items() if k not in ("compositions", "row_seeds")}, os.path.join(args["workdir"], params_name))
 
     first = args["sample_offset"]
+    if args["claim"]:
+        if not args["composition_file"]:
+            raise SystemExit("--claim needs --composition_file")
+        if args["workers"] == 1:
+            n = claim_loop(args)
+        else:
+            with ProcessPoolExecutor(max_workers=args["workers"]) as executor:
+                n = sum(f.result() for f in as_completed([executor.submit(claim_loop, args) for _ in range(args["workers"])]))
+        print(f"claim mode: this invocation computed {n} compositions")
+        raise SystemExit(0)
     tasks = [(args, i, args["row_seeds"][i] if args["composition_file"] else i + args["seed"])
              for i in range(first, first + args["number_of_samples"])]
 

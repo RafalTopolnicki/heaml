@@ -93,17 +93,24 @@ python scripts/composition_list.py missing slurm/compositions/TiNbZrHfTaMoWYReRu
 ```
 
 `slurm/submit_random_gl_<elements>.sh` (sets FILE, WORKDIR, NTASKS, CONCURRENT; shared step
-`slurm/submit_complist.sh`) submits one array of `topola_complist_array.sbatch`: NTASKS tasks × ceil(rows/NTASKS)
-rows, CONCURRENT=4 alloys at a time per 14-cpu task (a round of 10–12-component alloys ≈ 3–6 h, 24 rows = 6 rounds
-= 18–36 h), 2-day wall time.  Variables go through the environment (`--export=ALL`): a comma-separated value inside
+`slurm/submit_complist.sh`) submits one array of `topola_complist_array.sbatch` whose tasks **drain the list
+dynamically**: each of the CONCURRENT=4 workers of a task claims the next free row by creating its directory
+(atomic mkdir, `run_random_compositions.py --claim`), computes it and takes the next.  Any number of tasks share one
+list and all end at about the same time; with a fixed row split (first version, array 9386076) the tasks beyond the
+cpu cap formed an idle second wave that doubled the wall time.  NTASKS=37 = the cpu cap (~512 cpus / 14), so the
+whole allowance works from the start; a round of 4 alloys ≈ 3–6 h, 2-day wall time per task.  A directory without
+`results.json` belongs to a running or killed task; when nothing runs any more,
+`composition_list.py missing` + `env FILE=<missing.csv> RECLAIM=1 NTASKS=5 ...` recomputes those.  `OFFSET=n`
+restricts a submission to rows ≥ n (used to add dynamic tasks next to the running static array 9386076, whose 37
+tasks own rows 0..887).  Variables go through the environment (`--export=ALL`): a comma-separated value inside
 `--export=ALL,VAR=a,b` is split by sbatch (that bug sampled pure Ti on 2026-10-25).  QOS: 128 submitted / 64 running
 jobs per user, ~512 cpus (37 tasks); every array task is one job.  Full pipeline (lattice scan, Debye, final SCF,
 McMillan in the `consts.py` variant, GL since 2026-10-25); `scripts/make_slim_dataset.py` recomputes eta in GL anyway.
 
 | list | compositions | families (seed base) | tasks |
 |---|---|---|---|
-| `TiNbZrHfTaMoWYReRu_gl.csv` → `random.ratios/sra.TiNbZrHfTaMoWYReRu.kp10.ew0.6.gl` | 1308 | full 800 (2000; old set 100..1099), k9/8/7 100 each (49000/48000/47000), k6..2 top-ups 68/45/30/25/40 to 100 with the old GL-converted points (46000…42000; old 20000+1000k) | 55 |
-| `TiScNbZrHfTaMoWYReRuLa_gl.csv` → `random.ratios/sra.TiScNbZrHfTaMoWYReRuLa.kp10.ew0.6.gl` | 1001 | full +1 (3000; old 999 entries, seeds 100..1099), k11…2 100 each (50000+1000k) | 42 |
+| `TiNbZrHfTaMoWYReRu_gl.csv` → `random.ratios/sra.TiNbZrHfTaMoWYReRu.kp10.ew0.6.gl` | 1308 | full 800 (2000; old set 100..1099), k9/8/7 100 each (49000/48000/47000), k6..2 top-ups 68/45/30/25/40 to 100 with the old GL-converted points (46000…42000; old 20000+1000k) | 37 |
+| `TiScNbZrHfTaMoWYReRuLa_gl.csv` → `random.ratios/sra.TiScNbZrHfTaMoWYReRuLa.kp10.ew0.6.gl` | 1001 | full +1 (3000; old 999 entries, seeds 100..1099), k11…2 100 each (50000+1000k) | 37 |
 
 Generators are those of `run_random_compositions.py`: full-simplex sample i = flat Dirichlet with seed SEED+i;
 k-face sample i = subset `face_subset(n, k, i, SEED)` (fixed random order of all C(n,k) subsets, so k9/k8 of the
