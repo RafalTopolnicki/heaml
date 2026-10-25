@@ -28,8 +28,11 @@ for fam in "${FAMILIES[@]}"; do
     printf "%-5s k=%-3s %4d samples  seed %-6s %d concurrent x %d rounds = %2d/task -> %3d tasks  array %s\n" \
         "${name}" "${k:-all}" "${n}" "${seed}" "${conc}" "$(( per / conc ))" "${per}" "${ntask}" "${arr}"
     [ -n "${DRYRUN:-}" ] && continue
-    sbatch --job-name="rnd_${name}" --array="${arr}" ${ACCOUNT:+--account="${ACCOUNT}"} \
-        --export=ALL,WORKDIR="${WORKDIR}",ELEMENTS="${ELEMENTS}",SEED="${seed}",NSAMPLES="${n}",PER_TASK="${per}",CONCURRENT="${conc}",N_NONZERO="${k}",MIN_FRAC=0.05 \
+    # variables go through the environment (--export=ALL): a comma-separated ELEMENTS value inside
+    # --export=ALL,ELEMENTS=Ti,Nb,... is split by sbatch into separate variables (-> ELEMENTS=Ti, bug 2026-10-25)
+    WORKDIR="${WORKDIR}" ELEMENTS="${ELEMENTS}" SEED="${seed}" NSAMPLES="${n}" PER_TASK="${per}" CONCURRENT="${conc}" \
+        N_NONZERO="${k}" MIN_FRAC=0.05 \
+        sbatch --job-name="rnd_${name}" --array="${arr}" ${ACCOUNT:+--account="${ACCOUNT}"} --export=ALL \
         slurm/topola_random_array.sbatch
 done
 echo "total ${total} compositions in ${ntotal} array tasks -> ${WORKDIR}"

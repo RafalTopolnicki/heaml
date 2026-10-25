@@ -26,6 +26,9 @@ offset=$(( (SLURM_ARRAY_TASK_ID - 1) * PER_TASK ))
 n=$(( NSAMPLES - offset )); [ "${n}" -gt "${PER_TASK}" ] && n=${PER_TASK}
 [ "${n}" -gt 0 ] || { echo "task ${SLURM_ARRAY_TASK_ID}: nothing to do (offset ${offset} >= ${NSAMPLES})"; exit 0; }
 [ "${CONCURRENT}" -gt "${n}" ] && CONCURRENT=${n}
+nel=$(echo "${ELEMENTS}" | tr ',' '\n' | grep -c .)
+[ "${nel}" -ge 2 ] || { echo "ELEMENTS='${ELEMENTS}' has ${nel} element(s) — the list was truncated (pass it via the environment, not inside --export=ALL,...)"; exit 2; }
+[ -z "${N_NONZERO}" ] || [ "${N_NONZERO}" -lt "${nel}" ] || { echo "N_NONZERO=${N_NONZERO} >= ${nel} elements"; exit 2; }
 export OMP_THREAD_LIMIT=${SLURM_CPUS_PER_TASK}       # each specx may use all cpus; CONCURRENT of them run at a time
 export OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 MKL_NUM_THREADS=1 NUMEXPR_NUM_THREADS=1
 mkdir -p "${WORKDIR}"
