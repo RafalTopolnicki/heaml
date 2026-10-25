@@ -1,0 +1,38 @@
+--- a/source/bzmesh.f	2020-08-29 10:14:56.000000000 +0200
++++ b/source/bzmesh.f	2026-10-25 14:40:56.573083318 +0100
+@@ -35,7 +35,7 @@
+ c     symmetry    Yes         R -> -R       k -> -k / R -> -R
+ c-----------------------------------------------------------------------
+       implicit real*8 (a-h,o-z)
+-      parameter(zero=1d-20, tiny=1d-10, ibit=31, nk1x=10000)
++      parameter(zero=1d-20, tiny=1d-10, ibit=31, nk1x=400000)
+       real*8 g(3,3),r(3,3),vkp(3,nkmx),wtkp(nkmx),protat(9,24,2)
+      &      ,t(3),s(3),bc(3,3),bctyp(3)
+       integer isymop(24,2),nc(0:ibit-1)
+--- a/source/spmain.f	2026-03-16 18:10:07.367567402 +0100
++++ b/source/spmain.f	2026-10-25 14:40:56.587284226 +0100
+@@ -1308,6 +1308,24 @@
+  8100 continue
+ 
+       close(51)
++c     --- Lloyd integrated DOS (detl) on the complex energy contour, for
++c         the total DOS at E_F independent of the site decomposition.
++      open(unit=52,file='fort.52',status='unknown')
++      write(52,*) 'nspin'
++      write(52,*) nspin
++      write(52,*) 'mse'
++      write(52,*) mse
++      write(52,*) 'ef'
++      write(52,*) (ef(is), is=1,nspin)
++      do 8200 is=1,nspin
++        write(52,*) 'spin', is
++        write(52,*) 'energy_detl'
++        do 8210 k=1,mse
++          write(52,*) dble(e(k,is)), dimag(e(k,is)),
++     &                dble(detl(k,is)), dimag(detl(k,is))
++ 8210   continue
++ 8200 continue
++      close(52)
+ 
+ c      write(50, *)itr1,ncmpx,meshr,anclr,corlvl,dr,xr,v3,ef,er,ew,ez,
+ c     &         edelt,dmy

@@ -43,6 +43,41 @@ sbatch --export=ALL,SCRIPT=0_compare_with_known_bz10-10-20.sh,THREADS=28,OVERSUB
 `NJOBS` / `OMP_THREAD_LIMIT` the same way (set them in an `sbatch --wrap` or copy the node script).
 Monitoring: `squeue -u $USER`, `sacct -j <jobid> --format=JobID,State,Elapsed,MaxRSS,TotalCPU`.
 
+## k-point convergence (final-SCF only, needs the "bigk" AkaiKKR build)
+
+`slurm/submit_kconv.sh` submits `topola_kconv.sbatch`: a job array with one `scripts/finalscf.py` run
+(full SCF + DOS/fort.51/fort.52) per bzqlty of `BZLIST`, one specx on 14 cpus, 8 GB, 12 h. Results go to
+`results/test.kconv/<NAME>_<REL>_<XC>_bz<N>/` with a `composition.json`. On bcc, bzqlty 40 gives ~12 000
+irreducible k-points and the stock binary stops at 10 000 (`too many k-points`), so build the patched copy
+`cpa2002v010.bigk` (bzmesh.f `nk1x=400000`, spmain.f writes fort.52) next to the production one:
+`${ROOT}/cpa2002v010.bigk/specx` is picked up automatically (or set `AKAIMODBIN`, or change `consts.py`;
+the `AKAIMODBIN` override in `consts.py` must be committed for the automatic pick-up to work).
+Rule: bzqlty is never raised above 60.
+
+Building the patched copy on Topola (`slurm/akaikkr_bigk.patch` = the two source changes; makefile unchanged):
+
+```
+cd /lu/topola/home/rtop/heaml
+cp -r cpa2002v010.potential2026 cpa2002v010.bigk
+cd cpa2002v010.bigk && patch -p1 < ../slurm/akaikkr_bigk.patch
+make -f makefile.gfortran clean; make -f makefile.gfortran        # (whatever built the production specx)
+```
+
+```
+slurm/submit_kconv.sh                                        # Ta34Nb33Hf8Zr14Ti11 (a=3.36 A), bz 20 30 40 50 60
+env BZLIST="15 25 35 45 55" slurm/submit_kconv.sh            # odd values
+env NAME=Nb_a6.20 ELEMENTS=41 CONC=1.0 A0=6.20 REL=nrl XC=vbh BZLIST="20 30 40 60" slurm/submit_kconv.sh
+```
+
+Topola only computes; the analysis runs on the workstation. When the array is COMPLETED, copy the run
+directories back (each holds `finalscf_*.out`, `fort.51`, `fort.52`, `composition.json`; ~0.5 MB per bzqlty)
+and build the table locally:
+
+```
+rsync -av topola:/lu/topola/home/rtop/heaml/results/test.kconv/ /home/rafal/WORK/HEA/ML/results/test.kconv/
+python scripts/eta_rmta_tests/17_kconv_table.py results/test.kconv/TNHZT_a3.36_sra_pbe   # workstation, repo root
+```
+
 ## Status log
 
 **2026-10-23** — first array 9383051 (`0_compare_with_known_V.sh`, 7 tasks × 3 alloys, 14 cpus, 8G, 2 d)
