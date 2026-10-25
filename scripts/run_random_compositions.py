@@ -96,6 +96,10 @@ if __name__ == "__main__":
     parser.add_argument("--number_of_samples", type=int, default=2)
     parser.add_argument("--workers", type=int, default=1)
     parser.add_argument("--seed", type=int, default=0)
+    parser.add_argument("--sample_offset", type=int, default=0,
+                        help="Global index of the first sample of this invocation. Sample i uses seed SEED+i, so parallel "
+                             "SLURM tasks sharing SEED and taking disjoint offset ranges generate disjoint samples "
+                             "and, for faces, keep one common C(n,k) subset order (full coverage).")
     parser.add_argument("--task", type=str, default="all", choices=["lattice", "all"])
     parser.add_argument("--ew", type=float, default=None,
                         help="Ewald parameter (overrides consts.py default if set)")
@@ -135,9 +139,12 @@ if __name__ == "__main__":
     if os.path.exists(os.path.join(args["workdir"], params_name)):
         # extending an existing dataset: keep the original parameters, record this batch separately
         params_name = params_name.replace(".json", f".seed{args['seed']}.json")
+    if args["sample_offset"]:
+        params_name = params_name.replace(".json", f".off{args['sample_offset']}.json")
     save_dict_to_json(args, os.path.join(args["workdir"], params_name))
 
-    tasks = [(args, i, i + args["seed"]) for i in range(args["number_of_samples"])]
+    first = args["sample_offset"]
+    tasks = [(args, i, i + args["seed"]) for i in range(first, first + args["number_of_samples"])]
 
     if args["workers"] == 1:
         for task in tasks:
