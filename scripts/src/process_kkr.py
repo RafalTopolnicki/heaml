@@ -1,10 +1,12 @@
 import numpy as np
+import io
 import json
 import os
 import pandas as pd
 from src.features import compute_hea_features
 from src.consts import composition_labels, PHYSICAL_CP_MIN_GPA, PHYSICAL_THETA_MIN_K, ATOMS_PER_CELL, DG_T_K, STONER_I_EV, E_SF_MEV, C_REF_CP_GPA, STONER_S_REF, STONER_MU_BASE
 from src.elements import ELEMENTS
+from src.utils import read_kkr_file
 
 
 def normalize_composition(composition):
@@ -51,7 +53,7 @@ def read_params(path, dirname):
     return data
 
 def read_debye(path, dirname):
-    data = json.load(open(os.path.join(path, dirname, "debye", "debye_summary.json"), "r"))
+    data = json.loads(read_kkr_file(os.path.join(path, dirname), "debye/debye_summary.json"))  # file or kkr_raw.tar
 
     # Backward compatibility:
     # old code downstream expects "thetaDB"
@@ -95,7 +97,7 @@ def get_composition(path, dirname):
 
 def read_macmillan(path, dirname):
     composition_dict, elements = get_composition(path, dirname)
-    df = pd.read_csv(open(os.path.join(path, dirname, 'finalscf', 'mcmillan_cutoff_results.csv')))
+    df = pd.read_csv(io.StringIO(read_kkr_file(os.path.join(path, dirname), 'finalscf/mcmillan_cutoff_results.csv')))
     df = df[(df['reduce_mode'] == 'mean') & (df['integral_mode'] == 'plain') & (df['norm_mode'] == 'none')]
     assert len(df) == len(composition_dict)
     df['component_label'] = [elements[x-1] for x in df['component']]

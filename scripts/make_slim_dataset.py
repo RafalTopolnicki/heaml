@@ -16,12 +16,13 @@ Entries without fort.51 or finalscf output in SRC cannot be converted; they are 
 (name, Z list, concentrations, a0, KKR params) for slurm/topola_finalscf_rerun.sbatch, which writes a fresh
 fort.51 + .out into DST/<entry>/finalscf; then `--finish` converts them and removes the bulky files again.
 DST/slim_info.json records the settings and counts."""
-import argparse, csv, glob, gzip, json, os, shutil, subprocess, sys, time
+import argparse, csv, fnmatch, glob, gzip, io, json, os, shutil, subprocess, sys, tarfile, time
 from multiprocessing import Pool
 HERE = os.path.dirname(os.path.abspath(__file__)); sys.path.insert(0, HERE)
 from macmillan_cutoff import run_mcmillan_cutoff_sweep        # noqa: E402
 from src.process_kkr import process_kkr                       # noqa: E402
 from src.elements import ELEMENTS                             # noqa: E402
+from src.utils import KKR_ARCHIVE, read_kkr_file              # noqa: E402
 
 KEEP = ['run_params.json', 'debye/debye_summary.json']
 BULKY = ['fort.50', 'fort.51', 'mcmillan_cutoff_run.log']
@@ -39,11 +40,37 @@ def _copy_plain(src, dst):
         shutil.copy2(src, dst)
 
 
+def _tar_first(entry, *patterns):
+    """'tar:<member>' of the last archived copy matching the first matching pattern in entry/kkr_raw.tar, or None."""
+    archive = os.path.join(entry, KKR_ARCHIVE)
+    if not os.path.isfile(archive): return None
+    with tarfile.open(archive) as tar: names = tar.getnames()
+    for pat in patterns:
+        m = [n for n in names if fnmatch.fnmatchcase(n, pat)]
+        if m: return 'tar:' + m[-1]
+    return None
+
+
 def entry_sources(src_entry):
+    """fort.51 and finalscf_*.out of an entry: plain or .gz in finalscf/, or (packed entry) members of kkr_raw.tar."""
     fs = os.path.join(src_entry, 'finalscf')
-    f51 = _first(f'{fs}/fort.51') or _first(f'{fs}/fort.51.gz')
-    out = _first(f'{fs}/finalscf_*.out') or _first(f'{fs}/finalscf_*.out.gz')
+    f51 = _first(f'{fs}/fort.51') or _first(f'{fs}/fort.51.gz') or _tar_first(src_entry, 'finalscf/fort.51', 'finalscf/fort.51.gz')
+    out = _first(f'{fs}/finalscf_*.out') or _first(f'{fs}/finalscf_*.out.gz') or \
+        _tar_first(src_entry, 'finalscf/finalscf_*.out', 'finalscf/finalscf_*.out.gz')
     return f51, out
+
+
+def _fetch(src_entry, src, dst_dir, name=None):
+    """Copy an entry_sources() path (file or 'tar:member') into dst_dir, decompressed; returns the path written."""
+    base = os.path.basename(src[4:] if src.startswith('tar:') else src)
+    dst = os.path.join(dst_dir, name or (base[:-3] if base.endswith('.gz') else base))
+    if not src.startswith('tar:'):
+        _copy_plain(src, dst); return dst
+    with tarfile.open(os.path.join(src_entry, KKR_ARCHIVE)) as tar:
+        data = tar.extractfile(tar.getmember(src[4:])).read()
+    if base.endswith('.gz'): data = gzip.decompress(data)
+    with open(dst, 'wb') as g: g.write(data)
+    return dst
 
 
 def convert(args):
@@ -59,13 +86,13 @@ def convert(args):
             f51, out = entry_sources(src_entry)
             if not (f51 and out): return name, 'missing', 'no fort.51 / finalscf_*.out in SRC'
             os.makedirs(dfs, exist_ok=True)
-            for rel in KEEP:
+            for rel in KEEP:             # from disk or from a packed entry's kkr_raw.tar
                 os.makedirs(os.path.dirname(os.path.join(dst_entry, rel)), exist_ok=True)
-                shutil.copy2(os.path.join(src_entry, rel), os.path.join(dst_entry, rel))
-            _copy_plain(f51, os.path.join(dfs, 'fort.51'))
-            _copy_plain(out, os.path.join(dfs, os.path.basename(out)))
+                with open(os.path.join(dst_entry, rel), 'w') as g: g.write(read_kkr_file(src_entry, rel))
+            _fetch(src_entry, f51, dfs, 'fort.51')
+            _fetch(src_entry, out, dfs)
         if not os.path.exists(os.path.join(dfs, 'fort.51')):
-            _copy_plain(f51, os.path.join(dfs, 'fort.51'))
+            _fetch(dst_entry, f51, dfs, 'fort.51')
         rp = json.load(open(os.path.join(dst_entry, 'run_params.json')))
         ds = json.load(open(os.path.join(dst_entry, 'debye', 'debye_summary.json')))
         run_mcmillan_cutoff_sweep(workdir=dfs, run_kkr=False, mixture_mass=rp['mixture_mass'], theta_d=ds.get('thetaDB_K'),
@@ -115,7 +142,8 @@ def main():
             rp = json.load(open(os.path.join(e, 'run_params.json')))
             if subset is not None and any(float(c) > 0 and l not in subset for l, c in zip(rp['element_labels'], rp['concentrations'])):
                 skipped_el += 1; continue
-            if not os.path.isfile(os.path.join(e, 'debye', 'debye_summary.json')): missing.append((n, 'no debye_summary.json')); continue
+            try: read_kkr_file(e, 'debye/debye_summary.json')
+            except FileNotFoundError: missing.append((n, 'no debye_summary.json')); continue
             f51, out = entry_sources(e)
             if not (f51 and out): missing.append((n, 'rerun')); continue
             jobs.append((e, dst, a.cutoff_mode, a.dos_normalization, False))

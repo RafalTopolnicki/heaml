@@ -3,7 +3,7 @@ import json
 import os
 import shutil
 from src.elements import HEAClass
-from src.utils import save_dict_to_json, gzip_file
+from src.utils import save_dict_to_json, gzip_file, pack_kkr_files, read_kkr_file
 from src.consts import KKR_PARAMS_LATTICE, KKR_PARAMS_DEBYE, KKR_PARAMS_FINALSCF
 from lattice import run_kkr_eos
 from finalscf import run_kkr_finalscf
@@ -15,14 +15,13 @@ from src.process_kkr import process_kkr
 # =========================
 # --reuse_from: take lattice (+ KKR Debye) from an earlier run, recompute only the final SCF
 # =========================
-def _read_lattice_summary(path):
+def _read_lattice_summary(text):
     # lattice_summary.txt written by lattice.run_kkr_eos: "a0 = ...", "E0 = ...", "B0 = ..."
     vals = {}
-    with open(path) as f:
-        for line in f:
-            if '=' in line:
-                k, v = line.split('=', 1)
-                vals[k.strip()] = float(v)
+    for line in text.splitlines():
+        if '=' in line:
+            k, v = line.split('=', 1)
+            vals[k.strip()] = float(v)
     return {"lattice_constant_bohr": vals["a0"],
             "minimum_energy_ev": vals["E0"],
             "bulk_modulus_gpa": vals["B0"]}
@@ -58,8 +57,11 @@ def prepare_reuse(reuse_from, workdir, run_params, reuse_debye):
     if reuse_debye:
         subdirs.append(run_params['KKR_PARAMS_DEBYE']['subdir'])
     in_place = os.path.realpath(reuse_from) == os.path.realpath(workdir)
+    # a packed run (kkr_raw.tar) has no lattice/, debye/ on disk: take the summaries from its archive
+    lattice_txt = read_kkr_file(reuse_from, f"{subdirs[0]}/lattice_summary.txt")
+    debye_txt = read_kkr_file(reuse_from, f"{subdirs[1]}/debye_summary.json") if reuse_debye else None
     for sub in subdirs:
-        if not in_place:
+        if not in_place and os.path.isdir(os.path.join(reuse_from, sub)):
             # .pot files are SCF restart data, not needed for anything downstream
             shutil.copytree(os.path.join(reuse_from, sub), os.path.join(workdir, sub), dirs_exist_ok=True,
                             ignore=shutil.ignore_patterns('*.pot', '*.pot.info'))
@@ -78,10 +80,14 @@ def prepare_reuse(reuse_from, workdir, run_params, reuse_debye):
             if os.path.exists(f) and not os.path.exists(f + '.copy'):
                 shutil.copy2(f, f + '.copy')
 
-    eof_output = _read_lattice_summary(os.path.join(workdir, subdirs[0], 'lattice_summary.txt'))
-    debye_output = None
-    if reuse_debye:
-        debye_output = json.load(open(os.path.join(workdir, subdirs[1], 'debye_summary.json')))
+    if not in_place:
+        for sub, name, txt in [(subdirs[0], 'lattice_summary.txt', lattice_txt)] + \
+                ([(subdirs[1], 'debye_summary.json', debye_txt)] if reuse_debye else []):
+            os.makedirs(os.path.join(workdir, sub), exist_ok=True)
+            with open(os.path.join(workdir, sub, name), 'w') as f:
+                f.write(txt)
+    eof_output = _read_lattice_summary(lattice_txt)
+    debye_output = json.loads(debye_txt) if reuse_debye else None
     print(f"Reusing lattice{' + Debye' if reuse_debye else ''} from {reuse_from}: {eof_output}")
     return eof_output, debye_output
 
@@ -231,6 +237,10 @@ def run_one_hea(**kwargs):
     if kwargs.get('compress', True):
         for name in ['fort.50', 'fort.51', f"{scf_params['output']}_{scf_params['a0']:.6f}.out"]:
             gzip_file(os.path.join(scf_params['workdir'], name))
+    # file quota on the cluster: everything except the summaries read below goes into <workdir>/kkr_raw.tar
+    # (tar -xf kkr_raw.tar restores lattice/, debye/, finalscf/); only reached when the steps above succeeded
+    if kwargs.get('pack', True):
+        pack_kkr_files(workdir)
 
     # make all final computations
     allresults = process_kkr(path=workdir, dirname='', allow_missing_theta=True)
@@ -247,6 +257,8 @@ if __name__ == "__main__":
     parser.add_argument("--concentrations", nargs="+", required=True)
     parser.add_argument("--workdir", type=str, default=".")
     parser.add_argument("--no-gzip", action="store_true")
+    parser.add_argument("--no-pack", action="store_true",
+                        help="keep lattice/, debye/, finalscf/ as files instead of packing them into kkr_raw.tar")
     parser.add_argument("--overwrite_params", action="store_true")
 
 
@@ -282,6 +294,7 @@ if __name__ == "__main__":
 
     # normalize flags
     args["compress"] = not args.pop("no_gzip")
+    args["pack"] = not args.pop("no_pack")
 
     result = run_one_hea(**args)
     print(result)

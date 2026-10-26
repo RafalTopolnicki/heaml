@@ -68,6 +68,70 @@ def gzip_file(path):
     os.remove(path)
     return gz
 
+# Per-composition archive of the raw KKR files (inputs, gzipped outputs, fort.5x, CSVs, logs). The SLURM home quota
+# counts files (62k), and a finished composition used to hold ~40 of them (incl. subdirectories); after packing only
+# results.json, run_params.json and kkr_raw.tar remain. process_kkr() reads debye_summary.json and
+# mcmillan_cutoff_results.csv through read_kkr_file(), i.e. from disk when present, else from the archive.
+# Plain (uncompressed) tar: the big members are already .gz, and 'a' mode can append to an existing archive.
+KKR_ARCHIVE = "kkr_raw.tar"
+KKR_PACK_SUBDIRS = ["lattice", "debye", "finalscf", "finalscf.copy"]
+KKR_KEEP_FILES = set()   # paths relative to the composition dir that stay on disk (none by default)
+
+
+def pack_kkr_files(compdir):
+    """Move everything in compdir/{lattice,debye,finalscf} except KKR_KEEP_FILES into compdir/kkr_raw.tar and remove
+    emptied subdirectories. Files are deleted only after the archive is complete; an existing archive is appended to
+    (a re-run's members follow the old ones, so extraction keeps the newest). Returns the number of files packed."""
+    import tarfile
+    members = []
+    for sub in KKR_PACK_SUBDIRS:
+        subdir = os.path.join(compdir, sub)
+        if not os.path.isdir(subdir) or os.path.islink(subdir):
+            continue
+        for dirpath, _, filenames in os.walk(subdir):
+            for name in sorted(filenames):
+                path = os.path.join(dirpath, name)
+                rel = os.path.relpath(path, compdir).replace(os.sep, "/")
+                if rel not in KKR_KEEP_FILES and os.path.isfile(path) and not os.path.islink(path):
+                    members.append((path, rel))
+    if not members:
+        return 0
+    archive = os.path.join(compdir, KKR_ARCHIVE)
+    tmp = archive + ".tmp"
+    if os.path.exists(archive):
+        shutil.copy2(archive, tmp)
+    with tarfile.open(tmp, "a") as tar:
+        for path, rel in members:
+            tar.add(path, arcname=rel)
+    os.replace(tmp, archive)
+    for path, _ in members:
+        os.remove(path)
+    for sub in KKR_PACK_SUBDIRS:
+        subdir = os.path.join(compdir, sub)
+        for dirpath, _, _ in os.walk(subdir, topdown=False):  # deepest first
+            try:
+                os.rmdir(dirpath)  # only succeeds when empty
+            except OSError:
+                pass
+    return len(members)
+
+
+def read_kkr_file(compdir, rel):
+    """Text of compdir/<rel>, from disk or (when packed) from compdir/kkr_raw.tar; last archived copy wins."""
+    import tarfile
+    path = os.path.join(compdir, rel)
+    if os.path.isfile(path):
+        with open(path) as f:
+            return f.read()
+    archive = os.path.join(compdir, KKR_ARCHIVE)
+    if os.path.isfile(archive):
+        with tarfile.open(archive) as tar:
+            hits = [m for m in tar.getmembers() if m.name == rel]
+            if hits:
+                return tar.extractfile(hits[-1]).read().decode()
+    raise FileNotFoundError(f"{rel} neither in {compdir} nor in its {KKR_ARCHIVE}")
+
+
 def cleanup_potential_files(base):
     # The input written for "<base>.inp" says "go <base>.inp.pot", so AkaiKKR names the potential
     # <base>.inp.pot(.info). Until 2026-10-21 only <base>.pot was tried, which never exists, and every

@@ -130,6 +130,9 @@ if __name__ == "__main__":
                         help="CSV from scripts/composition_list.py: compute its rows instead of sampling. "
                              "--sample_offset is the first row and --number_of_samples the row count "
                              "(default: all remaining rows); --elements/--seed/--n_nonzero are ignored.")
+    parser.add_argument("--sample_stride", type=int, default=1,
+                        help="With --composition_file: take every STRIDE-th row from --sample_offset on (task i of an "
+                             "N-task array with offset i-1 and stride N gets an even mix of the list's families)")
     parser.add_argument("--dry_run", action="store_true", help="Print the sample -> directory mapping, compute nothing")
     args = vars(parser.parse_args())
 
@@ -141,8 +144,9 @@ if __name__ == "__main__":
         args["row_seeds"] = {int(r["idx"]): int(r["seed"]) for r in rows}
         if args["sample_offset"] >= len(rows):
             raise SystemExit(f"--sample_offset {args['sample_offset']} >= {len(rows)} rows: nothing to do")
-        args["number_of_samples"] = min(args["number_of_samples"] if args["number_of_samples"] > 0 else len(rows),
-                                        len(rows) - args["sample_offset"])
+        stride = args["sample_stride"]
+        n_left = -(-(len(rows) - args["sample_offset"]) // stride)      # rows offset, offset+stride, ... < len(rows)
+        args["number_of_samples"] = min(args["number_of_samples"] if args["number_of_samples"] > 0 else n_left, n_left)
         args["n_nonzero"] = None
     elif args["number_of_samples"] <= 0:
         raise SystemExit("--number_of_samples must be > 0 without --composition_file")
@@ -172,8 +176,13 @@ if __name__ == "__main__":
     save_dict_to_json({k: v for k, v in args.items() if k not in ("compositions", "row_seeds")}, os.path.join(args["workdir"], params_name))
 
     first = args["sample_offset"]
-    tasks = [(args, i, args["row_seeds"][i] if args["composition_file"] else i + args["seed"])
-             for i in range(first, first + args["number_of_samples"])]
+    if args["composition_file"]:
+        # positions in the file -> its idx column (equal for a full list, not for a `composition_list.py missing` one)
+        idx = sorted(args["compositions"])
+        picked = [idx[first + j * args["sample_stride"]] for j in range(args["number_of_samples"])]
+        tasks = [(args, i, args["row_seeds"][i]) for i in picked]
+    else:
+        tasks = [(args, i, i + args["seed"]) for i in range(first, first + args["number_of_samples"])]
 
     if args["workers"] == 1:
         for task in tasks:
