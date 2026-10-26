@@ -8,4 +8,6 @@
 FILE=${FILE:-slurm/compositions/TiScNbZrHfTaMoWYReRuLa_gl.csv}
 WORKDIR=${WORKDIR:-random.ratios/sra.TiScNbZrHfTaMoWYReRuLa.kp10.ew0.6.gl}
 NTASKS=${NTASKS:-36}; CONCURRENT=${CONCURRENT:-6}; JOBNAME=rnd12
+# run directly on the login node (it calls sbatch itself); under sbatch $0 is a spool copy without submit_complist.sh
+[ -n "${SLURM_JOB_ID:-}" ] && { echo "run $(basename "$0") directly (e.g. slurm/$(basename "$0")), not via sbatch"; exit 2; }
 source "$(dirname "$0")/submit_complist.sh"
