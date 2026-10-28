@@ -223,51 +223,64 @@ def process_kkr(path, dirname, allow_missing_theta=False):
     True (process_hea) → the row is kept with outside_range=True and Tc=0, so results.json still holds
     eta, energies and elastic constants (lambda with theta_mix can be recomputed from eta_mix)."""
     try:
-        composition, elements = get_composition(path, dirname)
-        comp_dict = dict(zip(elements, composition))
-        # Mind: dict merging old-style as this has to run on old python
-        #data = {'name': dirname} | read_params(path, dirname) | read_debye(path, dirname) | read_macmillan(path, dirname)
-        data = {'name': dirname}
-        data.update(read_params(path, dirname))
-        data.update(read_debye(path, dirname))
-        data.update(read_macmillan(path, dirname))
-        # composition-weighted eta [Ry/Bohr²]; lambda = eta_mix * C / (M_mix * theta_D²) for any theta_D
-        data['eta_mix'] = float(np.sum([data[e] * data[f'{e}_eta_total'] for e in composition_labels if e in data]))
-        if data.get('thetaDB') is None and allow_missing_theta:
-            return _process_missing_theta(data, comp_dict)
-        data['lambda'] = compute_lambda(data)
-        cp_ok = data.get('Cp_GPa', 0.0) >= PHYSICAL_CP_MIN_GPA
-        theta_ok = data.get('thetaDB', 0.0) >= PHYSICAL_THETA_MIN_K
-        data['outside_range'] = not (cp_ok and theta_ok)
-        if data['outside_range']:
-            data['lambda_unphysical'] = data['lambda']
-            data['lambda'] = 0.0
-            data['Tc_mu0.1'] = 0.0
-            data['Tc_mu0.2'] = 0.0
-            data['Tc_mu0.3'] = 0.0
-        else:
-            data['Tc_mu0.1'] = tc_from_data(data, mu=0.1)
-            data['Tc_mu0.2'] = tc_from_data(data, mu=0.2)
-            data['Tc_mu0.3'] = tc_from_data(data, mu=0.3)
-        data['lambda_nocutoff'] = compute_lambda_nocutoff(data)
-        _lam_nc = data['lambda_nocutoff']
-        data['Tc_mu0.1_nocutoff'] = tc_from_data({**data, 'lambda': _lam_nc}, mu=0.1)
-        data['Tc_mu0.2_nocutoff'] = tc_from_data({**data, 'lambda': _lam_nc}, mu=0.2)
-        data['Tc_mu0.3_nocutoff'] = tc_from_data({**data, 'lambda': _lam_nc}, mu=0.3)
-        # Stoner spin-fluctuation correction (Option B)
-        stoner = compute_stoner_correction(data, comp_dict)
-        data.update(stoner)
-        if data['outside_range']:
-            data['Tc_sf'] = 0.0
-        # add features
-        data = {**data, **compute_hea_features(comp_dict=comp_dict, normalize_composition=True)}
-
-        _add_dG(data, comp_dict)
-
-        return data
+        data, elements = read_kkr_raw(path, dirname)
+        return derive_kkr(data, elements, allow_missing_theta=allow_missing_theta)
     except Exception as e:
          print(f'Error in processing {dirname}: {e}')
          return None
+
+
+def read_kkr_raw(path, dirname):
+    """Raw per-composition quantities from the KKR files (run_params, Debye summary, McMillan-Hopfield csv);
+    returns (data, element_labels). Everything derive_kkr() computes is left out."""
+    composition, elements = get_composition(path, dirname)
+    # Mind: dict merging old-style as this has to run on old python
+    data = {'name': dirname}
+    data.update(read_params(path, dirname))
+    data.update(read_debye(path, dirname))
+    data.update(read_macmillan(path, dirname))
+    return data, elements
+
+
+def derive_kkr(data, elements, allow_missing_theta=False):
+    """eta_mix, lambda, Tc, Stoner correction, features and dG from the raw quantities of read_kkr_raw()
+    (or a database row, see src.database). Modifies and returns data; raises on missing input."""
+    comp_dict = {e: data[e] for e in elements}
+    # composition-weighted eta [Ry/Bohr²]; lambda = eta_mix * C / (M_mix * theta_D²) for any theta_D
+    data['eta_mix'] = float(np.sum([data[e] * data[f'{e}_eta_total'] for e in composition_labels if e in data]))
+    if data.get('thetaDB') is None and allow_missing_theta:
+        return _process_missing_theta(data, comp_dict)
+    data['lambda'] = compute_lambda(data)
+    cp_ok = data.get('Cp_GPa', 0.0) >= PHYSICAL_CP_MIN_GPA
+    theta_ok = data.get('thetaDB', 0.0) >= PHYSICAL_THETA_MIN_K
+    data['outside_range'] = not (cp_ok and theta_ok)
+    if data['outside_range']:
+        data['lambda_unphysical'] = data['lambda']
+        data['lambda'] = 0.0
+        data['Tc_mu0.1'] = 0.0
+        data['Tc_mu0.2'] = 0.0
+        data['Tc_mu0.3'] = 0.0
+    else:
+        data['Tc_mu0.1'] = tc_from_data(data, mu=0.1)
+        data['Tc_mu0.2'] = tc_from_data(data, mu=0.2)
+        data['Tc_mu0.3'] = tc_from_data(data, mu=0.3)
+    data['lambda_nocutoff'] = compute_lambda_nocutoff(data)
+    _lam_nc = data['lambda_nocutoff']
+    data['Tc_mu0.1_nocutoff'] = tc_from_data({**data, 'lambda': _lam_nc}, mu=0.1)
+    data['Tc_mu0.2_nocutoff'] = tc_from_data({**data, 'lambda': _lam_nc}, mu=0.2)
+    data['Tc_mu0.3_nocutoff'] = tc_from_data({**data, 'lambda': _lam_nc}, mu=0.3)
+    # Stoner spin-fluctuation correction (Option B)
+    stoner = compute_stoner_correction(data, comp_dict)
+    data.update(stoner)
+    if data['outside_range']:
+        data['Tc_sf'] = 0.0
+    # add features
+    data = {**data, **compute_hea_features(comp_dict=comp_dict, normalize_composition=True)}
+
+    _add_dG(data, comp_dict)
+
+    return data
+
 
 def _add_dG(data, comp_dict):
     # thermodynamic stability: dG = dE - T*dS_conf  (eV/atom, w.r.t. pure BCC phases)

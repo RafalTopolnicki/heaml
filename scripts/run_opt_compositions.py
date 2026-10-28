@@ -12,6 +12,7 @@ from src.utils import generate_dirname, append_errorlog, save_dict_to_json, log_
 from src.ml import train_cb_model
 from src.consts import composition_labels as ALL_ELEMENTS, ACQUISITION_ALPHA, ACQUISITION_METRIC, TARGET, TARGET_DG, CANDIDATE_COMPOSITIONS_N, MIN_NOVELTY_DIST, FRESH_FRACTION, LOCAL_TOP_K, LOCAL_NOISE_SCALE, MODEL_SUBSAMPLE_FRACTION, DG_THRESHOLD_DEFAULT, STONER_I_EV, STONER_N_EF_APPROX, STONER_BETA, STONER_S_THRESHOLD, STONER_S_REF, PHYSICAL_CP_MIN_GPA, PHYSICAL_THETA_MIN_K, FOUND_ITERATION_KEY, EARLY_STOP_PATIENCE
 from src.sampling import generate_candidates_data
+from src.database import read_database
 from process_hea import run_one_hea
 import numpy as np
 import datetime
@@ -257,7 +258,8 @@ def filter_known_candidates(df_known, df_candidates, columns, min_dist=0.01, met
 def composition_key(row, columns, ndigits=5):
     return tuple(round(float(row[c]), ndigits) for c in columns)
 
-def write_init_tc_comparison(init_data, initdirs, workdir, target=TARGET):
+def write_init_tc_comparison(init_data, initdirs, workdir, target=TARGET, stored_rows=None):
+    """stored_rows: {name: row} as written in the --init_db files (used instead of initdir/<name>/results.json)."""
     if isinstance(initdirs, str):
         initdirs = [initdirs]
     rows = []
@@ -265,7 +267,9 @@ def write_init_tc_comparison(init_data, initdirs, workdir, target=TARGET):
         name = entry.get("name", "")
         tc_computed = entry.get(target)
         tc_stored = None
-        results_path = next(
+        if stored_rows is not None:
+            tc_stored = stored_rows.get(name, {}).get(target)
+        results_path = None if stored_rows is not None else next(
             (os.path.join(d, name, "results.json") for d in initdirs
              if os.path.exists(os.path.join(d, name, "results.json"))),
             None,
@@ -388,7 +392,10 @@ def recompute_debye_consistent(data_list, target_debye_mode, composition_labels)
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--workdir", type=str, required=True)
-    parser.add_argument("--initdir", type=str, nargs='+', required=True)
+    parser.add_argument("--initdir", type=str, nargs='+', default=None,
+                        help="init dataset directories (one KKR subdirectory per composition)")
+    parser.add_argument("--init_db", type=str, nargs='+', default=None,
+                        help="init database CSV files (scripts/make_database.py) instead of --initdir")
     parser.add_argument("--errorlog", type=str, required=True)
     parser.add_argument("--iterations", type=int, default=2)
     parser.add_argument("--workers", type=int, default=4)
@@ -471,6 +478,8 @@ if __name__ == "__main__":
              f"Default: {TARGET} (from consts.py).",
     )
     args = vars(parser.parse_args())
+    if (args["initdir"] is None) == (args["init_db"] is None):
+        parser.error("give exactly one of --initdir / --init_db")
 
     # --target overrides consts.TARGET everywhere it is read at call time
     TARGET = args["target"]
@@ -527,7 +536,12 @@ if __name__ == "__main__":
     #all_candidates = generate_candidates_data(min_comp=minimal_compositions, max_comp=maximal_compositions)
 
     # read initial computations
-    init_data = read_experiments_from_directory(args["initdir"])
+    if args["init_db"] is not None:
+        init_data, init_db_rows = read_database(args["init_db"])
+        print(f"Init data read from {args['init_db']}: {len(init_data)} rows with thetaDB "
+              f"({len(init_db_rows) - len(init_data)} without thetaDB skipped)")
+    else:
+        init_data, init_db_rows = read_experiments_from_directory(args["initdir"]), None
     normalize_rows_to_elements(init_data, composition_labels)
     # Drop init structures that violate composition constraints; they remain on disk.
     n_init_total = len(init_data)
@@ -541,7 +555,7 @@ if __name__ == "__main__":
           f"(>{args['min_components_ratio']}) (eligible as best / local-search centers) "
           f"({n_init_total - len(init_data)} excluded)")
     recompute_debye_consistent(init_data, args.get('debye_mode', 'kkr'), composition_labels)
-    write_init_tc_comparison(init_data, args["initdir"], workdir, target=TARGET)
+    write_init_tc_comparison(init_data, args["initdir"] or [], workdir, target=TARGET, stored_rows=init_db_rows)
     for d in init_data:
         d[FOUND_ITERATION_KEY] = 0  # 0 = init dataset
     known_data = init_data.copy()
