@@ -23,6 +23,7 @@ def make_model(seed=100, iterations=5000):
         random_seed=seed,
         thread_count=MODEL_THREAD_COUNT,
         verbose=False,
+        allow_writing_files=False,  # no catboost_info/ in the cwd (several runs share it on SLURM)
     )
 
 

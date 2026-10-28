@@ -49,6 +49,50 @@ def read_experiments_from_directory(paths):
                     results.append(res)
     return results
 
+COMPUTATION_ARCHIVE = "computation.tar"
+
+
+def pack_iteration(computationdir):
+    """Move the finished compositions of computationdir (those with results.json) into
+    <iteration>/computation.tar (file quota: ~5 inodes per composition -> 1 per iteration); unfinished or failed
+    ones stay as directories. Locally: `tar -xf iteration_N/computation.tar -C iteration_N/computation`."""
+    import tarfile
+    done = sorted(e for e in os.listdir(computationdir)
+                  if os.path.isfile(os.path.join(computationdir, e, "results.json")))
+    if not done:
+        return 0
+    archive = os.path.join(os.path.dirname(computationdir.rstrip("/")), COMPUTATION_ARCHIVE)
+    tmp = archive + ".tmp"
+    if os.path.exists(archive):
+        shutil.copy2(archive, tmp)
+    with tarfile.open(tmp, "a") as tar:
+        for e in done:
+            tar.add(os.path.join(computationdir, e), arcname=e)
+    os.replace(tmp, archive)
+    for e in done:
+        shutil.rmtree(os.path.join(computationdir, e))
+    return len(done)
+
+
+def read_iteration_results(computationdir):
+    """read_experiments_from_directory for an iteration, also when it was packed by pack_iteration
+    (the archive is extracted, read and the extracted copies removed again)."""
+    import tarfile
+    archive = os.path.join(os.path.dirname(computationdir.rstrip("/")), COMPUTATION_ARCHIVE)
+    extracted = []
+    if os.path.isfile(archive):
+        os.makedirs(computationdir, exist_ok=True)
+        with tarfile.open(archive) as tar:
+            names = sorted({m.name.split("/")[0] for m in tar.getmembers()})
+            extracted = [n for n in names if not os.path.exists(os.path.join(computationdir, n))]
+            tar.extractall(computationdir, members=[m for m in tar.getmembers() if m.name.split("/")[0] in extracted])
+    try:
+        return read_experiments_from_directory(computationdir) if os.path.isdir(computationdir) else []
+    finally:
+        for n in extracted:
+            shutil.rmtree(os.path.join(computationdir, n), ignore_errors=True)
+
+
 def compute_min_distances(df_known, df_candidates, columns, metric="euclidean"):
 
     X_known = df_known[columns].values
@@ -459,6 +503,9 @@ if __name__ == "__main__":
         help=f"Stoner enhancement threshold above which the acquisition penalty kicks in. "
              f"Default: {STONER_S_THRESHOLD}.",
     )
+    parser.add_argument("--pack_iterations", action="store_true",
+                        help="after each iteration move its finished compositions into iteration_N/computation.tar "
+                             "(file quota on Topola); --resume_from reads such archives")
     parser.add_argument("--save_plots", action="store_true",
                         help="Save McMillan orbital PNG plots for every composition (off by default; large output)")
     parser.add_argument(
@@ -602,9 +649,9 @@ if __name__ == "__main__":
         # Seed known_data with results from the copied iterations (in order)
         for it in resume_iters:
             comp_dir = os.path.join(workdir, f"iteration_{it}", "computation")
-            if not os.path.isdir(comp_dir):
+            iter_data = read_iteration_results(comp_dir)
+            if not iter_data:
                 continue
-            iter_data = read_experiments_from_directory(comp_dir)
             normalize_rows_to_elements(iter_data, composition_labels)
             recompute_debye_consistent(iter_data, args.get('debye_mode', 'kkr'), composition_labels)
             valid = [d for d in iter_data if d.get(TARGET) is not None and not pd.isna(d.get(TARGET))]
@@ -797,6 +844,8 @@ if __name__ == "__main__":
         # create now list of all known data
         known_data = known_data + new_data
         known_data = deduplicate_known_data(known_data, composition_labels)
+        if args["pack_iterations"]:
+            print(f"Packed {pack_iteration(computationdir)} compositions into {iterationdir}/{COMPUTATION_ARCHIVE}")
 
         # log the progress
         log_iteration_summary(

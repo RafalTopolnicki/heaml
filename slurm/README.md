@@ -125,6 +125,34 @@ Afterwards (workstation): rsync the `.gl` directory back and
 `python scripts/make_slim_dataset.py random.ratios/<set>.gl random.ratios/<set>.slim.gl`
 (merges with the entries already converted from the old set; `slim_info.json` lists both sources).
 
+## GL optimisation runs from init databases (2026-10-28)
+
+The optimizer no longer needs the random datasets on Topola: `run_opt_compositions.py --init_db <csv>` reads a flat
+database built on the workstation by `scripts/make_database.py` and committed under `databases/` (one row per
+composition, raw KKR inputs + derived Tc; derived columns are recomputed with the current code on reading, identical
+to `--initdir`).  `databases/sra.TiNbZrHfTaMoWYReRu.kp10.ew0.6.gl.csv` = all 1795 GL points (1774 with θ_D),
+`.gl.interior.csv` = the 997 with all 10 elements > 0.
+
+```
+bash slurm/submit_opt_gl_TiNbZrHfTaMoWYReRu.sh                          # 15 runs x CHAIN=3 chained jobs
+env ONLY="mc9 mc10" bash slurm/submit_opt_gl_TiNbZrHfTaMoWYReRu.sh      # selected tags; DRY=1 prints only
+```
+
+Runs (target `Tc_mu0.1`, θ_D mix, Stoner off, max 70 %, required components > 5 %, 10 champions/iteration, seed 100,
+early stop after 15 iterations without improvement): mincomp 2…10 with β=2; mincomp 7 with β=0/1/5/10; mincomp 2 and 3
+from the interior database.  Output `opt.ratios.gl/<init>.mu0.1.acqbeta<β>.stonerbeta0.mixdebye.mincomp<m>.r0.05.max0.7.face0.1/`,
+logs `slurm/logs/opt_<tag>_<jobid>.out`.  `topola_opt.sbatch`: whole node (28 cpus, 32G, 2 days), 10 concurrent
+compositions, each specx up to 28 threads.  The same job is queued CHAIN times with `--dependency=afterany`; each one
+resumes the run in place (`--resume_from` = the workdir, `ITERATIONS` = total) and exits immediately when the run has
+early-stopped or is complete.  A composition interrupted by the wall time is not finished later.  15 × 28 = 420 cpus of
+the ~512 cap.  File quota: `--pack_iterations` moves every finished iteration's compositions into
+`iteration_N/computation.tar` (≈5 inodes per iteration instead of ~50; up to ~45 per composition while it runs);
+`--resume_from` reads the archives.  Workstation, after rsync:
+`for t in opt.ratios.gl/*/iteration_*/computation.tar; do tar -xf $t -C $(dirname $t)/computation; done`.
+Do not create an `EXIT` file in the repo root: every run checks it and would stop.  Candidates with 9 or 10 required
+elements cannot be found by rejection; `src/sampling.py` then forces random m-element subsets above the ratio
+(accept probability 1/C(j, m), same uniform distribution).
+
 ## Status log
 
 **2026-10-23** — first array 9383051 (`0_compare_with_known_V.sh`, 7 tasks × 3 alloys, 14 cpus, 8G, 2 d)

@@ -1,3 +1,4 @@
+import math
 import pandas as pd
 import numpy as np
 import sobol_seq
@@ -81,34 +82,66 @@ def generate_global_candidates(
     candidates = []
     seen = set()
     n_components = len(composition_labels)
+    # Lower bounds are built into the sample (x = lo + (1 - sum lo) * y, y uniform on the simplex: uniform on the
+    # allowed region) instead of rejection, which fails when every element is required (min_components = n:
+    # P(all 10 fractions > 0.05) = 0.5**9). lo = 0 (the usual case) leaves the Sobol sequence unchanged.
+    lo = np.array([(min_comp or {}).get(el, 0.0) for el in composition_labels], dtype=float)
+    if min_components >= n_components and min_components_ratio > 0:
+        lo = np.maximum(lo, min_components_ratio * (1.0 + 1e-9))   # is_valid_composition needs v > ratio
+    if lo.sum() >= 1.0:
+        raise ValueError(f"lower bounds sum to {lo.sum():.3f} >= 1")
 
     current_skip = skip
-    for _ in range(max_rounds):
-        batch_size = max(1000, oversample_factor * (n_candidates - len(candidates)))
-        composition_grid = generate_simplex_sobol(
-            n_components=n_components,
-            n_points=batch_size,
-            skip=current_skip,
-        )
-        current_skip += batch_size
+    # pass 'plain': Sobol points on the simplex (shifted by lo), rejection by is_valid_composition.
+    # pass 'subset' (only if 'plain' could not fill n_candidates, e.g. 9 of 10 elements > 5 %): every point gets a
+    # random subset of min_components elements forced above min_components_ratio and is kept with probability
+    # 1/C(j, m), j = number of fractions above the ratio, which undoes the multiple counting of points with j > m:
+    # the accepted points are uniform on the allowed region, as in 'plain' (exact for lo = 0).
+    for mode in ("plain", "subset"):
+        if mode == "subset":
+            if not (1 < min_components < n_components and min_components_ratio > 0):
+                break
+            print(f"[candidates] global: only {len(candidates)}/{n_candidates} by rejection, "
+                  f"sampling with forced {min_components}-element subsets")
+        rng = np.random.default_rng(skip)
+        for _ in range(max_rounds):
+            batch_size = max(1000, oversample_factor * (n_candidates - len(candidates)))
+            composition_grid = generate_simplex_sobol(
+                n_components=n_components,
+                n_points=batch_size,
+                skip=current_skip,
+            )
+            current_skip += batch_size
+            if mode == "subset":
+                y = np.asarray(composition_grid, dtype=float)
+                forced = np.argsort(rng.random(y.shape), axis=1)[:, :min_components]
+                lo_rows = np.tile(lo, (len(y), 1))
+                np.put_along_axis(lo_rows, forced, np.maximum(np.take_along_axis(lo_rows, forced, axis=1),
+                                                              min_components_ratio * (1.0 + 1e-9)), axis=1)
+                x = lo_rows + (1.0 - lo_rows.sum(axis=1, keepdims=True)) * y
+                j = (x > min_components_ratio).sum(axis=1)
+                keep = rng.random(len(x)) * np.array([math.comb(int(v), min_components) for v in j]) < 1.0
+                composition_grid = x[keep]
+            elif lo.any():
+                composition_grid = lo + (1.0 - lo.sum()) * np.asarray(composition_grid, dtype=float)
 
-        for comp in composition_grid:
-            comp_d = dict(zip(composition_labels, comp))
+            for comp in composition_grid:
+                comp_d = dict(zip(composition_labels, comp))
 
-            if not is_valid_composition(comp_d, min_comp=min_comp, max_comp=max_comp,
-                                        min_components=min_components, min_components_ratio=min_components_ratio):
-                continue
+                if not is_valid_composition(comp_d, min_comp=min_comp, max_comp=max_comp,
+                                            min_components=min_components, min_components_ratio=min_components_ratio):
+                    continue
 
-            key = tuple(round(float(comp_d[el]), round_decimals) for el in composition_labels)
-            if key in seen:
-                continue
-            seen.add(key)
+                key = tuple(round(float(comp_d[el]), round_decimals) for el in composition_labels)
+                if key in seen:
+                    continue
+                seen.add(key)
 
-            comp_d = {**comp_d, **compute_hea_features(comp_d), "_source": "global"}
-            candidates.append(comp_d)
+                comp_d = {**comp_d, **compute_hea_features(comp_d), "_source": "global"}
+                candidates.append(comp_d)
 
-            if len(candidates) >= n_candidates:
-                return pd.DataFrame(candidates)
+                if len(candidates) >= n_candidates:
+                    return pd.DataFrame(candidates)
 
     raise RuntimeError(f"Could only generate {len(candidates)} global candidates")
 
