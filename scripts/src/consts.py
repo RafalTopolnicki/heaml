@@ -24,7 +24,6 @@ if AKAIMODBIN is None:
 print(f"Using AKAIMODBIN: {AKAIMODBIN}")
 
 AKAIBIN=AKAIMODBIN
-
 ATOMS_PER_CELL = 2
 
 # Maximal set of elements considered across all experiments.

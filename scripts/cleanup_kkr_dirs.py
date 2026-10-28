@@ -42,8 +42,9 @@ def plan_subdir(subdir):
         if name.endswith(".inp") or name.endswith(".inp.gz"):
             inp = name[:-3] if name.endswith(".gz") else name
             for suffix in (".pot", ".pot.info"):
-                if inp + suffix in names:
-                    delete.append(os.path.join(subdir, inp + suffix))
+                p = os.path.join(subdir, inp + suffix)
+                if inp + suffix in names and p not in delete:  # X.inp and X.inp.gz may both exist
+                    delete.append(p)
     for name in sorted(names):
         path = os.path.join(subdir, name)
         if not os.path.isfile(path) or os.path.islink(path):
