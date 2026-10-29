@@ -17,6 +17,7 @@ from process_hea import run_one_hea
 import numpy as np
 import datetime
 from sklearn.metrics.pairwise import cosine_distances
+from scipy.spatial import cKDTree
 
 
 def snapshot_python_code(workdir):
@@ -93,6 +94,15 @@ def read_iteration_results(computationdir):
             shutil.rmtree(os.path.join(computationdir, n), ignore_errors=True)
 
 
+def iteration_has_results(iterationdir):
+    """True if iteration_N holds at least one finished composition (packed archive or computation/*/results.json)."""
+    if os.path.isfile(os.path.join(iterationdir, COMPUTATION_ARCHIVE)):
+        return True
+    computationdir = os.path.join(iterationdir, "computation")
+    return os.path.isdir(computationdir) and any(
+        os.path.isfile(os.path.join(computationdir, c, "results.json")) for c in os.listdir(computationdir))
+
+
 def compute_min_distances(df_known, df_candidates, columns, metric="euclidean"):
 
     X_known = df_known[columns].values
@@ -103,17 +113,18 @@ def compute_min_distances(df_known, df_candidates, columns, metric="euclidean"):
         dist = cosine_distances(X_cand, X_known)
         return dist.min(axis=1)
 
-    # manual broadcasting for other metrics
-    diff = X_cand[:, None, :] - X_known[None, :, :]
-
+    # nearest known point with a KD-tree: the former full broadcast (n_cand x n_known x n_el float64, twice) needed
+    # ~32 GB at 100k candidates x 2000 known points and got the Topola opt jobs OOM-killed
     if metric == "euclidean":
-        dist = np.sqrt(np.sum(diff**2, axis=2))
+        p = 2
     elif metric == "manhattan":
-        dist = np.sum(np.abs(diff), axis=2)
+        p = 1
     else:
         raise ValueError("Unknown metric")
-
-    return np.min(dist, axis=1)
+    if len(X_known) == 0:
+        return np.full(len(X_cand), np.inf)
+    dist, _ = cKDTree(np.asarray(X_known, dtype=float)).query(np.asarray(X_cand, dtype=float), k=1, p=p)
+    return dist
 
 def compute_one_composition(composition_dict, workdir):
     # global stop condition
@@ -621,8 +632,15 @@ if __name__ == "__main__":
             if m and os.path.isdir(os.path.join(resume_from, name)):
                 resume_iters.append(int(m.group(1)))
         resume_iters = sorted(resume_iters)
+        # trailing iterations without any result (job killed before/while they ran) are redone under the same number
+        # instead of being skipped; an empty one in the middle stays (later iterations already depend on the gap)
+        while resume_iters and not iteration_has_results(os.path.join(resume_from, f"iteration_{resume_iters[-1]}")):
+            empty = os.path.join(resume_from, f"iteration_{resume_iters.pop()}")
+            print(f"  [redo] {empty} has no results")
+            if os.path.realpath(resume_from) == os.path.realpath(workdir):
+                shutil.rmtree(empty)
         if not resume_iters:
-            raise ValueError(f"--resume_from directory has no iteration_N subdirs: {resume_from}")
+            raise ValueError(f"--resume_from directory has no iteration_N subdirs with results: {resume_from}")
 
         max_resume_iter = resume_iters[-1]
         start_iteration = max_resume_iter + 1

@@ -34,8 +34,14 @@ WORKDIR=${OPTROOT}/${NAME}
 if grep -qs "EARLY STOP" "${WORKDIR}/optimization_log.txt"; then
     echo "[$(date +%F_%T)] ${WORKDIR}: already early-stopped, nothing to do"; grep "EARLY STOP" "${WORKDIR}/optimization_log.txt"; exit 0
 fi
-last=$(ls -d "${WORKDIR}"/iteration_* 2>/dev/null | sed 's/.*iteration_//' | sort -n | tail -1)
-last=${last:-0}
+# last iteration with results; trailing empty iteration_N (job killed before its compositions finished) are redone
+# under the same number by run_opt_compositions.py --resume_from (same rule: computation.tar or */results.json)
+last=0
+for d in $(ls -d "${WORKDIR}"/iteration_* 2>/dev/null | sed 's/.*iteration_//' | sort -n); do
+    if [ -f "${WORKDIR}/iteration_${d}/computation.tar" ] || ls "${WORKDIR}/iteration_${d}"/computation/*/results.json >/dev/null 2>&1; then
+        last=${d}
+    fi
+done
 remaining=$(( ITERATIONS - last ))
 [ "${remaining}" -gt 0 ] || { echo "[$(date +%F_%T)] ${WORKDIR}: ${last} of ${ITERATIONS} iterations done, nothing to do"; exit 0; }
 RESUME=()
@@ -43,6 +49,7 @@ RESUME=()
 
 export OMP_THREAD_LIMIT=${SLURM_CPUS_PER_TASK}       # each specx may use all cpus; WORKERS of them run at a time
 export OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 MKL_NUM_THREADS=1 NUMEXPR_NUM_THREADS=1   # see bash.old/2_run_opt_*: forked workers hung in BLAS
+export PYTHONUNBUFFERED=1                            # otherwise the log loses the main process' last lines on a kill
 mkdir -p "${WORKDIR}"
 echo "[$(date +%F_%T)] host $(hostname)  ${WORKDIR}  init ${INIT_DB}  mincomp ${MINCOMP} (>${MIN_RATIO}) max ${MAX_COMP}  beta ${BETA}  target ${TARGET}  iterations $((last + 1))..${ITERATIONS}"
 python scripts/run_opt_compositions.py \

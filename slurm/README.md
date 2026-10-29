@@ -153,6 +153,14 @@ Do not create an `EXIT` file in the repo root: every run checks it and would sto
 elements cannot be found by rejection; `src/sampling.py` then forces random m-element subsets above the ratio
 (accept probability 1/C(j, m), same uniform distribution).
 
+**2026-10-29 — OOM fix.** mc6 and mc7 β=1/2/10 were OOM-killed (rc 137, all 3 chained jobs) once the known set reached
+~2000 points: `compute_min_distances` broadcast 100k candidates × known × elements in float64 (~2 × 16 GB > 32G).
+It now uses `scipy.spatial.cKDTree` (same distances to 1e-16, ~0.6 GB, 1.5 s).  A trailing `iteration_N` without
+results (no `computation.tar`, no `computation/*/results.json`) is now redone under the same number on resume (both
+`topola_opt.sbatch` and `--resume_from`); empty iterations in the middle stay as gaps.  `PYTHONUNBUFFERED=1` so the
+log shows the main process' last step before a kill.  Resubmit:
+`env ONLY="mc6 mc7 mc7_b1 mc7_b10" bash slurm/submit_opt_gl_TiNbZrHfTaMoWYReRu.sh`.
+
 ## Status log
 
 **2026-10-23** — first array 9383051 (`0_compare_with_known_V.sh`, 7 tasks × 3 alloys, 14 cpus, 8G, 2 d)
