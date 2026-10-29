@@ -115,6 +115,7 @@ A running composition holds ≤ ~45 files, failed ones stay unpacked. Older dire
 |---|---|---|---|
 | `TiNbZrHfTaMoWYReRu_gl.csv` → `random.ratios/sra.TiNbZrHfTaMoWYReRu.kp10.ew0.6.gl` | 1308 | full 800 (2000; old set 100..1099), k9/8/7 100 each (49000/48000/47000), k6..2 top-ups 68/45/30/25/40 to 100 with the old GL-converted points (46000…42000; old 20000+1000k) | 55 |
 | `TiScNbZrHfTaMoWYReRuLa_gl.csv` → `random.ratios/sra.TiScNbZrHfTaMoWYReRuLa.kp10.ew0.6.gl` | 1001 | full +1 (3000; old 999 entries, seeds 100..1099), k11…2 100 each (50000+1000k) | 42 |
+| `TiNbZrHfTaMoWYVSc_gl.csv` → `random.ratios/sra.TiNbZrHfTaMoWYVSc.kp10.ew0.6.gl` (2026-10-29; Re, Ru → V, Sc; no old points, same final design as the ReRu database) | 1800 | full 1000 (6000), k9…2 100 each (70000+1000k) | 60 × 30 rows |
 
 Generators are those of `run_random_compositions.py`: full-simplex sample i = flat Dirichlet with seed SEED+i;
 k-face sample i = subset `face_subset(n, k, i, SEED)` (fixed random order of all C(n,k) subsets, so k9/k8 of the
