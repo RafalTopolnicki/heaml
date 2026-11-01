@@ -23,7 +23,8 @@ from src.process_kkr import read_kkr_raw, derive_kkr
 
 META_COLUMNS = ['element_labels', 'source', 'eta_variant']
 # keys derive_kkr() sets besides the features; dropped before recomputation so no stale value survives
-DERIVED_KEYS = {'eta_mix', 'lambda', 'outside_range', 'lambda_unphysical', 'lambda_nocutoff', 'dG_eV'}
+DERIVED_KEYS = {'eta_mix', 'lambda', 'outside_range', 'lambda_unphysical', 'lambda_nocutoff', 'dG_eV',
+                'theta_corr', 'lambda_corr', 'lambda_es'}
 DERIVED_PREFIXES = ('Tc_', 'Stoner_')
 
 

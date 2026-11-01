@@ -7,7 +7,7 @@ import sys
 from concurrent.futures import ProcessPoolExecutor, as_completed
 import pandas as pd
 import math
-from src.process_kkr import process_kkr, compute_lambda, compute_lambda_nocutoff, tc_from_data, compute_stoner_correction
+from src.process_kkr import process_kkr, compute_lambda, compute_lambda_nocutoff, tc_from_data, compute_stoner_correction, compute_tc_corrected
 from src.utils import generate_dirname, append_errorlog, save_dict_to_json, log_iteration_summary
 from src.ml import train_cb_model
 from src.consts import composition_labels as ALL_ELEMENTS, ACQUISITION_ALPHA, ACQUISITION_METRIC, TARGET, TARGET_DG, CANDIDATE_COMPOSITIONS_N, MIN_NOVELTY_DIST, FRESH_FRACTION, LOCAL_TOP_K, LOCAL_NOISE_SCALE, MODEL_SUBSAMPLE_FRACTION, DG_THRESHOLD_DEFAULT, STONER_I_EV, STONER_N_EF_APPROX, STONER_BETA, STONER_S_THRESHOLD, STONER_S_REF, PHYSICAL_CP_MIN_GPA, PHYSICAL_THETA_MIN_K, FOUND_ITERATION_KEY, EARLY_STOP_PATIENCE
@@ -436,6 +436,7 @@ def recompute_debye_consistent(data_list, target_debye_mode, composition_labels)
         comp_dict = {el: row[el] for el in composition_labels if el in row}
         stoner = compute_stoner_correction(row, comp_dict)
         row.update(stoner)
+        row.update(compute_tc_corrected(row, comp_dict))
 
         n_recomputed += 1
 

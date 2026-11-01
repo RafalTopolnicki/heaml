@@ -90,6 +90,17 @@ STONER_N_EF_APPROX = {
     "V":  0.90,  # rough (bcc V has a high N(EF)); added 2026-10-23
 }
 
+# Corrected Tc (key 'Tc_corr', process_kkr.compute_tc_corrected; added 2026-11-01, Tc_mu* unchanged):
+# (1) mix-Debye rows: theta_mix with bcc theta_D for the hcp elements Ti, Sc (the bcc lattice is much softer; KKR bcc
+#     Sc gives 193 K), lambda rescaled by (theta_mix/theta_corr)^2;  (2) electron-paramagnon coupling per site,
+#     lambda_es = alpha * sum_i x_i s_i ln(1/(1 - s_i)), s_i = I_i N_i(E_F) (STONER_I_EV, KKR site DOS per spin), in
+#     Tc = theta/1.45 exp(-1.04 (1+lam+les) / (lam - les - mu* (1 + 0.62 (lam+les))))  (Bose 2009, Eqs. 26-27; alpha <= 1).
+# theta_Ti, theta_Sc, alpha fitted on the 121-row GL literature baseline (sets A ∪ B, rms log ratio; leave-one-author-out
+# ranges Ti 280-300, Sc 185-275, alpha 0.3-0.4) by scripts/baseline_corrections.py; mu* = 0.1 stays optimal.
+TC_CORR_THETA_BCC_K = {"Ti": 300.0, "Sc": 215.0}
+TC_CORR_SF_ALPHA = 0.3
+TC_CORR_MU = 0.1
+
 # Stoner acquisition penalty (Option C).
 # STONER_BETA = 0.0 disables the penalty entirely (no effect on optimization).
 # When enabled: penalty = exp(-STONER_BETA * max(S_mix - STONER_S_THRESHOLD, 0))

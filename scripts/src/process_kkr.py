@@ -4,7 +4,7 @@ import json
 import os
 import pandas as pd
 from src.features import compute_hea_features
-from src.consts import composition_labels, PHYSICAL_CP_MIN_GPA, PHYSICAL_THETA_MIN_K, ATOMS_PER_CELL, DG_T_K, STONER_I_EV, E_SF_MEV, C_REF_CP_GPA, STONER_S_REF, STONER_MU_BASE
+from src.consts import composition_labels, PHYSICAL_CP_MIN_GPA, PHYSICAL_THETA_MIN_K, ATOMS_PER_CELL, DG_T_K, STONER_I_EV, E_SF_MEV, C_REF_CP_GPA, STONER_S_REF, STONER_MU_BASE, TC_CORR_THETA_BCC_K, TC_CORR_SF_ALPHA, TC_CORR_MU
 from src.elements import ELEMENTS
 from src.utils import read_kkr_file
 
@@ -217,6 +217,34 @@ def compute_stoner_correction(data, composition_dict, mu_star_coulomb=0.13):
         'Tc_sf':               Tc_sf,
     }
 
+def compute_tc_corrected(data, comp_dict, mu=TC_CORR_MU):
+    """Tc with the bcc theta_D of Ti/Sc in theta_mix and the per-site electron-paramagnon coupling (see consts,
+    TC_CORR_*). Needs thetaDB, lambda (>0, inside the physical range) and <el>_Ntot; theta is changed only for
+    debye_mode 'mix' (theta_mix = sum x_i theta_i is rebuilt from the elements table with the bcc overrides)."""
+    total_c = sum(c for c in comp_dict.values() if c > 0)
+    out = {'theta_corr': None, 'lambda_corr': 0.0, 'lambda_es': 0.0, 'Tc_corr': 0.0}
+    theta, lam = data.get('thetaDB'), data.get('lambda') or 0.0
+    if total_c <= 0 or not theta or lam <= 0 or data.get('outside_range'):
+        return out
+    if data.get('debye_mode') == 'mix':
+        theta_corr = sum(c / total_c * TC_CORR_THETA_BCC_K.get(el, ELEMENTS[el].debye_temperature)
+                         for el, c in comp_dict.items() if c > 0)
+    else:
+        theta_corr = theta
+    lam_corr = lam * (theta / theta_corr) ** 2
+    les = 0.0
+    for el, c in comp_dict.items():
+        ntot = data.get(f'{el}_Ntot')
+        if c <= 0 or ntot is None:
+            continue
+        s = min(STONER_I_EV.get(el, 0.40) * ntot / _Ry_to_eV, 0.95)
+        les += c / total_c * TC_CORR_SF_ALPHA * s * np.log(1.0 / (1.0 - s))
+    denom = lam_corr - les - mu * (1.0 + 0.62 * (lam_corr + les))
+    tc = theta_corr / 1.45 * np.exp(-1.04 * (1.0 + lam_corr + les) / denom) if denom > 0 else 0.0
+    out.update(theta_corr=theta_corr, lambda_corr=lam_corr, lambda_es=les, Tc_corr=float(tc))
+    return out
+
+
 def process_kkr(path, dirname, allow_missing_theta=False):
     """allow_missing_theta: KKR thetaDB is None when C' < 0 (mechanically unstable BCC).
     False (default, used by the optimizer loader) → such rows return None and are dropped, as before.
@@ -274,6 +302,7 @@ def derive_kkr(data, elements, allow_missing_theta=False):
     data.update(stoner)
     if data['outside_range']:
         data['Tc_sf'] = 0.0
+    data.update(compute_tc_corrected(data, comp_dict))
     # add features
     data = {**data, **compute_hea_features(comp_dict=comp_dict, normalize_composition=True)}
 
@@ -301,6 +330,7 @@ def _process_missing_theta(data, comp_dict):
         data[f'Tc_mu{mu_tag}_nocutoff'] = 0.0
     data.update(compute_stoner_correction({**data, 'thetaDB': 0.0}, comp_dict))
     data['Tc_sf'] = 0.0
+    data.update(compute_tc_corrected(data, comp_dict))
     data = {**data, **compute_hea_features(comp_dict=comp_dict, normalize_composition=True)}
     _add_dG(data, comp_dict)
     return data
