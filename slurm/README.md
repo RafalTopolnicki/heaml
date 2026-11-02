@@ -163,6 +163,11 @@ results (no `computation.tar`, no `computation/*/results.json`) is now redone un
 log shows the main process' last step before a kill.  Resubmit:
 `env ONLY="mc6 mc7 mc7_b1 mc7_b10" bash slurm/submit_opt_gl_TiNbZrHfTaMoWYReRu.sh`.
 
+**Set B (Ti,Nb,Zr,Hf,Ta,Mo,W,Y,V,Sc), init `databases/sra.TiNbZrHfTaMoWYVSc.kp10.ew0.6.gl.csv`, mincomp 2/3/7:**
+`submit_opt_gl_TiNbZrHfTaMoWYVSc_mc23.sh` and `_mc7.sh` (2026-11-01; targets `Tc_mu0.1` → tag `mu0.1` and the
+2026-11-01 `Tc_corr` → tag `corr.mu0.1`), `submit_opt_gl_TiNbZrHfTaMoWYVSc_corr2.sh` (2026-11-02; revised `Tc_corr`:
+bcc θ_D for Sc only + λ_es on V only, α_V = 0.4 → tag `corr2.mu0.1`; refuses to run if `consts.py` is older).
+
 ## Status log
 
 **2026-10-23** — first array 9383051 (`0_compare_with_known_V.sh`, 7 tasks × 3 alloys, 14 cpus, 8G, 2 d)

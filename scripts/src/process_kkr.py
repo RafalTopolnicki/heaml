@@ -219,7 +219,7 @@ def compute_stoner_correction(data, composition_dict, mu_star_coulomb=0.13):
 
 def compute_tc_corrected(data, comp_dict, mu=TC_CORR_MU):
     """Tc with the bcc theta_D of Ti/Sc in theta_mix and the per-site electron-paramagnon coupling (see consts,
-    TC_CORR_*). Needs thetaDB, lambda (>0, inside the physical range) and <el>_Ntot; theta is changed only for
+    TC_CORR_*; Tc_corr == Tc_mu0.1 without V and Sc). Needs thetaDB, lambda (>0, inside the physical range) and <el>_Ntot; theta is changed only for
     debye_mode 'mix' (theta_mix = sum x_i theta_i is rebuilt from the elements table with the bcc overrides)."""
     total_c = sum(c for c in comp_dict.values() if c > 0)
     out = {'theta_corr': None, 'lambda_corr': 0.0, 'lambda_es': 0.0, 'Tc_corr': 0.0}
@@ -235,10 +235,10 @@ def compute_tc_corrected(data, comp_dict, mu=TC_CORR_MU):
     les = 0.0
     for el, c in comp_dict.items():
         ntot = data.get(f'{el}_Ntot')
-        if c <= 0 or ntot is None:
+        if c <= 0 or ntot is None or not TC_CORR_SF_ALPHA.get(el):
             continue
         s = min(STONER_I_EV.get(el, 0.40) * ntot / _Ry_to_eV, 0.95)
-        les += c / total_c * TC_CORR_SF_ALPHA * s * np.log(1.0 / (1.0 - s))
+        les += c / total_c * TC_CORR_SF_ALPHA[el] * s * np.log(1.0 / (1.0 - s))
     denom = lam_corr - les - mu * (1.0 + 0.62 * (lam_corr + les))
     tc = theta_corr / 1.45 * np.exp(-1.04 * (1.0 + lam_corr + les) / denom) if denom > 0 else 0.0
     out.update(theta_corr=theta_corr, lambda_corr=lam_corr, lambda_es=les, Tc_corr=float(tc))
