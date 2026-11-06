@@ -168,6 +168,20 @@ log shows the main process' last step before a kill.  Resubmit:
 2026-11-01 `Tc_corr` → tag `corr.mu0.1`), `submit_opt_gl_TiNbZrHfTaMoWYVSc_corr2.sh` (2026-11-02; revised `Tc_corr`:
 bcc θ_D for Sc only + λ_es on V only, α_V = 0.4 → tag `corr2.mu0.1`; refuses to run if `consts.py` is older); `submit_opt_gl_TiNbZrHfTaMoWYVSc_corr2_mc4-10.sh` (2026-11-03): the same corr2 target for mincomp 4, 5, 6, 8, 9, 10.
 
+`submit_opt_gl_TiNbZrHfTaMoWYVSc_mu0.1_mc4-10.sh` (2026-11-06): set B **without** correction (target `Tc_mu0.1`, tag `mu0.1`,
+as set A) for mincomp 4, 5, 6, 8, 9, 10, completing the uncorrected series (mc 2/3/7 from `_mc23.sh` / `_mc7.sh`).
+
+## bcc / fcc / hcp comparison of the champions (2026-11-06)
+
+`scripts/td_champion_list.py` (workstation, reads `opt.ratios.gl/`) writes `slurm/compositions/td_champions_gl.csv`: the
+champion (best target among compositions with >= mincomp elements above 5 %) of set A GL `Tc_mu0.1` mc2–10, set B GL
+corr2 mc2–10 and every early-stopped set-B `Tc_mu0.1` run, plus the 12 pure elements (references for formation energies,
+into `thermodynamic/elements.sra.ew0.6.topola`, so an rsync back does not overwrite the workstation `elements.sra.ew0.6`).
+`bash slurm/submit_td_champions.sh` (login node; `DRY=1`, `ONLY="tag ..."`, `MAXPAR`) submits `topola_td_array.sbatch` for
+the rows without `structure_summary.json`: one composition per task, 7 cpus, 8G, 2 days, `scripts/structure_compare.py`
+with `KKR_PARAMS_LATTICE` (sra, pbe, ew 0.6, bzqlty 10, mxl 3, nmag — the settings of all earlier `thermodynamic/` runs).
+No restart inside a composition.  After more set-B `Tc_mu0.1` runs finish: rerun the list script, commit, resubmit.
+
 ## Status log
 
 **2026-10-23** — first array 9383051 (`0_compare_with_known_V.sh`, 7 tasks × 3 alloys, 14 cpus, 8G, 2 d)
