@@ -603,3 +603,31 @@ zweryfikować w źródłach**.
 
 - Skrypt `3_run_validation_binaries*.sh` cytuje Hulm & Blaugher (1961) i Matthiasa jako źródło przebiegów Tc(x).
 - Linie: Nb–Zr, Nb–Ti, Mo–Re, Nb–Ta, Nb–Mo, Nb–Hf.
+
+---
+
+## 4. Hc2 i parametr Makiego z rachunków KKR (sesja HC2, 2026-11-03)
+
+Kontekst: Idczak chce wyznaczać Hc2(T) w modelu WHH (α_M, λ_SO) z teorii. Notatka: `DOCS/ROZMOWA_2026-11-03_Hc2.md`.
+
+### 4.1 Tarantini i in., Supercond. Sci. Technol. 39, 021001 (2026) — wzory WHH w SI
+- C. Tarantini, E. F. Talantsev, I. Pallecchi, J. Hänisch, J. L. Tallon, D. C. Larbalestier,
+  doi [10.1088/1361-6668/ae417f](https://doi.org/10.1088/1361-6668/ae417f); plik `papers_data/Tarantini_2026_Supercond._Sci._Technol._39_021001.pdf`.
+- **Co bierzemy:** α_M = 3ħ/(2m v_F²τ) (wz. 10) = 3e²ħγρ_n/(2mπ²k_B²) (wz. 9); λ_SO = ħ/(3πk_BTcτ₂) (wz. 11);
+  równanie WHH (14–15); D = v_F²τ/3 i μ0|dHc2/dT| = 4Φ0k_B/(π²ħD) (Appendix C).
+- **Weryfikacja:** `PEŁNY` (sekcja 3.3 i Appendix B–C).
+
+### 4.2 Raghuraman, Wang, Widom, Appl. Phys. Lett. (2021) — ρ_0 HEA z KKR-CPA + Kubo–Greenwood
+- arXiv [2108.11739](https://arxiv.org/abs/2108.11739).
+- **Co bierzemy:** metoda liczenia oporu resztkowego stopów losowych (AlₓCoCrFeNi, MoNbTaVₓW); brakujący składnik ρ_0.
+- **Weryfikacja:** `ABS`.
+
+### 4.3 Ab initio Hc2 dla Nb, NbSe₂, MgB₂ (granica czysta)
+- arXiv [cond-mat/0404628](https://ar5iv.arxiv.org/html/cond-mat/0404628).
+- **Co bierzemy:** przykład Hc2 z powierzchni Fermiego ab initio (v_F przeskalowane przez renormalizację masy).
+- **Weryfikacja:** `ABS`.
+
+### 4.4 Inne trafienia
+- (NbTa)₀.₆₇(MoHfW)₀.₃₃, PRB 106, 184512 (2022): KKR-CPA tylko do struktury elektronowej, Hc2 z pomiaru
+  ([UWr](https://wfa.uwr.edu.pl/en/?p=81425)). `ABS`.
+- AlTiVNb / AlTiCrMo: KKR-CPA + Kubo–Greenwood, arXiv [2503.13235](https://arxiv.org/pdf/2503.13235). `ABS`.

@@ -9,6 +9,86 @@ C = []
 md = lambda s: C.append(nbf.v4.new_markdown_cell(s.strip('\n')))
 code = lambda s: C.append(nbf.v4.new_code_cell(s.strip('\n')))
 
+# bcc/fcc/hcp + ΔH of the champions (same cell in build_OptGL_mu0.1_Runs.py)
+TD_CODE = r"""
+import sys
+sys.path.insert(0, '../scripts')
+from src.elements import ELEMENTS as ELEMENT_DATA
+
+TD_LIST = Path('../slurm/compositions/td_champions_gl.csv')
+EL_TD = Path('../thermodynamic/elements.sra.ew0.6.topola')
+RY_MEV = 13.605693122994 * 1000
+STRUCT = ('bcc', 'fcc', 'hcp')
+REF_BROKEN = {'Re'}          # Topola Re run: B_bcc ~ 19 000 GPa, bcc ground state, E_bcc 2.79 eV below ebulk
+
+
+def read_td(d):
+    s = json.loads((d / 'structure_summary.json').read_text())
+    t = {f'E_{st}': s[st]['energy_per_atom_ry'] for st in STRUCT}
+    a_scan = [float(re.findall(r'_(\d+\.\d+)', f.name)[-1]) for f in (d / 'bcc').glob('*.inp')]
+    t.update(most_stable=s['most_stable'], a_bcc=s['bcc']['lattice_constant_bohr'], B_bcc=s['bcc']['bulk_modulus_gpa'],
+             dE_fcc=(t['E_fcc'] - t['E_bcc']) * RY_MEV, dE_hcp=(t['E_hcp'] - t['E_bcc']) * RY_MEV, comp=s['composition'])
+    t['a_in_scan'] = min(a_scan) < t['a_bcc'] < max(a_scan)
+    return t
+
+
+def element_refs(elements):
+    rows = []
+    for el in elements:
+        t = read_td(EL_TD / f'{el}1.0000')
+        rows.append({'el': el, 'gs_KKR': min(STRUCT, key=lambda st: t[f'E_{st}']),
+                     'E_fcc−E_bcc': t['dE_fcc'], 'E_hcp−E_bcc': t['dE_hcp'], 'a_bcc': t['a_bcc'], 'B_bcc': t['B_bcc'],
+                     'a in scan': t['a_in_scan'], 'E_bcc−ebulk': (t['E_bcc'] - ELEMENT_DATA[el].ebulk) * RY_MEV,
+                     'E_gs−E_bcc': np.nan if el in REF_BROKEN else min(0.0, t['dE_fcc'], t['dE_hcp'])})
+    return pd.DataFrame(rows).set_index('el')
+
+
+def champions_td(prefix, champ=None):
+    # rows <prefix>_mc<m> of TD_LIST; champ (index mincomp) = the notebook's champions, checked against the TD composition
+    lst = pd.read_csv(TD_LIST)
+    lst = lst[lst.tag.str.startswith(prefix + '_mc')]
+    rows = []
+    for _, r in lst.iterrows():
+        mc = int(r.tag.rsplit('_mc', 1)[1])
+        t = read_td(Path('..') / r.outdir / r.dirname)
+        c = {el: x for el, x in t['comp'].items() if x > 0}
+        if champ is not None:
+            dev = max(abs(c.get(el, 0.0) - champ.loc[mc, el]) for el in ELEMENTS)
+            assert dev < 1e-3, f'{r.tag}: TD composition differs from the notebook champion by {dev:.4f}'
+        e_bcc_ref = sum(x * ELEMENT_DATA[el].ebulk for el, x in c.items())
+        e_min = min(t[f'E_{st}'] for st in STRUCT)
+        ok = not (set(c) & REF_BROKEN)
+        rows.append({'mincomp': mc, 'Tc': r.Tc, 'champion': comp_str(pd.Series(c)), 'most_stable': t['most_stable'],
+                     'E_fcc−E_bcc': t['dE_fcc'], 'E_hcp−E_bcc': t['dE_hcp'], 'a_bcc': t['a_bcc'], 'B_bcc': t['B_bcc'],
+                     'a in scan': t['a_in_scan'],
+                     'ΔH_bcc': (t['E_bcc'] - e_bcc_ref) * RY_MEV if ok else np.nan,
+                     'ΔH_gs': ((e_min - e_bcc_ref) * RY_MEV - sum(x * REF.loc[el, 'E_gs−E_bcc'] for el, x in c.items())
+                               if ok else np.nan)})
+    return pd.DataFrame(rows).set_index('mincomp').sort_index()
+
+
+def td_plot(series):
+    fig, ax = plt.subplots(1, 2, figsize=(14, 4.5))
+    for (name, t), m in zip(series.items(), 'osd^'):
+        ax[0].plot(t.index, t['E_fcc−E_bcc'], m + '-', label=f'{name}: fcc')
+        ax[0].plot(t.index, t['E_hcp−E_bcc'], m + '--', label=f'{name}: hcp')
+        ax[1].plot(t.index, t['ΔH_bcc'], m + '-', label=f'{name}: ΔH_bcc')
+        ax[1].plot(t.index, t['ΔH_gs'], m + ':', label=f'{name}: ΔH_gs')
+    ax[0].set(xlabel='mincomp', ylabel='E − E_bcc [meV/atom]', title='Structure energy above bcc (champions)')
+    ax[1].set(xlabel='mincomp', ylabel='ΔH [meV/atom]', title='Mixing enthalpy of the champions')
+    ax[1].axhline(0, c='k', lw=.8)
+    for a in ax:
+        a.grid(alpha=.3); a.legend(fontsize=8)
+    plt.tight_layout(); plt.show()
+
+
+REF = element_refs(['Ti', 'Nb', 'Zr', 'Hf', 'Ta', 'Mo', 'W', 'Y', 'Re', 'Ru', 'V', 'Sc'])
+REF_FMT = {'E_fcc−E_bcc': '{:.1f}', 'E_hcp−E_bcc': '{:.1f}', 'a_bcc': '{:.3f}', 'B_bcc': '{:.0f}', 'E_bcc−ebulk': '{:.1f}',
+           'E_gs−E_bcc': '{:.1f}'}
+TD_FMT = {'Tc': '{:.2f}', 'E_fcc−E_bcc': '{:.1f}', 'E_hcp−E_bcc': '{:.1f}', 'a_bcc': '{:.3f}', 'B_bcc': '{:.0f}',
+          'ΔH_bcc': '{:+.1f}', 'ΔH_gs': '{:+.1f}'}
+"""
+
 md(r"""
 # Skład B (TiNbZrHfTaMoWYVSc): optymalizacje GL z celem `Tc_corr` (corr2), mincomp 2–10
 
@@ -375,7 +455,56 @@ pd.DataFrame(rows).set_index('mincomp').round(2)
 """)
 
 md(r"""
-## 11. Wnioski (2026-11-06)
+## 11. Termodynamika mistrzów: bcc / fcc / hcp i ΔH
+
+**Co policzono.** Dla mistrza każdego runu na Topoli policzono `scripts/structure_compare.py`. Skrypt to
+`slurm/topola_td_array.sbatch`, a lista składów to `slurm/compositions/td_champions_gl.csv` (2026-11-06/09). Ustawienia KKR są takie
+same jak w etapie lattice optymalizacji (sra, PBE, ew 0.6, bzqlty 10, mxl 3, nmag): EOS dla bcc i fcc oraz hcp dla 5
+wartości c/a. Wyniki są w `thermodynamic/<run>/<skład>/structure_summary.json`, a pierwiastki w
+`thermodynamic/elements.sra.ew0.6.topola/`.
+
+**Dwie serie mistrzów:**
+- **B corr2:** mistrzowie tego notebooka, cel `Tc_corr2`;
+- **B mu0.1:** mistrzowie runów składu B bez poprawki, cel `Tc_mu0.1`. Są to runy mc2–10
+  `...gl.mu0.1.acqbeta2...`, z czego mc 2/3/7 opisuje `OptGL_B_corr_Runs.ipynb`, a mc 4–6 i 8–10 nie mają jeszcze
+  osobnego notebooka. Kolumna `Tc` to `Tc_mu0.1` mistrza.
+
+**Definicje:**
+- **E_fcc − E_bcc, E_hcp − E_bcc** [meV/atom]: wartość > 0 oznacza, że bcc ma niższą energię.
+- **ΔH_bcc** = E_bcc(stop) − Σ c_i E_bcc(i), z referencjami bcc. Referencje to `ebulk` z `src/elements.py`, tak jak
+  w dG pipeline'u. Energie bcc z Topoli zgadzają się z `ebulk` do ≤ 2 meV, z wyjątkiem W (53 meV).
+- **ΔH_gs** = min po strukturach E(stop) − Σ c_i E_gs(i), z referencją w stanie podstawowym KKR każdego
+  pierwiastka (hcp dla Ti, Zr, Hf, Y, Sc).
+""")
+code(TD_CODE)
+code(r"""
+TD_C2 = champions_td('B_corr2', champ)
+TD_MU = champions_td('B_mu0.1')
+display(REF.loc[ELEMENTS].style.format(REF_FMT, na_rep='—').set_caption('Referencje pierwiastków (Topola, te same ustawienia)'))
+display(TD_C2.style.format(TD_FMT, na_rep='—').set_caption('Mistrzowie B corr2 (Tc = Tc_corr2)'))
+display(TD_MU.style.format(TD_FMT, na_rep='—').set_caption('Mistrzowie B mu0.1 (Tc = Tc_mu0.1)'))
+td_plot({'B corr2': TD_C2, 'B mu0.1': TD_MU})
+pd.DataFrame({'ΔH_bcc corr2': TD_C2['ΔH_bcc'], 'ΔH_bcc mu0.1': TD_MU['ΔH_bcc'],
+              'różnica mu0.1 − corr2': TD_MU['ΔH_bcc'] - TD_C2['ΔH_bcc'],
+              'V mistrza mu0.1 [%]': [100 * parse_name(n).get('V', 0) for n in
+                                      pd.read_csv(TD_LIST).set_index('tag').loc[[f'B_mu0.1_mc{m}' for m in TD_MU.index], 'dirname']],
+              'Sc mistrza corr2 [%]': 100 * champ.Sc}).round(1)
+""")
+md(r"""
+**Obserwacje.**
+- **Struktura.** Wszyscy mistrzowie obu serii są bcc. fcc leży 190–236, a hcp 218–266 meV/atom wyżej.
+- **ΔH_bcc jest dodatnie i rośnie z mincomp.** Dla B corr2 wynosi od +72 meV (Nb61Zr39) do +230 meV (mc10).
+  Na mc2–3 jest takie samo jak w składzie A (+73, +77 meV). Dla mc4–8 różni się od A o −23…+47 meV, bez stałego
+  znaku (A: +48, +131, +105, +152, +118 meV).
+- **Bez poprawki (B mu0.1) dodatkiem jest V:** w mc4–7 zamiast Sc, w mc8 obok Sc. Dla mc4–8 daje to ΔH_bcc wyższe o 40–95 meV niż w corr2
+  przy podobnym Tc (każda seria liczona swoim celem, różnica ≤ 0.4 K). Dla mc9–10, gdzie oba warianty zawierają V i Sc,
+  różnica spada do −7…+15 meV.
+- **Wyjątek: mistrz mc2 bez poprawki (V68Ti32).** To inny basen, z a = 5.8 bohr i ΔH_bcc +66 meV.
+- **Referencje.** Wybór stanu podstawowego zamiast bcc dodaje tylko 2–17 meV.
+""")
+
+md(r"""
+## 12. Wnioski (2026-11-06)
 
 **Przebieg.** Wszystkie 9 runów zakończyło się early stopem (16–37 iteracji). Każdy nowy punkt spełnia mincomp.
 Wyszukiwanie jest lokalne: punkty z płaszczyzn sympleksu pojawiają się tylko na początku mc2–5, punkty globalne tylko
