@@ -1,0 +1,6648 @@
+{
+ "Hf10Nb25Sc25Ti20Zr20": {
+  "src": "results/comparison.sra.ew0.6.bz10-10-20.gl/Hf10Nb25Sc25Ti20Zr20",
+  "results": {
+   "name": "Hf10Nb25Sc25Ti20Zr20",
+   "a0_bohr": 6.541727395535587,
+   "KKR_PARAMS_FINALSCF": {
+    "ew": 0.6,
+    "xc": "pbe",
+    "rel": "sra",
+    "bzqlty": 20,
+    "mxl": 3,
+    "magtype": "nmag",
+    "delta": 0.005,
+    "pmix": 0.01,
+    "edelt": 0.001,
+    "subdir": "finalscf",
+    "output": "finalscf",
+    "mcmillan_cutoff_mode": "valence"
+   },
+   "lambda": 1.1893128346787063,
+   "Tc_mu0.1": 15.889167166449777,
+   "Tc_mu0.2": 10.003586820557599,
+   "thetaDB_K": 216.84154309722712,
+   "mixture_debye_temperature": 320.5,
+   "eta_mix": 0.09829755213498065,
+   "Sc_Ntot": 7.724518985940535,
+   "Ti_Ntot": 14.460166847394568,
+   "Zr_Ntot": 9.176493270939936,
+   "Nb_Ntot": 10.19994020824108,
+   "Hf_Ntot": 8.493457801764592,
+   "Sc": 0.25,
+   "Ti": 0.2,
+   "Zr": 0.2,
+   "Nb": 0.25,
+   "Hf": 0.1,
+   "Tc_exp_all": [
+    6.83
+   ],
+   "Tc_exp_names": [
+    "Hf10Nb25Sc25Ti20Zr20"
+   ],
+   "Tc_exp": 6.83
+  },
+  "run_params": {
+   "element_labels": [
+    "Sc",
+    "Ti",
+    "Zr",
+    "Nb",
+    "Hf"
+   ],
+   "concentrations": [
+    25.0,
+    20.0,
+    20.0,
+    25.0,
+    10.0
+   ]
+  }
+ },
+ "Hf21Nb25Ti15V15Zr24": {
+  "src": "results/comparison.sra.ew0.6.bz10-10-20.gl/Hf21Nb25Ti15V15Zr24",
+  "results": {
+   "name": "Hf21Nb25Ti15V15Zr24",
+   "a0_bohr": 6.402687197986067,
+   "KKR_PARAMS_FINALSCF": {
+    "ew": 0.6,
+    "xc": "pbe",
+    "rel": "sra",
+    "bzqlty": 20,
+    "mxl": 3,
+    "magtype": "nmag",
+    "delta": 0.005,
+    "pmix": 0.01,
+    "edelt": 0.001,
+    "subdir": "finalscf",
+    "output": "finalscf",
+    "mcmillan_cutoff_mode": "valence"
+   },
+   "lambda": 0.8327943568175254,
+   "Tc_mu0.1": 11.20464639805044,
+   "Tc_mu0.2": 5.027959801009522,
+   "thetaDB_K": 266.7231422121479,
+   "mixture_debye_temperature": 306.05,
+   "eta_mix": 0.12661656104183827,
+   "Hf_Ntot": 7.8095653172918595,
+   "Nb_Ntot": 9.576016616570085,
+   "Ti_Ntot": 12.85211910662807,
+   "V_Ntot": 18.53045257546625,
+   "Zr_Ntot": 8.465120884352919,
+   "Hf": 0.21,
+   "Nb": 0.25,
+   "Ti": 0.15,
+   "V": 0.15,
+   "Zr": 0.24,
+   "Tc_exp_all": [
+    5.3
+   ],
+   "Tc_exp_names": [
+    "Hf21Nb25Ti15V15Zr24"
+   ],
+   "Tc_exp": 5.3
+  },
+  "run_params": {
+   "element_labels": [
+    "Hf",
+    "Nb",
+    "Ti",
+    "V",
+    "Zr"
+   ],
+   "concentrations": [
+    21.0,
+    25.0,
+    15.0,
+    15.0,
+    24.0
+   ]
+  }
+ },
+ "Hf35Nb10Ta35Mo10W10": {
+  "src": "results/comparison.sra.ew0.6.bz10-10-20.gl/Hf35Nb10Ta35Mo10W10",
+  "results": {
+   "name": "Hf35Nb10Ta35Mo10W10",
+   "a0_bohr": 6.338129237212889,
+   "KKR_PARAMS_FINALSCF": {
+    "ew": 0.6,
+    "xc": "pbe",
+    "rel": "sra",
+    "bzqlty": 20,
+    "mxl": 3,
+    "magtype": "nmag",
+    "delta": 0.005,
+    "pmix": 0.01,
+    "edelt": 0.001,
+    "subdir": "finalscf",
+    "output": "finalscf",
+    "mcmillan_cutoff_mode": "valence"
+   },
+   "lambda": 0.5543150634372885,
+   "Tc_mu0.1": 4.00303308256362,
+   "Tc_mu0.2": 0.6543886077419853,
+   "thetaDB_K": 272.56495295324595,
+   "mixture_debye_temperature": 284.0,
+   "eta_mix": 0.14730458757906925,
+   "Nb_Ntot": 7.931751398796296,
+   "Mo_Ntot": 7.3308096841460415,
+   "Hf_Ntot": 6.937043622822376,
+   "Ta_Ntot": 7.214073235118599,
+   "W_Ntot": 6.438303651014233,
+   "Nb": 0.1,
+   "Mo": 0.1,
+   "Hf": 0.35,
+   "Ta": 0.35,
+   "W": 0.1,
+   "Tc_exp_all": [
+    4.06
+   ],
+   "Tc_exp_names": [
+    "Hf35Nb10Ta35Mo10W10"
+   ],
+   "Tc_exp": 4.06
+  },
+  "run_params": {
+   "element_labels": [
+    "Nb",
+    "Mo",
+    "Hf",
+    "Ta",
+    "W"
+   ],
+   "concentrations": [
+    10.0,
+    10.0,
+    35.0,
+    35.0,
+    10.0
+   ]
+  }
+ },
+ "Hf35Nb22Ta23Mo10W10": {
+  "src": "results/comparison.sra.ew0.6.bz10-10-20.gl/Hf35Nb22Ta23Mo10W10",
+  "results": {
+   "name": "Hf35Nb22Ta23Mo10W10",
+   "a0_bohr": 6.339101254556618,
+   "KKR_PARAMS_FINALSCF": {
+    "ew": 0.6,
+    "xc": "pbe",
+    "rel": "sra",
+    "bzqlty": 20,
+    "mxl": 3,
+    "magtype": "nmag",
+    "delta": 0.005,
+    "pmix": 0.01,
+    "edelt": 0.001,
+    "subdir": "finalscf",
+    "output": "finalscf",
+    "mcmillan_cutoff_mode": "valence"
+   },
+   "lambda": 0.5942154479190793,
+   "Tc_mu0.1": 4.997867552208488,
+   "Tc_mu0.2": 1.063354920047889,
+   "thetaDB_K": 271.9399918002493,
+   "mixture_debye_temperature": 288.2,
+   "eta_mix": 0.147004675818862,
+   "Nb_Ntot": 8.006953437624333,
+   "Mo_Ntot": 7.409694984328896,
+   "Hf_Ntot": 6.988843353590533,
+   "Ta_Ntot": 7.283829377087556,
+   "W_Ntot": 6.508602700421946,
+   "Nb": 0.22,
+   "Mo": 0.1,
+   "Hf": 0.35,
+   "Ta": 0.23,
+   "W": 0.1,
+   "Tc_exp_all": [
+    4.82
+   ],
+   "Tc_exp_names": [
+    "Hf35Nb22Ta23Mo10W10"
+   ],
+   "Tc_exp": 4.82
+  },
+  "run_params": {
+   "element_labels": [
+    "Nb",
+    "Mo",
+    "Hf",
+    "Ta",
+    "W"
+   ],
+   "concentrations": [
+    22.0,
+    10.0,
+    35.0,
+    23.0,
+    10.0
+   ]
+  }
+ },
+ "Hf35Nb35Ta10Mo10W10": {
+  "src": "results/comparison.sra.ew0.6.bz10-10-20.gl/Hf35Nb35Ta10Mo10W10",
+  "results": {
+   "name": "Hf35Nb35Ta10Mo10W10",
+   "a0_bohr": 6.337992160197483,
+   "KKR_PARAMS_FINALSCF": {
+    "ew": 0.6,
+    "xc": "pbe",
+    "rel": "sra",
+    "bzqlty": 20,
+    "mxl": 3,
+    "magtype": "nmag",
+    "delta": 0.005,
+    "pmix": 0.01,
+    "edelt": 0.001,
+    "subdir": "finalscf",
+    "output": "finalscf",
+    "mcmillan_cutoff_mode": "valence"
+   },
+   "lambda": 0.6875720797785607,
+   "Tc_mu0.1": 7.526982993590383,
+   "Tc_mu0.2": 2.4029437150085267,
+   "thetaDB_K": 273.3404329687394,
+   "mixture_debye_temperature": 292.75,
+   "eta_mix": 0.15896441655367613,
+   "Nb_Ntot": 8.078876161914774,
+   "Mo_Ntot": 7.484928086835285,
+   "Hf_Ntot": 7.031705413626682,
+   "Ta_Ntot": 7.584733518096242,
+   "W_Ntot": 6.5767351160183365,
+   "Nb": 0.35,
+   "Mo": 0.1,
+   "Hf": 0.35,
+   "Ta": 0.1,
+   "W": 0.1,
+   "Tc_exp_all": [
+    5.91
+   ],
+   "Tc_exp_names": [
+    "Hf35Nb35Ta10Mo10W10"
+   ],
+   "Tc_exp": 5.91
+  },
+  "run_params": {
+   "element_labels": [
+    "Nb",
+    "Mo",
+    "Hf",
+    "Ta",
+    "W"
+   ],
+   "concentrations": [
+    35.0,
+    10.0,
+    35.0,
+    10.0,
+    10.0
+   ]
+  }
+ },
+ "Hf5Nb45Sc10Ti5Zr35": {
+  "src": "results/comparison.sra.ew0.6.bz10-10-20.gl/Hf5Nb45Sc10Ti5Zr35",
+  "results": {
+   "name": "Hf5Nb45Sc10Ti5Zr35",
+   "a0_bohr": 6.489500539298963,
+   "KKR_PARAMS_FINALSCF": {
+    "ew": 0.6,
+    "xc": "pbe",
+    "rel": "sra",
+    "bzqlty": 20,
+    "mxl": 3,
+    "magtype": "nmag",
+    "delta": 0.005,
+    "pmix": 0.01,
+    "edelt": 0.001,
+    "subdir": "finalscf",
+    "output": "finalscf",
+    "mcmillan_cutoff_mode": "valence"
+   },
+   "lambda": 0.9351195232432763,
+   "Tc_mu0.1": 13.993159391854824,
+   "Tc_mu0.2": 7.227045306772015,
+   "thetaDB_K": 270.3668867569062,
+   "mixture_debye_temperature": 287.25,
+   "eta_mix": 0.13426703090973124,
+   "Sc_Ntot": 6.890117872355643,
+   "Ti_Ntot": 13.257594187888442,
+   "Zr_Ntot": 8.803262700707247,
+   "Nb_Ntot": 10.194987041808444,
+   "Hf_Ntot": 8.026426988586223,
+   "Sc": 0.1,
+   "Ti": 0.05,
+   "Zr": 0.35,
+   "Nb": 0.45,
+   "Hf": 0.05,
+   "Tc_exp_all": [
+    7.73
+   ],
+   "Tc_exp_names": [
+    "Hf5Nb45Sc10Ti5Zr35"
+   ],
+   "Tc_exp": 7.73
+  },
+  "run_params": {
+   "element_labels": [
+    "Sc",
+    "Ti",
+    "Zr",
+    "Nb",
+    "Hf"
+   ],
+   "concentrations": [
+    10.0,
+    5.0,
+    35.0,
+    45.0,
+    5.0
+   ]
+  }
+ },
+ "Hf5Nb45Sc20Ti15Zr15": {
+  "src": "results/comparison.sra.ew0.6.bz10-10-20.gl/Hf5Nb45Sc20Ti15Zr15",
+  "results": {
+   "name": "Hf5Nb45Sc20Ti15Zr15",
+   "a0_bohr": 6.450421238396013,
+   "KKR_PARAMS_FINALSCF": {
+    "ew": 0.6,
+    "xc": "pbe",
+    "rel": "sra",
+    "bzqlty": 20,
+    "mxl": 3,
+    "magtype": "nmag",
+    "delta": 0.005,
+    "pmix": 0.01,
+    "edelt": 0.001,
+    "subdir": "finalscf",
+    "output": "finalscf",
+    "mcmillan_cutoff_mode": "valence"
+   },
+   "lambda": 0.9143731220055613,
+   "Tc_mu0.1": 13.256748667952,
+   "Tc_mu0.2": 6.681976101936846,
+   "thetaDB_K": 266.0683600283263,
+   "mixture_debye_temperature": 310.75,
+   "eta_mix": 0.11442615925637241,
+   "Sc_Ntot": 7.021288467628862,
+   "Ti_Ntot": 13.144689396431382,
+   "Zr_Ntot": 8.52723125404188,
+   "Nb_Ntot": 9.62267762122885,
+   "Hf_Ntot": 7.844046315442231,
+   "Sc": 0.2,
+   "Ti": 0.15,
+   "Zr": 0.15,
+   "Nb": 0.45,
+   "Hf": 0.05,
+   "Tc_exp_all": [
+    7.69
+   ],
+   "Tc_exp_names": [
+    "Hf5Nb45Sc20Ti15Zr15"
+   ],
+   "Tc_exp": 7.69
+  },
+  "run_params": {
+   "element_labels": [
+    "Sc",
+    "Ti",
+    "Zr",
+    "Nb",
+    "Hf"
+   ],
+   "concentrations": [
+    20.0,
+    15.0,
+    15.0,
+    45.0,
+    5.0
+   ]
+  }
+ },
+ "HfMoNbTiZr": {
+  "src": "results/comparison.sra.ew0.6.bz10-10-20.gl/HfMoNbTiZr",
+  "results": {
+   "name": "HfMoNbTiZr",
+   "a0_bohr": 6.35437081426713,
+   "KKR_PARAMS_FINALSCF": {
+    "ew": 0.6,
+    "xc": "pbe",
+    "rel": "sra",
+    "bzqlty": 20,
+    "mxl": 3,
+    "magtype": "nmag",
+    "delta": 0.005,
+    "pmix": 0.01,
+    "edelt": 0.001,
+    "subdir": "finalscf",
+    "output": "finalscf",
+    "mcmillan_cutoff_mode": "valence"
+   },
+   "lambda": 0.7197069283553735,
+   "Tc_mu0.1": 8.856754902176846,
+   "Tc_mu0.2": 3.1153194782702593,
+   "thetaDB_K": 287.92791853237617,
+   "mixture_debye_temperature": 333.0,
+   "eta_mix": 0.13257130444195786,
+   "Hf_Ntot": 7.375874509957607,
+   "Mo_Ntot": 8.459405227255463,
+   "Nb_Ntot": 8.858001645600844,
+   "Ti_Ntot": 12.238508965527911,
+   "Zr_Ntot": 8.036189694993617,
+   "Hf": 0.2,
+   "Mo": 0.2,
+   "Nb": 0.2,
+   "Ti": 0.2,
+   "Zr": 0.2,
+   "Tc_exp_all": [
+    4.1
+   ],
+   "Tc_exp_names": [
+    "HfMoNbTiZr"
+   ],
+   "Tc_exp": 4.1
+  },
+  "run_params": {
+   "element_labels": [
+    "Hf",
+    "Mo",
+    "Nb",
+    "Ti",
+    "Zr"
+   ],
+   "concentrations": [
+    20.0,
+    20.0,
+    20.0,
+    20.0,
+    20.0
+   ]
+  }
+ },
+ "HfNbTa": {
+  "src": "results/comparison.sra.ew0.6.bz10-10-20.gl/HfNbTa",
+  "results": {
+   "name": "HfNbTa",
+   "a0_bohr": 6.412389664401173,
+   "KKR_PARAMS_FINALSCF": {
+    "ew": 0.6,
+    "xc": "pbe",
+    "rel": "sra",
+    "bzqlty": 20,
+    "mxl": 3,
+    "magtype": "nmag",
+    "delta": 0.005,
+    "pmix": 0.01,
+    "edelt": 0.001,
+    "subdir": "finalscf",
+    "output": "finalscf",
+    "mcmillan_cutoff_mode": "valence"
+   },
+   "lambda": 0.8677595411075338,
+   "Tc_mu0.1": 10.744660845868445,
+   "Tc_mu0.2": 5.090578769534261,
+   "thetaDB_K": 236.67241287165578,
+   "mixture_debye_temperature": 255.0,
+   "eta_mix": 0.16076275995482622,
+   "Nb_Ntot": 9.325678931154592,
+   "Hf_Ntot": 8.074076673665386,
+   "Ta_Ntot": 8.489898836535982,
+   "Nb": 0.3333333333333333,
+   "Hf": 0.3333333333333333,
+   "Ta": 0.3333333333333333,
+   "Tc_exp_all": [
+    7.11
+   ],
+   "Tc_exp_names": [
+    "HfNbTa"
+   ],
+   "Tc_exp": 7.11
+  },
+  "run_params": {
+   "element_labels": [
+    "Nb",
+    "Hf",
+    "Ta"
+   ],
+   "concentrations": [
+    33.333,
+    33.333,
+    33.333
+   ]
+  }
+ },
+ "HfNbTaTiV": {
+  "src": "results/comparison.sra.ew0.6.bz10-10-20.gl/HfNbTaTiV",
+  "results": {
+   "name": "HfNbTaTiV",
+   "a0_bohr": 6.264652470464257,
+   "KKR_PARAMS_FINALSCF": {
+    "ew": 0.6,
+    "xc": "pbe",
+    "rel": "sra",
+    "bzqlty": 20,
+    "mxl": 3,
+    "magtype": "nmag",
+    "delta": 0.005,
+    "pmix": 0.01,
+    "edelt": 0.001,
+    "subdir": "finalscf",
+    "output": "finalscf",
+    "mcmillan_cutoff_mode": "valence"
+   },
+   "lambda": 0.7256282044783481,
+   "Tc_mu0.1": 8.617478688950348,
+   "Tc_mu0.2": 3.080630989455617,
+   "thetaDB_K": 274.8373282348498,
+   "mixture_debye_temperature": 313.0,
+   "eta_mix": 0.13253156435173086,
+   "Hf_Ntot": 7.55678218838842,
+   "Nb_Ntot": 8.55225844170843,
+   "Ta_Ntot": 7.846716956668182,
+   "Ti_Ntot": 12.426704337973558,
+   "V_Ntot": 16.791266589118944,
+   "Hf": 0.2,
+   "Nb": 0.2,
+   "Ta": 0.2,
+   "Ti": 0.2,
+   "V": 0.2,
+   "Tc_exp_all": [
+    4.0,
+    5.0
+   ],
+   "Tc_exp_names": [
+    "HfNbTaTiV",
+    "HfNbTaTiV_Sarkar"
+   ],
+   "Tc_exp": 4.5
+  },
+  "run_params": {
+   "element_labels": [
+    "Hf",
+    "Nb",
+    "Ta",
+    "Ti",
+    "V"
+   ],
+   "concentrations": [
+    20.0,
+    20.0,
+    20.0,
+    20.0,
+    20.0
+   ]
+  }
+ },
+ "HfNbTi": {
+  "src": "results/comparison.sra.ew0.6.bz10-10-20.gl/HfNbTi",
+  "results": {
+   "name": "HfNbTi",
+   "a0_bohr": 6.411666325776971,
+   "KKR_PARAMS_FINALSCF": {
+    "ew": 0.6,
+    "xc": "pbe",
+    "rel": "sra",
+    "bzqlty": 20,
+    "mxl": 3,
+    "magtype": "nmag",
+    "delta": 0.005,
+    "pmix": 0.01,
+    "edelt": 0.001,
+    "subdir": "finalscf",
+    "output": "finalscf",
+    "mcmillan_cutoff_mode": "valence"
+   },
+   "lambda": 0.857444387160951,
+   "Tc_mu0.1": 11.092311619924079,
+   "Tc_mu0.2": 5.17577759905874,
+   "thetaDB_K": 249.8012898488722,
+   "mixture_debye_temperature": 315.0,
+   "eta_mix": 0.12491587042221998,
+   "Ti_Ntot": 13.250800224044712,
+   "Nb_Ntot": 9.665236640144524,
+   "Hf_Ntot": 7.993326589844539,
+   "Ti": 0.3333333333333333,
+   "Nb": 0.3333333333333333,
+   "Hf": 0.3333333333333333,
+   "Tc_exp_all": [
+    6.47
+   ],
+   "Tc_exp_names": [
+    "HfNbTi"
+   ],
+   "Tc_exp": 6.47
+  },
+  "run_params": {
+   "element_labels": [
+    "Ti",
+    "Nb",
+    "Hf"
+   ],
+   "concentrations": [
+    33.333,
+    33.333,
+    33.333
+   ]
+  }
+ },
+ "HfNbTiVZr": {
+  "src": "results/comparison.sra.ew0.6.bz10-10-20.gl/HfNbTiVZr",
+  "results": {
+   "name": "HfNbTiVZr",
+   "a0_bohr": 6.351377748814854,
+   "KKR_PARAMS_FINALSCF": {
+    "ew": 0.6,
+    "xc": "pbe",
+    "rel": "sra",
+    "bzqlty": 20,
+    "mxl": 3,
+    "magtype": "nmag",
+    "delta": 0.005,
+    "pmix": 0.01,
+    "edelt": 0.001,
+    "subdir": "finalscf",
+    "output": "finalscf",
+    "mcmillan_cutoff_mode": "valence"
+   },
+   "lambda": 0.8142164424198309,
+   "Tc_mu0.1": 10.93188670194886,
+   "Tc_mu0.2": 4.750433021462136,
+   "thetaDB_K": 272.033627784536,
+   "mixture_debye_temperature": 319.0,
+   "eta_mix": 0.12197968266853644,
+   "Hf_Ntot": 7.594840844521212,
+   "Nb_Ntot": 9.116537147964252,
+   "Ti_Ntot": 12.537053091839248,
+   "V_Ntot": 17.663980948919352,
+   "Zr_Ntot": 8.183996652389759,
+   "Hf": 0.2,
+   "Nb": 0.2,
+   "Ti": 0.2,
+   "V": 0.2,
+   "Zr": 0.2,
+   "Tc_exp_all": [
+    3.73
+   ],
+   "Tc_exp_names": [
+    "HfNbTiVZr"
+   ],
+   "Tc_exp": 3.73
+  },
+  "run_params": {
+   "element_labels": [
+    "Hf",
+    "Nb",
+    "Ti",
+    "V",
+    "Zr"
+   ],
+   "concentrations": [
+    20.0,
+    20.0,
+    20.0,
+    20.0,
+    20.0
+   ]
+  }
+ },
+ "HfNbZr": {
+  "src": "results/comparison.sra.ew0.6.bz10-10-20.gl/HfNbZr",
+  "results": {
+   "name": "HfNbZr",
+   "a0_bohr": 6.573208593463652,
+   "KKR_PARAMS_FINALSCF": {
+    "ew": 0.6,
+    "xc": "pbe",
+    "rel": "sra",
+    "bzqlty": 20,
+    "mxl": 3,
+    "magtype": "nmag",
+    "delta": 0.005,
+    "pmix": 0.01,
+    "edelt": 0.001,
+    "subdir": "finalscf",
+    "output": "finalscf",
+    "mcmillan_cutoff_mode": "valence"
+   },
+   "lambda": 0.9398913487316902,
+   "Tc_mu0.1": 12.560893988277037,
+   "Tc_mu0.2": 6.5221564861651835,
+   "thetaDB_K": 240.64411517259262,
+   "mixture_debye_temperature": 265.0,
+   "eta_mix": 0.1443178780572587,
+   "Zr_Ntot": 9.430073786220142,
+   "Nb_Ntot": 11.261696243847876,
+   "Hf_Ntot": 8.572815472246429,
+   "Zr": 0.3333333333333333,
+   "Nb": 0.3333333333333333,
+   "Hf": 0.3333333333333333,
+   "Tc_exp_all": [
+    7.07
+   ],
+   "Tc_exp_names": [
+    "HfNbZr"
+   ],
+   "Tc_exp": 7.07
+  },
+  "run_params": {
+   "element_labels": [
+    "Zr",
+    "Nb",
+    "Hf"
+   ],
+   "concentrations": [
+    33.333,
+    33.333,
+    33.333
+   ]
+  }
+ },
+ "Nb25Ta25Ti25Zr25": {
+  "src": "results/comparison.sra.ew0.6.bz10-10-20.gl/Nb25Ta25Ti25Zr25",
+  "results": {
+   "name": "Nb25Ta25Ti25Zr25",
+   "a0_bohr": 6.369126983244518,
+   "KKR_PARAMS_FINALSCF": {
+    "ew": 0.6,
+    "xc": "pbe",
+    "rel": "sra",
+    "bzqlty": 20,
+    "mxl": 3,
+    "magtype": "nmag",
+    "delta": 0.005,
+    "pmix": 0.01,
+    "edelt": 0.001,
+    "subdir": "finalscf",
+    "output": "finalscf",
+    "mcmillan_cutoff_mode": "valence"
+   },
+   "lambda": 0.8233183066391386,
+   "Tc_mu0.1": 11.301979268862738,
+   "Tc_mu0.2": 4.990731859127526,
+   "thetaDB_K": 275.11782770916574,
+   "mixture_debye_temperature": 301.25,
+   "eta_mix": 0.1411055258736013,
+   "Ti_Ntot": 12.68929144502822,
+   "Zr_Ntot": 8.408286665512705,
+   "Nb_Ntot": 9.298280104730637,
+   "Ta_Ntot": 8.4928439991205,
+   "Ti": 0.25,
+   "Zr": 0.25,
+   "Nb": 0.25,
+   "Ta": 0.25,
+   "Tc_exp_all": [
+    7.75,
+    8.12
+   ],
+   "Tc_exp_names": [
+    "Nb25Ta25Ti25Zr25",
+    "TaNbZrTi_Krishnan"
+   ],
+   "Tc_exp": 7.935
+  },
+  "run_params": {
+   "element_labels": [
+    "Ti",
+    "Zr",
+    "Nb",
+    "Ta"
+   ],
+   "concentrations": [
+    25.0,
+    25.0,
+    25.0,
+    25.0
+   ]
+  }
+ },
+ "Nb34Ti33Zr14Ta11Hf8": {
+  "src": "results/comparison.sra.ew0.6.bz10-10-20.gl/Nb34Ti33Zr14Ta11Hf8",
+  "results": {
+   "name": "Nb34Ti33Zr14Ta11Hf8",
+   "a0_bohr": 6.350907727320846,
+   "KKR_PARAMS_FINALSCF": {
+    "ew": 0.6,
+    "xc": "pbe",
+    "rel": "sra",
+    "bzqlty": 20,
+    "mxl": 3,
+    "magtype": "nmag",
+    "delta": 0.005,
+    "pmix": 0.01,
+    "edelt": 0.001,
+    "subdir": "finalscf",
+    "output": "finalscf",
+    "mcmillan_cutoff_mode": "valence"
+   },
+   "lambda": 0.8224947620567955,
+   "Tc_mu0.1": 11.481473516197791,
+   "Tc_mu0.2": 5.062760645372605,
+   "thetaDB_K": 280.0381115762444,
+   "mixture_debye_temperature": 316.29999999999995,
+   "eta_mix": 0.1334759936310789,
+   "Nb_Ntot": 9.221519022642935,
+   "Ti_Ntot": 12.665062465594817,
+   "Zr_Ntot": 8.326549754428498,
+   "Ta_Ntot": 8.447316316523072,
+   "Hf_Ntot": 7.693243731631218,
+   "Nb": 0.34,
+   "Ti": 0.33,
+   "Zr": 0.14,
+   "Ta": 0.11,
+   "Hf": 0.08,
+   "Tc_exp_all": [
+    7.5
+   ],
+   "Tc_exp_names": [
+    "Nb34Ti33Zr14Ta11Hf8"
+   ],
+   "Tc_exp": 7.5
+  },
+  "run_params": {
+   "element_labels": [
+    "Nb",
+    "Ti",
+    "Zr",
+    "Ta",
+    "Hf"
+   ],
+   "concentrations": [
+    34.0,
+    33.0,
+    14.0,
+    11.0,
+    8.0
+   ]
+  }
+ },
+ "Nb40Hf20Zr20Ti20": {
+  "src": "results/comparison.sra.ew0.6.bz10-10-20.gl/Nb40Hf20Zr20Ti20",
+  "results": {
+   "name": "Nb40Hf20Zr20Ti20",
+   "a0_bohr": 6.439550908013985,
+   "KKR_PARAMS_FINALSCF": {
+    "ew": 0.6,
+    "xc": "pbe",
+    "rel": "sra",
+    "bzqlty": 20,
+    "mxl": 3,
+    "magtype": "nmag",
+    "delta": 0.005,
+    "pmix": 0.01,
+    "edelt": 0.001,
+    "subdir": "finalscf",
+    "output": "finalscf",
+    "mcmillan_cutoff_mode": "valence"
+   },
+   "lambda": 0.8563490096774599,
+   "Tc_mu0.1": 11.895220706051353,
+   "Tc_mu0.2": 5.541242825261933,
+   "thetaDB_K": 268.5232998816872,
+   "mixture_debye_temperature": 298.0,
+   "eta_mix": 0.13636958584992115,
+   "Ti_Ntot": 13.171061691440332,
+   "Zr_Ntot": 8.740127142128966,
+   "Nb_Ntot": 9.985342170470355,
+   "Hf_Ntot": 8.016822740267749,
+   "Ti": 0.2,
+   "Zr": 0.2,
+   "Nb": 0.4,
+   "Hf": 0.2,
+   "Tc_exp_all": [
+    7.99
+   ],
+   "Tc_exp_names": [
+    "Nb40Hf20Zr20Ti20"
+   ],
+   "Tc_exp": 7.99
+  },
+  "run_params": {
+   "element_labels": [
+    "Ti",
+    "Zr",
+    "Nb",
+    "Hf"
+   ],
+   "concentrations": [
+    20.0,
+    20.0,
+    40.0,
+    20.0
+   ]
+  }
+ },
+ "Nb47Re20HfZrTi33": {
+  "src": "results/comparison.sra.ew0.6.bz10-10-20.gl/Nb47Re20HfZrTi33",
+  "results": {
+   "name": "Nb47Re20HfZrTi33",
+   "a0_bohr": 6.223658810243363,
+   "KKR_PARAMS_FINALSCF": {
+    "ew": 0.6,
+    "xc": "pbe",
+    "rel": "sra",
+    "bzqlty": 20,
+    "mxl": 3,
+    "magtype": "nmag",
+    "delta": 0.005,
+    "pmix": 0.01,
+    "edelt": 0.001,
+    "subdir": "finalscf",
+    "output": "finalscf",
+    "mcmillan_cutoff_mode": "valence"
+   },
+   "lambda": 0.4873464957128326,
+   "Tc_mu0.1": 2.9161552750355253,
+   "Tc_mu0.2": 0.24286522429285787,
+   "thetaDB_K": 321.54138356281385,
+   "mixture_debye_temperature": 315.85,
+   "eta_mix": 0.12803817448309412,
+   "Ti_Ntot": 9.877592263420908,
+   "Zr_Ntot": 6.3724481028797335,
+   "Nb_Ntot": 6.6619820070751326,
+   "Hf_Ntot": 5.856943511769279,
+   "Re_Ntot": 4.968196808011589,
+   "Ti": 0.11,
+   "Zr": 0.11,
+   "Nb": 0.47,
+   "Hf": 0.11,
+   "Re": 0.2,
+   "Tc_exp_all": [
+    5.42
+   ],
+   "Tc_exp_names": [
+    "Nb47Re20HfZrTi33"
+   ],
+   "Tc_exp": 5.42
+  },
+  "run_params": {
+   "element_labels": [
+    "Ti",
+    "Zr",
+    "Nb",
+    "Hf",
+    "Re"
+   ],
+   "concentrations": [
+    11.0,
+    11.0,
+    47.0,
+    11.0,
+    20.0
+   ]
+  }
+ },
+ "Nb50Ti25Mo25": {
+  "src": "results/comparison.sra.ew0.6.bz10-10-20.gl/Nb50Ti25Mo25",
+  "results": {
+   "name": "Nb50Ti25Mo25",
+   "a0_bohr": 6.16345346955199,
+   "KKR_PARAMS_FINALSCF": {
+    "ew": 0.6,
+    "xc": "pbe",
+    "rel": "sra",
+    "bzqlty": 20,
+    "mxl": 3,
+    "magtype": "nmag",
+    "delta": 0.005,
+    "pmix": 0.01,
+    "edelt": 0.001,
+    "subdir": "finalscf",
+    "output": "finalscf",
+    "mcmillan_cutoff_mode": "valence"
+   },
+   "lambda": 0.5577535856601111,
+   "Tc_mu0.1": 5.2714464723005285,
+   "Tc_mu0.2": 0.8842626759644481,
+   "thetaDB_K": 351.51125950483214,
+   "mixture_debye_temperature": 355.0,
+   "eta_mix": 0.12458330915518391,
+   "Ti_Ntot": 10.271657800272084,
+   "Nb_Ntot": 6.782092129598512,
+   "Mo_Ntot": 6.296128021905156,
+   "Ti": 0.25,
+   "Nb": 0.5,
+   "Mo": 0.25,
+   "Tc_exp_all": [
+    2.8
+   ],
+   "Tc_exp_names": [
+    "Nb50Ti25Mo25"
+   ],
+   "Tc_exp": 2.8
+  },
+  "run_params": {
+   "element_labels": [
+    "Ti",
+    "Nb",
+    "Mo"
+   ],
+   "concentrations": [
+    25.0,
+    50.0,
+    25.0
+   ]
+  }
+ },
+ "Nb50Ti25W25": {
+  "src": "results/comparison.sra.ew0.6.bz10-10-20.gl/Nb50Ti25W25",
+  "results": {
+   "name": "Nb50Ti25W25",
+   "a0_bohr": 6.168465382749904,
+   "KKR_PARAMS_FINALSCF": {
+    "ew": 0.6,
+    "xc": "pbe",
+    "rel": "sra",
+    "bzqlty": 20,
+    "mxl": 3,
+    "magtype": "nmag",
+    "delta": 0.005,
+    "pmix": 0.01,
+    "edelt": 0.001,
+    "subdir": "finalscf",
+    "output": "finalscf",
+    "mcmillan_cutoff_mode": "valence"
+   },
+   "lambda": 0.5088908063740926,
+   "Tc_mu0.1": 3.55411971833592,
+   "Tc_mu0.2": 0.3837650439738553,
+   "thetaDB_K": 329.76572526311213,
+   "mixture_debye_temperature": 342.5,
+   "eta_mix": 0.12670284327871423,
+   "Ti_Ntot": 10.11525774240591,
+   "Nb_Ntot": 6.701287932805867,
+   "W_Ntot": 5.463455460766924,
+   "Ti": 0.25,
+   "Nb": 0.5,
+   "W": 0.25,
+   "Tc_exp_all": [
+    4.2
+   ],
+   "Tc_exp_names": [
+    "Nb50Ti25W25"
+   ],
+   "Tc_exp": 4.2
+  },
+  "run_params": {
+   "element_labels": [
+    "Ti",
+    "Nb",
+    "W"
+   ],
+   "concentrations": [
+    25.0,
+    50.0,
+    25.0
+   ]
+  }
+ },
+ "Nb57Re10HfZrTi33": {
+  "src": "results/comparison.sra.ew0.6.bz10-10-20.gl/Nb57Re10HfZrTi33",
+  "results": {
+   "name": "Nb57Re10HfZrTi33",
+   "a0_bohr": 6.283348003765318,
+   "KKR_PARAMS_FINALSCF": {
+    "ew": 0.6,
+    "xc": "pbe",
+    "rel": "sra",
+    "bzqlty": 20,
+    "mxl": 3,
+    "magtype": "nmag",
+    "delta": 0.005,
+    "pmix": 0.01,
+    "edelt": 0.001,
+    "subdir": "finalscf",
+    "output": "finalscf",
+    "mcmillan_cutoff_mode": "valence"
+   },
+   "lambda": 0.6165786737636401,
+   "Tc_mu0.1": 6.40665381884275,
+   "Tc_mu0.2": 1.5356568519676737,
+   "thetaDB_K": 312.17490319248355,
+   "mixture_debye_temperature": 301.75,
+   "eta_mix": 0.140392131548222,
+   "Ti_Ntot": 11.242615458075802,
+   "Zr_Ntot": 7.377572489141831,
+   "Nb_Ntot": 7.803192729279272,
+   "Hf_Ntot": 6.759246245553923,
+   "Re_Ntot": 5.593179590656304,
+   "Ti": 0.11,
+   "Zr": 0.11,
+   "Nb": 0.57,
+   "Hf": 0.11,
+   "Re": 0.1,
+   "Tc_exp_all": [
+    5.42
+   ],
+   "Tc_exp_names": [
+    "Nb57Re10HfZrTi33"
+   ],
+   "Tc_exp": 5.42
+  },
+  "run_params": {
+   "element_labels": [
+    "Ti",
+    "Zr",
+    "Nb",
+    "Hf",
+    "Re"
+   ],
+   "concentrations": [
+    11.0,
+    11.0,
+    57.0,
+    11.0,
+    10.0
+   ]
+  }
+ },
+ "Nb60Re10Zr10Hf10Ti10": {
+  "src": "results/comparison.sra.ew0.6.bz10-10-20.gl/Nb60Re10Zr10Hf10Ti10",
+  "results": {
+   "name": "Nb60Re10Zr10Hf10Ti10",
+   "a0_bohr": 6.275861607575923,
+   "KKR_PARAMS_FINALSCF": {
+    "ew": 0.6,
+    "xc": "pbe",
+    "rel": "sra",
+    "bzqlty": 20,
+    "mxl": 3,
+    "magtype": "nmag",
+    "delta": 0.005,
+    "pmix": 0.01,
+    "edelt": 0.001,
+    "subdir": "finalscf",
+    "output": "finalscf",
+    "mcmillan_cutoff_mode": "valence"
+   },
+   "lambda": 0.6057127326773064,
+   "Tc_mu0.1": 6.142727099858673,
+   "Tc_mu0.2": 1.392545699280428,
+   "thetaDB_K": 315.4103444001066,
+   "mixture_debye_temperature": 300.6,
+   "eta_mix": 0.1402778103274685,
+   "Nb_Ntot": 7.675433763986858,
+   "Re_Ntot": 5.484289549526906,
+   "Zr_Ntot": 7.296488629784301,
+   "Hf_Ntot": 6.684531408902925,
+   "Ti_Ntot": 11.126987817836154,
+   "Nb": 0.6,
+   "Re": 0.1,
+   "Zr": 0.1,
+   "Hf": 0.1,
+   "Ti": 0.1,
+   "Tc_exp_all": [
+    5.7
+   ],
+   "Tc_exp_names": [
+    "Nb60Re10Zr10Hf10Ti10"
+   ],
+   "Tc_exp": 5.7
+  },
+  "run_params": {
+   "element_labels": [
+    "Nb",
+    "Re",
+    "Zr",
+    "Hf",
+    "Ti"
+   ],
+   "concentrations": [
+    60.0,
+    10.0,
+    10.0,
+    10.0,
+    10.0
+   ]
+  }
+ },
+ "Nb67HfZrTi33": {
+  "src": "results/comparison.sra.ew0.6.bz10-10-20.gl/Nb67HfZrTi33",
+  "results": {
+   "name": "Nb67HfZrTi33",
+   "a0_bohr": 6.350138491993015,
+   "KKR_PARAMS_FINALSCF": {
+    "ew": 0.6,
+    "xc": "pbe",
+    "rel": "sra",
+    "bzqlty": 20,
+    "mxl": 3,
+    "magtype": "nmag",
+    "delta": 0.005,
+    "pmix": 0.01,
+    "edelt": 0.001,
+    "subdir": "finalscf",
+    "output": "finalscf",
+    "mcmillan_cutoff_mode": "valence"
+   },
+   "lambda": 0.7432725959589185,
+   "Tc_mu0.1": 10.349622507709741,
+   "Tc_mu0.2": 3.872229531330579,
+   "thetaDB_K": 312.43790345836373,
+   "mixture_debye_temperature": 287.65,
+   "eta_mix": 0.15467448354425686,
+   "Ti_Ntot": 12.771547886007388,
+   "Zr_Ntot": 8.551024227695432,
+   "Nb_Ntot": 9.196191436315194,
+   "Hf_Ntot": 7.807643507079661,
+   "Ti": 0.11,
+   "Zr": 0.11,
+   "Nb": 0.67,
+   "Hf": 0.11,
+   "Tc_exp_all": [
+    9.36,
+    7.0
+   ],
+   "Tc_exp_names": [
+    "Nb67HfZrTi33",
+    "Nb67TiZrHf33_MA"
+   ],
+   "Tc_exp": 8.18
+  },
+  "run_params": {
+   "element_labels": [
+    "Ti",
+    "Zr",
+    "Nb",
+    "Hf"
+   ],
+   "concentrations": [
+    11.0,
+    11.0,
+    67.0,
+    11.0
+   ]
+  }
+ },
+ "NbHf75TiZr25": {
+  "src": "results/comparison.sra.ew0.6.bz10-10-20.gl/NbHf75TiZr25",
+  "results": {
+   "name": "NbHf75TiZr25",
+   "a0_bohr": 6.4948971077054525,
+   "KKR_PARAMS_FINALSCF": {
+    "ew": 0.6,
+    "xc": "pbe",
+    "rel": "sra",
+    "bzqlty": 20,
+    "mxl": 3,
+    "magtype": "nmag",
+    "delta": 0.005,
+    "pmix": 0.01,
+    "edelt": 0.001,
+    "subdir": "finalscf",
+    "output": "finalscf",
+    "mcmillan_cutoff_mode": "valence"
+   },
+   "lambda": 0.8782245223452003,
+   "Tc_mu0.1": 11.40215698067006,
+   "Tc_mu0.2": 5.482953525713011,
+   "thetaDB_K": 245.72386155615217,
+   "mixture_debye_temperature": 283.125,
+   "eta_mix": 0.13861543996189807,
+   "Nb_Ntot": 10.47859991204008,
+   "Hf_Ntot": 8.353282053871867,
+   "Ti_Ntot": 13.742099571143733,
+   "Zr_Ntot": 9.126955935383007,
+   "Nb": 0.375,
+   "Hf": 0.375,
+   "Ti": 0.125,
+   "Zr": 0.125,
+   "Tc_exp_all": [
+    7.15
+   ],
+   "Tc_exp_names": [
+    "NbHf75TiZr25"
+   ],
+   "Tc_exp": 7.15
+  },
+  "run_params": {
+   "element_labels": [
+    "Nb",
+    "Hf",
+    "Ti",
+    "Zr"
+   ],
+   "concentrations": [
+    37.5,
+    37.5,
+    12.5,
+    12.5
+   ]
+  }
+ },
+ "NbReZrHfTi": {
+  "src": "results/comparison.sra.ew0.6.bz10-10-20.gl/NbReZrHfTi",
+  "results": {
+   "name": "NbReZrHfTi",
+   "a0_bohr": 6.2943407182270255,
+   "KKR_PARAMS_FINALSCF": {
+    "ew": 0.6,
+    "xc": "pbe",
+    "rel": "sra",
+    "bzqlty": 20,
+    "mxl": 3,
+    "magtype": "nmag",
+    "delta": 0.005,
+    "pmix": 0.01,
+    "edelt": 0.001,
+    "subdir": "finalscf",
+    "output": "finalscf",
+    "mcmillan_cutoff_mode": "valence"
+   },
+   "lambda": 0.5836820072088033,
+   "Tc_mu0.1": 5.026454955737533,
+   "Tc_mu0.2": 1.004571370452479,
+   "thetaDB_K": 289.12019888605005,
+   "mixture_debye_temperature": 326.2,
+   "eta_mix": 0.127727031247711,
+   "Nb_Ntot": 7.808342568740433,
+   "Re_Ntot": 5.853411201427197,
+   "Zr_Ntot": 7.196843669769896,
+   "Hf_Ntot": 6.608519018071366,
+   "Ti_Ntot": 11.10793074493442,
+   "Nb": 0.2,
+   "Re": 0.2,
+   "Zr": 0.2,
+   "Hf": 0.2,
+   "Ti": 0.2,
+   "Tc_exp_all": [
+    5.3
+   ],
+   "Tc_exp_names": [
+    "NbReZrHfTi"
+   ],
+   "Tc_exp": 5.3
+  },
+  "run_params": {
+   "element_labels": [
+    "Nb",
+    "Re",
+    "Zr",
+    "Hf",
+    "Ti"
+   ],
+   "concentrations": [
+    20.0,
+    20.0,
+    20.0,
+    20.0,
+    20.0
+   ]
+  }
+ },
+ "NbSc0.33Mo0.67HfZrTi": {
+  "src": "results/comparison.sra.ew0.6.bz10-10-20.gl/NbSc0.33Mo0.67HfZrTi",
+  "results": {
+   "name": "NbSc0.33Mo0.67HfZrTi",
+   "a0_bohr": 6.319639574892346,
+   "KKR_PARAMS_FINALSCF": {
+    "ew": 0.6,
+    "xc": "pbe",
+    "rel": "sra",
+    "bzqlty": 20,
+    "mxl": 3,
+    "magtype": "nmag",
+    "delta": 0.005,
+    "pmix": 0.01,
+    "edelt": 0.001,
+    "subdir": "finalscf",
+    "output": "finalscf",
+    "mcmillan_cutoff_mode": "valence"
+   },
+   "lambda": 0.6728342406391695,
+   "Tc_mu0.1": 7.893508522243033,
+   "Tc_mu0.2": 2.3963283824271784,
+   "thetaDB_K": 302.8489022250992,
+   "mixture_debye_temperature": 335.77275,
+   "eta_mix": 0.12530432721726248,
+   "Sc_Ntot": 6.3180456028499945,
+   "Mo_Ntot": 7.869577667792163,
+   "Nb_Ntot": 8.21118000722604,
+   "Hf_Ntot": 6.918227424911745,
+   "Zr_Ntot": 7.540546493084294,
+   "Ti_Ntot": 11.58206551322104,
+   "Sc": 0.11055,
+   "Mo": 0.22445,
+   "Nb": 0.335,
+   "Hf": 0.11,
+   "Zr": 0.11,
+   "Ti": 0.11,
+   "Tc_exp_all": [
+    4.4
+   ],
+   "Tc_exp_names": [
+    "NbSc0.33Mo0.67HfZrTi"
+   ],
+   "Tc_exp": 4.4
+  },
+  "run_params": {
+   "element_labels": [
+    "Sc",
+    "Mo",
+    "Nb",
+    "Hf",
+    "Zr",
+    "Ti"
+   ],
+   "concentrations": [
+    11.055,
+    22.445,
+    33.5,
+    11.0,
+    11.0,
+    11.0
+   ]
+  }
+ },
+ "NbTa55HfTiZr45": {
+  "src": "results/comparison.sra.ew0.6.bz10-10-20.gl/NbTa55HfTiZr45",
+  "results": {
+   "name": "NbTa55HfTiZr45",
+   "a0_bohr": 6.398226220973927,
+   "KKR_PARAMS_FINALSCF": {
+    "ew": 0.6,
+    "xc": "pbe",
+    "rel": "sra",
+    "bzqlty": 20,
+    "mxl": 3,
+    "magtype": "nmag",
+    "delta": 0.005,
+    "pmix": 0.01,
+    "edelt": 0.001,
+    "subdir": "finalscf",
+    "output": "finalscf",
+    "mcmillan_cutoff_mode": "valence"
+   },
+   "lambda": 0.8187968205507173,
+   "Tc_mu0.1": 10.558698698882331,
+   "Tc_mu0.2": 4.625833713791527,
+   "thetaDB_K": 259.83326707643255,
+   "mixture_debye_temperature": 282.625,
+   "eta_mix": 0.14907703617811857,
+   "Nb_Ntot": 9.52681983027072,
+   "Ta_Ntot": 8.689765402153245,
+   "Hf_Ntot": 7.984732445967023,
+   "Ti_Ntot": 13.080282829737772,
+   "Zr_Ntot": 8.708049940142631,
+   "Nb": 0.275,
+   "Ta": 0.275,
+   "Hf": 0.15,
+   "Ti": 0.15,
+   "Zr": 0.15,
+   "Tc_exp_all": [
+    7.2,
+    6.68
+   ],
+   "Tc_exp_names": [
+    "NbTa55HfTiZr45",
+    "TaNb55ZrHfTi45"
+   ],
+   "Tc_exp": 6.9399999999999995
+  },
+  "run_params": {
+   "element_labels": [
+    "Nb",
+    "Ta",
+    "Hf",
+    "Ti",
+    "Zr"
+   ],
+   "concentrations": [
+    27.5,
+    27.5,
+    15.0,
+    15.0,
+    15.0
+   ]
+  }
+ },
+ "NbTa67MoHfW33": {
+  "src": "results/comparison.sra.ew0.6.bz10-10-20.gl/NbTa67MoHfW33",
+  "results": {
+   "name": "NbTa67MoHfW33",
+   "a0_bohr": 6.231320585986807,
+   "KKR_PARAMS_FINALSCF": {
+    "ew": 0.6,
+    "xc": "pbe",
+    "rel": "sra",
+    "bzqlty": 20,
+    "mxl": 3,
+    "magtype": "nmag",
+    "delta": 0.005,
+    "pmix": 0.01,
+    "edelt": 0.001,
+    "subdir": "finalscf",
+    "output": "finalscf",
+    "mcmillan_cutoff_mode": "valence"
+   },
+   "lambda": 0.4130214869186158,
+   "Tc_mu0.1": 1.3354129603843747,
+   "Tc_mu0.2": 0.02522650389385387,
+   "thetaDB_K": 321.7524526806363,
+   "mixture_debye_temperature": 293.525,
+   "eta_mix": 0.13331809770837846,
+   "Nb_Ntot": 6.428359065201369,
+   "Ta_Ntot": 5.852240617735448,
+   "Mo_Ntot": 5.871820753479038,
+   "Hf_Ntot": 5.890924571803108,
+   "W_Ntot": 5.155575929086821,
+   "Nb": 0.335,
+   "Ta": 0.335,
+   "Mo": 0.11,
+   "Hf": 0.11,
+   "W": 0.11,
+   "Tc_exp_all": [
+    4.3
+   ],
+   "Tc_exp_names": [
+    "NbTa67MoHfW33"
+   ],
+   "Tc_exp": 4.3
+  },
+  "run_params": {
+   "element_labels": [
+    "Nb",
+    "Ta",
+    "Mo",
+    "Hf",
+    "W"
+   ],
+   "concentrations": [
+    33.5,
+    33.5,
+    11.0,
+    11.0,
+    11.0
+   ]
+  }
+ },
+ "NbTaTiVZr": {
+  "src": "results/comparison.sra.ew0.6.bz10-10-20.gl/NbTaTiVZr",
+  "results": {
+   "name": "NbTaTiVZr",
+   "a0_bohr": 6.257626213770564,
+   "KKR_PARAMS_FINALSCF": {
+    "ew": 0.6,
+    "xc": "pbe",
+    "rel": "sra",
+    "bzqlty": 20,
+    "mxl": 3,
+    "magtype": "nmag",
+    "delta": 0.005,
+    "pmix": 0.01,
+    "edelt": 0.001,
+    "subdir": "finalscf",
+    "output": "finalscf",
+    "mcmillan_cutoff_mode": "valence"
+   },
+   "lambda": 0.7480564949613377,
+   "Tc_mu0.1": 9.940857844819343,
+   "Tc_mu0.2": 3.7630348822032427,
+   "thetaDB_K": 295.8156212008696,
+   "mixture_debye_temperature": 317.0,
+   "eta_mix": 0.13320856693374694,
+   "Nb_Ntot": 8.379820783315958,
+   "Ta_Ntot": 7.688032177968225,
+   "Ti_Ntot": 11.94640403052252,
+   "V_Ntot": 16.30142344670772,
+   "Zr_Ntot": 7.839960297622177,
+   "Nb": 0.2,
+   "Ta": 0.2,
+   "Ti": 0.2,
+   "V": 0.2,
+   "Zr": 0.2,
+   "Tc_exp_all": [
+    5.13
+   ],
+   "Tc_exp_names": [
+    "NbTaTiVZr"
+   ],
+   "Tc_exp": 5.13
+  },
+  "run_params": {
+   "element_labels": [
+    "Nb",
+    "Ta",
+    "Ti",
+    "V",
+    "Zr"
+   ],
+   "concentrations": [
+    20.0,
+    20.0,
+    20.0,
+    20.0,
+    20.0
+   ]
+  }
+ },
+ "NbTaTiZrHfV_Wu2018": {
+  "src": "results/comparison.sra.ew0.6.bz10-10-20.gl/NbTaTiZrHfV_Wu2018",
+  "results": {
+   "name": "NbTaTiZrHfV_Wu2018",
+   "a0_bohr": 6.345565183021259,
+   "KKR_PARAMS_FINALSCF": {
+    "ew": 0.6,
+    "xc": "pbe",
+    "rel": "sra",
+    "bzqlty": 20,
+    "mxl": 3,
+    "magtype": "nmag",
+    "delta": 0.005,
+    "pmix": 0.01,
+    "edelt": 0.001,
+    "subdir": "finalscf",
+    "output": "finalscf",
+    "mcmillan_cutoff_mode": "valence"
+   },
+   "lambda": 0.7822713626123482,
+   "Tc_mu0.1": 9.953714659732826,
+   "Tc_mu0.2": 4.06718218493992,
+   "thetaDB_K": 268.85376186425384,
+   "mixture_debye_temperature": 301.025,
+   "eta_mix": 0.1364090354327503,
+   "Nb_Ntot": 9.153445615371364,
+   "Ta_Ntot": 8.377220947406487,
+   "Ti_Ntot": 12.749848849664634,
+   "Zr_Ntot": 8.410362564539142,
+   "Hf_Ntot": 7.768047256507746,
+   "V_Ntot": 17.89298389492476,
+   "Nb": 0.215,
+   "Ta": 0.18100000000000002,
+   "Ti": 0.159,
+   "Zr": 0.14400000000000002,
+   "Hf": 0.166,
+   "V": 0.135,
+   "Tc_exp_all": [
+    5.1
+   ],
+   "Tc_exp_names": [
+    "NbTaTiZrHfV_Wu2018"
+   ],
+   "Tc_exp": 5.1
+  },
+  "run_params": {
+   "element_labels": [
+    "Nb",
+    "Ta",
+    "Ti",
+    "Zr",
+    "Hf",
+    "V"
+   ],
+   "concentrations": [
+    21.5,
+    18.1,
+    15.9,
+    14.4,
+    16.6,
+    13.5
+   ]
+  }
+ },
+ "NbTaTiZr_Wu2018": {
+  "src": "results/comparison.sra.ew0.6.bz10-10-20.gl/NbTaTiZr_Wu2018",
+  "results": {
+   "name": "NbTaTiZr_Wu2018",
+   "a0_bohr": 6.361365806367124,
+   "KKR_PARAMS_FINALSCF": {
+    "ew": 0.6,
+    "xc": "pbe",
+    "rel": "sra",
+    "bzqlty": 20,
+    "mxl": 3,
+    "magtype": "nmag",
+    "delta": 0.005,
+    "pmix": 0.01,
+    "edelt": 0.001,
+    "subdir": "finalscf",
+    "output": "finalscf",
+    "mcmillan_cutoff_mode": "valence"
+   },
+   "lambda": 0.8018203955285642,
+   "Tc_mu0.1": 10.688129538323354,
+   "Tc_mu0.2": 4.53945322796718,
+   "thetaDB_K": 274.3192868316812,
+   "mixture_debye_temperature": 294.0,
+   "eta_mix": 0.14551881594994262,
+   "Ti_Ntot": 12.648953562220685,
+   "Zr_Ntot": 8.40244014897005,
+   "Nb_Ntot": 9.178264481887878,
+   "Ta_Ntot": 8.376848977156525,
+   "Ti": 0.213,
+   "Zr": 0.228,
+   "Nb": 0.252,
+   "Ta": 0.307,
+   "Tc_exp_all": [
+    8.29
+   ],
+   "Tc_exp_names": [
+    "NbTaTiZr_Wu2018"
+   ],
+   "Tc_exp": 8.29
+  },
+  "run_params": {
+   "element_labels": [
+    "Ti",
+    "Zr",
+    "Nb",
+    "Ta"
+   ],
+   "concentrations": [
+    21.3,
+    22.8,
+    25.2,
+    30.7
+   ]
+  }
+ },
+ "NbTi67MoHfV33": {
+  "src": "results/comparison.sra.ew0.6.bz10-10-20.gl/NbTi67MoHfV33",
+  "results": {
+   "name": "NbTi67MoHfV33",
+   "a0_bohr": 6.200541293598797,
+   "KKR_PARAMS_FINALSCF": {
+    "ew": 0.6,
+    "xc": "pbe",
+    "rel": "sra",
+    "bzqlty": 20,
+    "mxl": 3,
+    "magtype": "nmag",
+    "delta": 0.005,
+    "pmix": 0.01,
+    "edelt": 0.001,
+    "subdir": "finalscf",
+    "output": "finalscf",
+    "mcmillan_cutoff_mode": "valence"
+   },
+   "lambda": 0.6945279379400776,
+   "Tc_mu0.1": 8.96625685558953,
+   "Tc_mu0.2": 2.927227269735727,
+   "thetaDB_K": 317.5722031785315,
+   "mixture_debye_temperature": 351.62500000000006,
+   "eta_mix": 0.1274620711169124,
+   "Nb_Ntot": 7.951112449861533,
+   "Ti_Ntot": 11.612608910358578,
+   "Mo_Ntot": 7.430540502423873,
+   "Hf_Ntot": 7.012509247862719,
+   "V_Ntot": 15.570714914847176,
+   "Nb": 0.335,
+   "Ti": 0.335,
+   "Mo": 0.11,
+   "Hf": 0.11,
+   "V": 0.11,
+   "Tc_exp_all": [
+    4.8
+   ],
+   "Tc_exp_names": [
+    "NbTi67MoHfV33"
+   ],
+   "Tc_exp": 4.8
+  },
+  "run_params": {
+   "element_labels": [
+    "Nb",
+    "Ti",
+    "Mo",
+    "Hf",
+    "V"
+   ],
+   "concentrations": [
+    33.5,
+    33.5,
+    11.0,
+    11.0,
+    11.0
+   ]
+  }
+ },
+ "NbTi75ZrHf25": {
+  "src": "results/comparison.sra.ew0.6.bz10-10-20.gl/NbTi75ZrHf25",
+  "results": {
+   "name": "NbTi75ZrHf25",
+   "a0_bohr": 6.360928793842517,
+   "KKR_PARAMS_FINALSCF": {
+    "ew": 0.6,
+    "xc": "pbe",
+    "rel": "sra",
+    "bzqlty": 20,
+    "mxl": 3,
+    "magtype": "nmag",
+    "delta": 0.005,
+    "pmix": 0.01,
+    "edelt": 0.001,
+    "subdir": "finalscf",
+    "output": "finalscf",
+    "mcmillan_cutoff_mode": "valence"
+   },
+   "lambda": 0.8424667936429763,
+   "Tc_mu0.1": 12.06464230411943,
+   "Tc_mu0.2": 5.5000092085365315,
+   "thetaDB_K": 280.8871920385334,
+   "mixture_debye_temperature": 325.625,
+   "eta_mix": 0.12613177126275377,
+   "Nb_Ntot": 9.258661803398724,
+   "Ti_Ntot": 12.68005723328374,
+   "Zr_Ntot": 8.282419325065375,
+   "Hf_Ntot": 7.668962006518581,
+   "Nb": 0.375,
+   "Ti": 0.375,
+   "Zr": 0.125,
+   "Hf": 0.125,
+   "Tc_exp_all": [
+    7.76
+   ],
+   "Tc_exp_names": [
+    "NbTi75ZrHf25"
+   ],
+   "Tc_exp": 7.76
+  },
+  "run_params": {
+   "element_labels": [
+    "Nb",
+    "Ti",
+    "Zr",
+    "Hf"
+   ],
+   "concentrations": [
+    37.5,
+    37.5,
+    12.5,
+    12.5
+   ]
+  }
+ },
+ "NbTiZr": {
+  "src": "results/comparison.sra.ew0.6.bz10-10-20.gl/NbTiZr",
+  "results": {
+   "name": "NbTiZr",
+   "a0_bohr": 6.397441991892986,
+   "KKR_PARAMS_FINALSCF": {
+    "ew": 0.6,
+    "xc": "pbe",
+    "rel": "sra",
+    "bzqlty": 20,
+    "mxl": 3,
+    "magtype": "nmag",
+    "delta": 0.005,
+    "pmix": 0.01,
+    "edelt": 0.001,
+    "subdir": "finalscf",
+    "output": "finalscf",
+    "mcmillan_cutoff_mode": "valence"
+   },
+   "lambda": 0.9032039440540072,
+   "Tc_mu0.1": 13.924387076542839,
+   "Tc_mu0.2": 6.92175280859576,
+   "thetaDB_K": 285.48389077936537,
+   "mixture_debye_temperature": 321.66666666666663,
+   "eta_mix": 0.12486624544396321,
+   "Ti_Ntot": 12.550229071010104,
+   "Zr_Ntot": 8.23213364772618,
+   "Nb_Ntot": 9.40661976331553,
+   "Ti": 0.3333333333333333,
+   "Zr": 0.3333333333333333,
+   "Nb": 0.3333333333333333,
+   "Tc_exp_all": [
+    7.98,
+    8.2
+   ],
+   "Tc_exp_names": [
+    "NbTiZr",
+    "TiZrNb_Kosuth"
+   ],
+   "Tc_exp": 8.09
+  },
+  "run_params": {
+   "element_labels": [
+    "Ti",
+    "Zr",
+    "Nb"
+   ],
+   "concentrations": [
+    33.333,
+    33.333,
+    33.333
+   ]
+  }
+ },
+ "NbV67HfZrTi33": {
+  "src": "results/comparison.sra.ew0.6.bz10-10-20.gl/NbV67HfZrTi33",
+  "results": {
+   "name": "NbV67HfZrTi33",
+   "a0_bohr": 6.200871630461346,
+   "KKR_PARAMS_FINALSCF": {
+    "ew": 0.6,
+    "xc": "pbe",
+    "rel": "sra",
+    "bzqlty": 20,
+    "mxl": 3,
+    "magtype": "nmag",
+    "delta": 0.005,
+    "pmix": 0.01,
+    "edelt": 0.001,
+    "subdir": "finalscf",
+    "output": "finalscf",
+    "mcmillan_cutoff_mode": "valence"
+   },
+   "lambda": 0.7110417458909432,
+   "Tc_mu0.1": 9.485159115601016,
+   "Tc_mu0.2": 3.255350556964039,
+   "thetaDB_K": 317.33176812115335,
+   "mixture_debye_temperature": 322.825,
+   "eta_mix": 0.13055950072716022,
+   "Nb_Ntot": 8.035673008021083,
+   "V_Ntot": 15.571979232814158,
+   "Hf_Ntot": 7.071144845127777,
+   "Zr_Ntot": 7.603945001949045,
+   "Ti_Ntot": 11.598176729718032,
+   "Nb": 0.335,
+   "V": 0.335,
+   "Hf": 0.11,
+   "Zr": 0.11,
+   "Ti": 0.11,
+   "Tc_exp_all": [
+    7.2
+   ],
+   "Tc_exp_names": [
+    "NbV67HfZrTi33"
+   ],
+   "Tc_exp": 7.2
+  },
+  "run_params": {
+   "element_labels": [
+    "Nb",
+    "V",
+    "Hf",
+    "Zr",
+    "Ti"
+   ],
+   "concentrations": [
+    33.5,
+    33.5,
+    11.0,
+    11.0,
+    11.0
+   ]
+  }
+ },
+ "NbY0.33Mo0.67HfZrTi": {
+  "src": "results/comparison.sra.ew0.6.bz10-10-20.gl/NbY0.33Mo0.67HfZrTi",
+  "results": {
+   "name": "NbY0.33Mo0.67HfZrTi",
+   "a0_bohr": 6.356939080652979,
+   "KKR_PARAMS_FINALSCF": {
+    "ew": 0.6,
+    "xc": "pbe",
+    "rel": "sra",
+    "bzqlty": 20,
+    "mxl": 3,
+    "magtype": "nmag",
+    "delta": 0.005,
+    "pmix": 0.01,
+    "edelt": 0.001,
+    "subdir": "finalscf",
+    "output": "finalscf",
+    "mcmillan_cutoff_mode": "valence"
+   },
+   "lambda": 0.6646870230560729,
+   "Tc_mu0.1": 7.593065489719803,
+   "Tc_mu0.2": 2.2378563610117017,
+   "thetaDB_K": 300.68478594155124,
+   "mixture_debye_temperature": 327.4815,
+   "eta_mix": 0.12843046173958028,
+   "Ti_Ntot": 11.463397119261144,
+   "Nb_Ntot": 8.300806510684211,
+   "Zr_Ntot": 7.49646081459573,
+   "Hf_Ntot": 6.848094696984195,
+   "Mo_Ntot": 8.079376480782008,
+   "Y_Ntot": 5.373239110321922,
+   "Ti": 0.11,
+   "Nb": 0.335,
+   "Zr": 0.11,
+   "Hf": 0.11,
+   "Mo": 0.22445,
+   "Y": 0.11055,
+   "Tc_exp_all": [
+    4.7
+   ],
+   "Tc_exp_names": [
+    "NbY0.33Mo0.67HfZrTi"
+   ],
+   "Tc_exp": 4.7
+  },
+  "run_params": {
+   "element_labels": [
+    "Ti",
+    "Nb",
+    "Zr",
+    "Hf",
+    "Mo",
+    "Y"
+   ],
+   "concentrations": [
+    11.0,
+    33.5,
+    11.0,
+    11.0,
+    22.445,
+    11.055
+   ]
+  }
+ },
+ "NbZr75TiHf25": {
+  "src": "results/comparison.sra.ew0.6.bz10-10-20.gl/NbZr75TiHf25",
+  "results": {
+   "name": "NbZr75TiHf25",
+   "a0_bohr": 6.483917173320671,
+   "KKR_PARAMS_FINALSCF": {
+    "ew": 0.6,
+    "xc": "pbe",
+    "rel": "sra",
+    "bzqlty": 20,
+    "mxl": 3,
+    "magtype": "nmag",
+    "delta": 0.005,
+    "pmix": 0.01,
+    "edelt": 0.001,
+    "subdir": "finalscf",
+    "output": "finalscf",
+    "mcmillan_cutoff_mode": "valence"
+   },
+   "lambda": 0.9169091414664555,
+   "Tc_mu0.1": 13.406743311960582,
+   "Tc_mu0.2": 6.778386626632925,
+   "thetaDB_K": 267.80268175163974,
+   "mixture_debye_temperature": 288.125,
+   "eta_mix": 0.1404122659479886,
+   "Nb_Ntot": 10.42908310381076,
+   "Zr_Ntot": 8.888524448393534,
+   "Ti_Ntot": 13.269144347335704,
+   "Hf_Ntot": 8.110139830639657,
+   "Nb": 0.375,
+   "Zr": 0.375,
+   "Ti": 0.125,
+   "Hf": 0.125,
+   "Tc_exp_all": [
+    8.17
+   ],
+   "Tc_exp_names": [
+    "NbZr75TiHf25"
+   ],
+   "Tc_exp": 8.17
+  },
+  "run_params": {
+   "element_labels": [
+    "Nb",
+    "Zr",
+    "Ti",
+    "Hf"
+   ],
+   "concentrations": [
+    37.5,
+    37.5,
+    12.5,
+    12.5
+   ]
+  }
+ },
+ "ScHfNbTaTi": {
+  "src": "results/comparison.sra.ew0.6.bz10-10-20.gl/ScHfNbTaTi",
+  "results": {
+   "name": "ScHfNbTaTi",
+   "a0_bohr": 6.407500891221523,
+   "KKR_PARAMS_FINALSCF": {
+    "ew": 0.6,
+    "xc": "pbe",
+    "rel": "sra",
+    "bzqlty": 20,
+    "mxl": 3,
+    "magtype": "nmag",
+    "delta": 0.005,
+    "pmix": 0.01,
+    "edelt": 0.001,
+    "subdir": "finalscf",
+    "output": "finalscf",
+    "mcmillan_cutoff_mode": "valence"
+   },
+   "lambda": 0.8204401432788634,
+   "Tc_mu0.1": 10.009439722530686,
+   "Tc_mu0.2": 4.397881617628855,
+   "thetaDB_K": 245.34188027465794,
+   "mixture_debye_temperature": 296.15,
+   "eta_mix": 0.13096827402823497,
+   "Sc_Ntot": 6.994718130774794,
+   "Hf_Ntot": 7.954600917357801,
+   "Nb_Ntot": 9.46391911606579,
+   "Ta_Ntot": 8.665740514846895,
+   "Ti_Ntot": 13.191749154094753,
+   "Sc": 0.08,
+   "Hf": 0.22,
+   "Nb": 0.25,
+   "Ta": 0.25,
+   "Ti": 0.2,
+   "Tc_exp_all": [
+    6.6
+   ],
+   "Tc_exp_names": [
+    "ScHfNbTaTi"
+   ],
+   "Tc_exp": 6.6
+  },
+  "run_params": {
+   "element_labels": [
+    "Sc",
+    "Hf",
+    "Nb",
+    "Ta",
+    "Ti"
+   ],
+   "concentrations": [
+    8.0,
+    22.0,
+    25.0,
+    25.0,
+    20.0
+   ]
+  }
+ },
+ "ScHfNbTaTiZr": {
+  "src": "results/comparison.sra.ew0.6.bz10-10-20.gl/ScHfNbTaTiZr",
+  "results": {
+   "name": "ScHfNbTaTiZr",
+   "a0_bohr": 6.484089496672994,
+   "KKR_PARAMS_FINALSCF": {
+    "ew": 0.6,
+    "xc": "pbe",
+    "rel": "sra",
+    "bzqlty": 20,
+    "mxl": 3,
+    "magtype": "nmag",
+    "delta": 0.005,
+    "pmix": 0.01,
+    "edelt": 0.001,
+    "subdir": "finalscf",
+    "output": "finalscf",
+    "mcmillan_cutoff_mode": "valence"
+   },
+   "lambda": 0.9132243819546558,
+   "Tc_mu0.1": 11.598143566669732,
+   "Tc_mu0.2": 5.837778085158545,
+   "thetaDB_K": 233.28357174544513,
+   "mixture_debye_temperature": 297.55,
+   "eta_mix": 0.12046413526996999,
+   "Sc_Ntot": 7.159986448425606,
+   "Hf_Ntot": 8.120165999065108,
+   "Nb_Ntot": 9.903824390128849,
+   "Ta_Ntot": 9.05578556954727,
+   "Ti_Ntot": 13.5753944400806,
+   "Zr_Ntot": 8.817798791610683,
+   "Sc": 0.12,
+   "Hf": 0.17,
+   "Nb": 0.19,
+   "Ta": 0.19,
+   "Ti": 0.17,
+   "Zr": 0.16,
+   "Tc_exp_all": [
+    7.2
+   ],
+   "Tc_exp_names": [
+    "ScHfNbTaTiZr"
+   ],
+   "Tc_exp": 7.2
+  },
+  "run_params": {
+   "element_labels": [
+    "Sc",
+    "Hf",
+    "Nb",
+    "Ta",
+    "Ti",
+    "Zr"
+   ],
+   "concentrations": [
+    12.0,
+    17.0,
+    19.0,
+    19.0,
+    17.0,
+    16.0
+   ]
+  }
+ },
+ "ScHfNbTaZr_bccL": {
+  "src": "results/comparison.sra.ew0.6.bz10-10-20.gl/ScHfNbTaZr_bccL",
+  "results": {
+   "name": "ScHfNbTaZr_bccL",
+   "a0_bohr": 6.492937902375945,
+   "KKR_PARAMS_FINALSCF": {
+    "ew": 0.6,
+    "xc": "pbe",
+    "rel": "sra",
+    "bzqlty": 20,
+    "mxl": 3,
+    "magtype": "nmag",
+    "delta": 0.005,
+    "pmix": 0.01,
+    "edelt": 0.001,
+    "subdir": "finalscf",
+    "output": "finalscf",
+    "mcmillan_cutoff_mode": "valence"
+   },
+   "lambda": 0.8776862538363691,
+   "Tc_mu0.1": 11.095335726607567,
+   "Tc_mu0.2": 5.33141306960457,
+   "thetaDB_K": 239.37722816624188,
+   "mixture_debye_temperature": 266.95,
+   "eta_mix": 0.142473041495816,
+   "Sc_Ntot": 6.974043474217757,
+   "Hf_Ntot": 8.19011599113838,
+   "Nb_Ntot": 10.080063693914102,
+   "Ta_Ntot": 9.165820931488671,
+   "Zr_Ntot": 8.977666225611808,
+   "Sc": 0.09,
+   "Hf": 0.21,
+   "Nb": 0.26,
+   "Ta": 0.26,
+   "Zr": 0.18,
+   "Tc_exp_all": [
+    7.4
+   ],
+   "Tc_exp_names": [
+    "ScHfNbTaZr_bccL"
+   ],
+   "Tc_exp": 7.4
+  },
+  "run_params": {
+   "element_labels": [
+    "Sc",
+    "Hf",
+    "Nb",
+    "Ta",
+    "Zr"
+   ],
+   "concentrations": [
+    9.0,
+    21.0,
+    26.0,
+    26.0,
+    18.0
+   ]
+  }
+ },
+ "ScHfNbTaZr_bccS": {
+  "src": "results/comparison.sra.ew0.6.bz10-10-20.gl/ScHfNbTaZr_bccS",
+  "results": {
+   "name": "ScHfNbTaZr_bccS",
+   "a0_bohr": 6.552964453092818,
+   "KKR_PARAMS_FINALSCF": {
+    "ew": 0.6,
+    "xc": "pbe",
+    "rel": "sra",
+    "bzqlty": 20,
+    "mxl": 3,
+    "magtype": "nmag",
+    "delta": 0.005,
+    "pmix": 0.01,
+    "edelt": 0.001,
+    "subdir": "finalscf",
+    "output": "finalscf",
+    "mcmillan_cutoff_mode": "valence"
+   },
+   "lambda": 0.9487338430078682,
+   "Tc_mu0.1": 11.881671075295445,
+   "Tc_mu0.2": 6.229564967390885,
+   "thetaDB_K": 224.13912929628466,
+   "mixture_debye_temperature": 273.45,
+   "eta_mix": 0.1273356721949336,
+   "Sc_Ntot": 7.169123586529087,
+   "Hf_Ntot": 8.347483757690645,
+   "Nb_Ntot": 10.417153420785224,
+   "Ta_Ntot": 9.47943891562373,
+   "Zr_Ntot": 9.131734146665927,
+   "Sc": 0.15,
+   "Hf": 0.22,
+   "Nb": 0.22,
+   "Ta": 0.2,
+   "Zr": 0.21,
+   "Tc_exp_all": [
+    7.4
+   ],
+   "Tc_exp_names": [
+    "ScHfNbTaZr_bccS"
+   ],
+   "Tc_exp": 7.4
+  },
+  "run_params": {
+   "element_labels": [
+    "Sc",
+    "Hf",
+    "Nb",
+    "Ta",
+    "Zr"
+   ],
+   "concentrations": [
+    15.0,
+    22.0,
+    22.0,
+    20.0,
+    21.0
+   ]
+  }
+ },
+ "ScHfNbTi": {
+  "src": "results/comparison.sra.ew0.6.bz10-10-20.gl/ScHfNbTi",
+  "results": {
+   "name": "ScHfNbTi",
+   "a0_bohr": 6.487086067882778,
+   "KKR_PARAMS_FINALSCF": {
+    "ew": 0.6,
+    "xc": "pbe",
+    "rel": "sra",
+    "bzqlty": 20,
+    "mxl": 3,
+    "magtype": "nmag",
+    "delta": 0.005,
+    "pmix": 0.01,
+    "edelt": 0.001,
+    "subdir": "finalscf",
+    "output": "finalscf",
+    "mcmillan_cutoff_mode": "valence"
+   },
+   "lambda": 1.0165355562361105,
+   "Tc_mu0.1": 13.178162453271723,
+   "Tc_mu0.2": 7.377418113647658,
+   "thetaDB_K": 223.021381356882,
+   "mixture_debye_temperature": 321.0,
+   "eta_mix": 0.10365540357136044,
+   "Sc_Ntot": 7.555803356252943,
+   "Hf_Ntot": 8.324001269984523,
+   "Nb_Ntot": 9.911888166889613,
+   "Ti_Ntot": 14.100502629644463,
+   "Sc": 0.2,
+   "Hf": 0.25,
+   "Nb": 0.3,
+   "Ti": 0.25,
+   "Tc_exp_all": [
+    6.6
+   ],
+   "Tc_exp_names": [
+    "ScHfNbTi"
+   ],
+   "Tc_exp": 6.6
+  },
+  "run_params": {
+   "element_labels": [
+    "Sc",
+    "Hf",
+    "Nb",
+    "Ti"
+   ],
+   "concentrations": [
+    20.0,
+    25.0,
+    30.0,
+    25.0
+   ]
+  }
+ },
+ "ScHfNbTi_nominal": {
+  "src": "results/comparison.sra.ew0.6.bz10-10-20.gl/ScHfNbTi_nominal",
+  "results": {
+   "name": "ScHfNbTi_nominal",
+   "a0_bohr": 6.521029354202065,
+   "KKR_PARAMS_FINALSCF": {
+    "ew": 0.6,
+    "xc": "pbe",
+    "rel": "sra",
+    "bzqlty": 20,
+    "mxl": 3,
+    "magtype": "nmag",
+    "delta": 0.005,
+    "pmix": 0.01,
+    "edelt": 0.001,
+    "subdir": "finalscf",
+    "output": "finalscf",
+    "mcmillan_cutoff_mode": "valence"
+   },
+   "lambda": 1.188465691601627,
+   "Tc_mu0.1": 14.840327652690677,
+   "Tc_mu0.2": 9.339035563632278,
+   "thetaDB_K": 202.70768925810907,
+   "mixture_debye_temperature": 325.0,
+   "eta_mix": 0.09754754411006716,
+   "Sc_Ntot": 7.888905378529422,
+   "Ti_Ntot": 14.747491312147666,
+   "Nb_Ntot": 10.175453614774067,
+   "Hf_Ntot": 8.650028112114416,
+   "Sc": 0.25,
+   "Ti": 0.25,
+   "Nb": 0.25,
+   "Hf": 0.25,
+   "Tc_exp_all": [
+    6.6
+   ],
+   "Tc_exp_names": [
+    "ScHfNbTi_nominal"
+   ],
+   "Tc_exp": 6.6
+  },
+  "run_params": {
+   "element_labels": [
+    "Sc",
+    "Ti",
+    "Nb",
+    "Hf"
+   ],
+   "concentrations": [
+    25.0,
+    25.0,
+    25.0,
+    25.0
+   ]
+  }
+ },
+ "ScHfNbZr": {
+  "src": "results/comparison.sra.ew0.6.bz10-10-20.gl/ScHfNbZr",
+  "results": {
+   "name": "ScHfNbZr",
+   "a0_bohr": 6.635206741453049,
+   "KKR_PARAMS_FINALSCF": {
+    "ew": 0.6,
+    "xc": "pbe",
+    "rel": "sra",
+    "bzqlty": 20,
+    "mxl": 3,
+    "magtype": "nmag",
+    "delta": 0.005,
+    "pmix": 0.01,
+    "edelt": 0.001,
+    "subdir": "finalscf",
+    "output": "finalscf",
+    "mcmillan_cutoff_mode": "valence"
+   },
+   "lambda": 1.1297524573213613,
+   "Tc_mu0.1": 14.116415772971422,
+   "Tc_mu0.2": 8.587880044892595,
+   "thetaDB_K": 205.7858798790121,
+   "mixture_debye_temperature": 284.05,
+   "eta_mix": 0.10984665578783243,
+   "Sc_Ntot": 7.607589444782401,
+   "Hf_Ntot": 8.72973113717265,
+   "Nb_Ntot": 10.931654672568971,
+   "Zr_Ntot": 9.529638264839614,
+   "Sc": 0.21,
+   "Hf": 0.26,
+   "Nb": 0.28,
+   "Zr": 0.25,
+   "Tc_exp_all": [
+    6.8
+   ],
+   "Tc_exp_names": [
+    "ScHfNbZr"
+   ],
+   "Tc_exp": 6.8
+  },
+  "run_params": {
+   "element_labels": [
+    "Sc",
+    "Hf",
+    "Nb",
+    "Zr"
+   ],
+   "concentrations": [
+    21.0,
+    26.0,
+    28.0,
+    25.0
+   ]
+  }
+ },
+ "ScHfNbZr_nominal": {
+  "src": "results/comparison.sra.ew0.6.bz10-10-20.gl/ScHfNbZr_nominal",
+  "results": {
+   "name": "ScHfNbZr_nominal",
+   "a0_bohr": 6.661507727515341,
+   "KKR_PARAMS_FINALSCF": {
+    "ew": 0.6,
+    "xc": "pbe",
+    "rel": "sra",
+    "bzqlty": 20,
+    "mxl": 3,
+    "magtype": "nmag",
+    "delta": 0.005,
+    "pmix": 0.01,
+    "edelt": 0.001,
+    "subdir": "finalscf",
+    "output": "finalscf",
+    "mcmillan_cutoff_mode": "valence"
+   },
+   "lambda": 1.2611321136561269,
+   "Tc_mu0.1": 15.157735863888744,
+   "Tc_mu0.2": 9.883249161054069,
+   "thetaDB_K": 192.77929062931594,
+   "mixture_debye_temperature": 287.5,
+   "eta_mix": 0.10475811923851605,
+   "Sc_Ntot": 7.836749296346323,
+   "Zr_Ntot": 9.77055280144721,
+   "Nb_Ntot": 11.128258794939809,
+   "Hf_Ntot": 8.965285772069073,
+   "Sc": 0.25,
+   "Zr": 0.25,
+   "Nb": 0.25,
+   "Hf": 0.25,
+   "Tc_exp_all": [
+    6.8
+   ],
+   "Tc_exp_names": [
+    "ScHfNbZr_nominal"
+   ],
+   "Tc_exp": 6.8
+  },
+  "run_params": {
+   "element_labels": [
+    "Sc",
+    "Zr",
+    "Nb",
+    "Hf"
+   ],
+   "concentrations": [
+    25.0,
+    25.0,
+    25.0,
+    25.0
+   ]
+  }
+ },
+ "ScHfTaTi": {
+  "src": "results/comparison.sra.ew0.6.bz10-10-20.gl/ScHfTaTi",
+  "results": {
+   "name": "ScHfTaTi",
+   "a0_bohr": 6.447378889372837,
+   "KKR_PARAMS_FINALSCF": {
+    "ew": 0.6,
+    "xc": "pbe",
+    "rel": "sra",
+    "bzqlty": 20,
+    "mxl": 3,
+    "magtype": "nmag",
+    "delta": 0.005,
+    "pmix": 0.01,
+    "edelt": 0.001,
+    "subdir": "finalscf",
+    "output": "finalscf",
+    "mcmillan_cutoff_mode": "valence"
+   },
+   "lambda": 0.9049071222214351,
+   "Tc_mu0.1": 10.577154086239785,
+   "Tc_mu0.2": 5.2691903316045,
+   "thetaDB_K": 216.14600212739384,
+   "mixture_debye_temperature": 303.0,
+   "eta_mix": 0.12003078456781249,
+   "Sc_Ntot": 7.333323209920447,
+   "Hf_Ntot": 8.248541109590915,
+   "Ta_Ntot": 8.943442825532877,
+   "Ti_Ntot": 13.80624982466005,
+   "Sc": 0.12,
+   "Hf": 0.24,
+   "Ta": 0.38,
+   "Ti": 0.26,
+   "Tc_exp_all": [
+    6.4
+   ],
+   "Tc_exp_names": [
+    "ScHfTaTi"
+   ],
+   "Tc_exp": 6.4
+  },
+  "run_params": {
+   "element_labels": [
+    "Sc",
+    "Hf",
+    "Ta",
+    "Ti"
+   ],
+   "concentrations": [
+    12.0,
+    24.0,
+    38.0,
+    26.0
+   ]
+  }
+ },
+ "ScHfTaTi_nominal": {
+  "src": "results/comparison.sra.ew0.6.bz10-10-20.gl/ScHfTaTi_nominal",
+  "results": {
+   "name": "ScHfTaTi_nominal",
+   "a0_bohr": 6.5378946983909945,
+   "KKR_PARAMS_FINALSCF": {
+    "ew": 0.6,
+    "xc": "pbe",
+    "rel": "sra",
+    "bzqlty": 20,
+    "mxl": 3,
+    "magtype": "nmag",
+    "delta": 0.005,
+    "pmix": 0.01,
+    "edelt": 0.001,
+    "subdir": "finalscf",
+    "output": "finalscf",
+    "mcmillan_cutoff_mode": "valence"
+   },
+   "lambda": 1.251268159212628,
+   "Tc_mu0.1": 14.000212212698049,
+   "Tc_mu0.2": 9.087920469728124,
+   "thetaDB_K": 179.6957911523066,
+   "mixture_debye_temperature": 316.25,
+   "eta_mix": 0.10020777611569232,
+   "Sc_Ntot": 8.025160027468118,
+   "Ti_Ntot": 15.140623085836031,
+   "Hf_Ntot": 8.885898900548291,
+   "Ta_Ntot": 9.54239411203153,
+   "Sc": 0.25,
+   "Ti": 0.25,
+   "Hf": 0.25,
+   "Ta": 0.25,
+   "Tc_exp_all": [
+    6.4
+   ],
+   "Tc_exp_names": [
+    "ScHfTaTi_nominal"
+   ],
+   "Tc_exp": 6.4
+  },
+  "run_params": {
+   "element_labels": [
+    "Sc",
+    "Ti",
+    "Hf",
+    "Ta"
+   ],
+   "concentrations": [
+    25.0,
+    25.0,
+    25.0,
+    25.0
+   ]
+  }
+ },
+ "ScNbTaTiZr": {
+  "src": "results/comparison.sra.ew0.6.bz10-10-20.gl/ScNbTaTiZr",
+  "results": {
+   "name": "ScNbTaTiZr",
+   "a0_bohr": 6.330885185578614,
+   "KKR_PARAMS_FINALSCF": {
+    "ew": 0.6,
+    "xc": "pbe",
+    "rel": "sra",
+    "bzqlty": 20,
+    "mxl": 3,
+    "magtype": "nmag",
+    "delta": 0.005,
+    "pmix": 0.01,
+    "edelt": 0.001,
+    "subdir": "finalscf",
+    "output": "finalscf",
+    "mcmillan_cutoff_mode": "valence"
+   },
+   "lambda": 0.7447599633236164,
+   "Tc_mu0.1": 9.050844957437528,
+   "Tc_mu0.2": 3.3987317759248805,
+   "thetaDB_K": 272.0054522495966,
+   "mixture_debye_temperature": 285.05,
+   "eta_mix": 0.14520250810743549,
+   "Sc_Ntot": 6.619226967566836,
+   "Nb_Ntot": 8.631904349891505,
+   "Ta_Ntot": 7.8734012275509695,
+   "Ti_Ntot": 12.261693001221524,
+   "Zr_Ntot": 8.120838312042975,
+   "Sc": 0.04,
+   "Nb": 0.29,
+   "Ta": 0.41,
+   "Ti": 0.15,
+   "Zr": 0.11,
+   "Tc_exp_all": [
+    7.9
+   ],
+   "Tc_exp_names": [
+    "ScNbTaTiZr"
+   ],
+   "Tc_exp": 7.9
+  },
+  "run_params": {
+   "element_labels": [
+    "Sc",
+    "Nb",
+    "Ta",
+    "Ti",
+    "Zr"
+   ],
+   "concentrations": [
+    4.0,
+    29.0,
+    41.0,
+    15.0,
+    11.0
+   ]
+  }
+ },
+ "ScNbTiZr": {
+  "src": "results/comparison.sra.ew0.6.bz10-10-20.gl/ScNbTiZr",
+  "results": {
+   "name": "ScNbTiZr",
+   "a0_bohr": 6.467558512021451,
+   "KKR_PARAMS_FINALSCF": {
+    "ew": 0.6,
+    "xc": "pbe",
+    "rel": "sra",
+    "bzqlty": 20,
+    "mxl": 3,
+    "magtype": "nmag",
+    "delta": 0.005,
+    "pmix": 0.01,
+    "edelt": 0.001,
+    "subdir": "finalscf",
+    "output": "finalscf",
+    "mcmillan_cutoff_mode": "valence"
+   },
+   "lambda": 0.9985196936146002,
+   "Tc_mu0.1": 14.859546529701696,
+   "Tc_mu0.2": 8.186341709769286,
+   "thetaDB_K": 258.41987533319,
+   "mixture_debye_temperature": 322.9,
+   "eta_mix": 0.1068155658017563,
+   "Sc_Ntot": 7.225664037486057,
+   "Nb_Ntot": 9.647573477992443,
+   "Ti_Ntot": 13.353872991374534,
+   "Zr_Ntot": 8.57466304330007,
+   "Sc": 0.18,
+   "Nb": 0.32,
+   "Ti": 0.24,
+   "Zr": 0.26,
+   "Tc_exp_all": [
+    8.4
+   ],
+   "Tc_exp_names": [
+    "ScNbTiZr"
+   ],
+   "Tc_exp": 8.4
+  },
+  "run_params": {
+   "element_labels": [
+    "Sc",
+    "Nb",
+    "Ti",
+    "Zr"
+   ],
+   "concentrations": [
+    18.0,
+    32.0,
+    24.0,
+    26.0
+   ]
+  }
+ },
+ "ScNbTiZr_nominal": {
+  "src": "results/comparison.sra.ew0.6.bz10-10-20.gl/ScNbTiZr_nominal",
+  "results": {
+   "name": "ScNbTiZr_nominal",
+   "a0_bohr": 6.5071545638498165,
+   "KKR_PARAMS_FINALSCF": {
+    "ew": 0.6,
+    "xc": "pbe",
+    "rel": "sra",
+    "bzqlty": 20,
+    "mxl": 3,
+    "magtype": "nmag",
+    "delta": 0.005,
+    "pmix": 0.01,
+    "edelt": 0.001,
+    "subdir": "finalscf",
+    "output": "finalscf",
+    "mcmillan_cutoff_mode": "valence"
+   },
+   "lambda": 1.1903443703668601,
+   "Tc_mu0.1": 17.011550467387675,
+   "Tc_mu0.2": 10.716098330819829,
+   "thetaDB_K": 231.90857374974925,
+   "mixture_debye_temperature": 330.0,
+   "eta_mix": 0.09722680399469598,
+   "Sc_Ntot": 7.643565107722061,
+   "Ti_Ntot": 14.11534336380902,
+   "Zr_Ntot": 8.94341591482197,
+   "Nb_Ntot": 9.911251500906374,
+   "Sc": 0.25,
+   "Ti": 0.25,
+   "Zr": 0.25,
+   "Nb": 0.25,
+   "Tc_exp_all": [
+    8.4,
+    8.11,
+    7.9
+   ],
+   "Tc_exp_names": [
+    "ScNbTiZr_nominal",
+    "NbScTiZr_Kitagawa",
+    "NbScTiZr_Seki"
+   ],
+   "Tc_exp": 8.11
+  },
+  "run_params": {
+   "element_labels": [
+    "Sc",
+    "Ti",
+    "Zr",
+    "Nb"
+   ],
+   "concentrations": [
+    25.0,
+    25.0,
+    25.0,
+    25.0
+   ]
+  }
+ },
+ "ScTaTiZr": {
+  "src": "results/comparison.sra.ew0.6.bz10-10-20.gl/ScTaTiZr",
+  "results": {
+   "name": "ScTaTiZr",
+   "a0_bohr": 6.33125425749984,
+   "KKR_PARAMS_FINALSCF": {
+    "ew": 0.6,
+    "xc": "pbe",
+    "rel": "sra",
+    "bzqlty": 20,
+    "mxl": 3,
+    "magtype": "nmag",
+    "delta": 0.005,
+    "pmix": 0.01,
+    "edelt": 0.001,
+    "subdir": "finalscf",
+    "output": "finalscf",
+    "mcmillan_cutoff_mode": "valence"
+   },
+   "lambda": 0.7107155923430393,
+   "Tc_mu0.1": 7.685526635890773,
+   "Tc_mu0.2": 2.6352130292384195,
+   "thetaDB_K": 257.4059156576092,
+   "mixture_debye_temperature": 287.2,
+   "eta_mix": 0.14175971850189345,
+   "Sc_Ntot": 6.742454066491419,
+   "Ta_Ntot": 7.917551388796115,
+   "Ti_Ntot": 12.432456060353438,
+   "Zr_Ntot": 8.184612551172453,
+   "Sc": 0.04,
+   "Ta": 0.64,
+   "Ti": 0.22,
+   "Zr": 0.1,
+   "Tc_exp_all": [
+    7.4
+   ],
+   "Tc_exp_names": [
+    "ScTaTiZr"
+   ],
+   "Tc_exp": 7.4
+  },
+  "run_params": {
+   "element_labels": [
+    "Sc",
+    "Ta",
+    "Ti",
+    "Zr"
+   ],
+   "concentrations": [
+    4.0,
+    64.0,
+    22.0,
+    10.0
+   ]
+  }
+ },
+ "ScTaTiZr_nominal": {
+  "src": "results/comparison.sra.ew0.6.bz10-10-20.gl/ScTaTiZr_nominal",
+  "results": {
+   "name": "ScTaTiZr_nominal",
+   "a0_bohr": 6.524898975327932,
+   "KKR_PARAMS_FINALSCF": {
+    "ew": 0.6,
+    "xc": "pbe",
+    "rel": "sra",
+    "bzqlty": 20,
+    "mxl": 3,
+    "magtype": "nmag",
+    "delta": 0.005,
+    "pmix": 0.01,
+    "edelt": 0.001,
+    "subdir": "finalscf",
+    "output": "finalscf",
+    "mcmillan_cutoff_mode": "valence"
+   },
+   "lambda": 1.2181568216088983,
+   "Tc_mu0.1": 15.242243495685912,
+   "Tc_mu0.2": 9.739488000345151,
+   "thetaDB_K": 201.98502664063085,
+   "mixture_debye_temperature": 321.25,
+   "eta_mix": 0.09946371459265008,
+   "Sc_Ntot": 7.783350893473809,
+   "Ti_Ntot": 14.513171321649304,
+   "Zr_Ntot": 9.181269271298204,
+   "Ta_Ntot": 9.258816331897291,
+   "Sc": 0.25,
+   "Ti": 0.25,
+   "Zr": 0.25,
+   "Ta": 0.25,
+   "Tc_exp_all": [
+    7.4
+   ],
+   "Tc_exp_names": [
+    "ScTaTiZr_nominal"
+   ],
+   "Tc_exp": 7.4
+  },
+  "run_params": {
+   "element_labels": [
+    "Sc",
+    "Ti",
+    "Zr",
+    "Ta"
+   ],
+   "concentrations": [
+    25.0,
+    25.0,
+    25.0,
+    25.0
+   ]
+  }
+ },
+ "ScVTiHfNb": {
+  "src": "results/comparison.sra.ew0.6.bz10-10-20.gl/ScVTiHfNb",
+  "results": {
+   "name": "ScVTiHfNb",
+   "a0_bohr": 6.356482267940951,
+   "KKR_PARAMS_FINALSCF": {
+    "ew": 0.6,
+    "xc": "pbe",
+    "rel": "sra",
+    "bzqlty": 20,
+    "mxl": 3,
+    "magtype": "nmag",
+    "delta": 0.005,
+    "pmix": 0.01,
+    "edelt": 0.001,
+    "subdir": "finalscf",
+    "output": "finalscf",
+    "mcmillan_cutoff_mode": "valence"
+   },
+   "lambda": 0.9209517227787707,
+   "Tc_mu0.1": 12.463830262553506,
+   "Tc_mu0.2": 6.332249142920509,
+   "thetaDB_K": 247.10336506434646,
+   "mixture_debye_temperature": 336.0,
+   "eta_mix": 0.10242951800126084,
+   "Sc_Ntot": 7.349807416825332,
+   "V_Ntot": 17.785246450722248,
+   "Ti_Ntot": 13.07152198150206,
+   "Hf_Ntot": 7.738538720826034,
+   "Nb_Ntot": 8.965754540339336,
+   "Sc": 0.2,
+   "V": 0.2,
+   "Ti": 0.2,
+   "Hf": 0.2,
+   "Nb": 0.2,
+   "Tc_exp_all": [
+    4.17
+   ],
+   "Tc_exp_names": [
+    "ScVTiHfNb"
+   ],
+   "Tc_exp": 4.17
+  },
+  "run_params": {
+   "element_labels": [
+    "Sc",
+    "V",
+    "Ti",
+    "Hf",
+    "Nb"
+   ],
+   "concentrations": [
+    20.0,
+    20.0,
+    20.0,
+    20.0,
+    20.0
+   ]
+  }
+ },
+ "Ta20Nb21Hf20Zr20Ti19": {
+  "src": "results/comparison.sra.ew0.6.bz10-10-20.gl/Ta20Nb21Hf20Zr20Ti19",
+  "results": {
+   "name": "Ta20Nb21Hf20Zr20Ti19",
+   "a0_bohr": 6.447244231458928,
+   "KKR_PARAMS_FINALSCF": {
+    "ew": 0.6,
+    "xc": "pbe",
+    "rel": "sra",
+    "bzqlty": 20,
+    "mxl": 3,
+    "magtype": "nmag",
+    "delta": 0.005,
+    "pmix": 0.01,
+    "edelt": 0.001,
+    "subdir": "finalscf",
+    "output": "finalscf",
+    "mcmillan_cutoff_mode": "valence"
+   },
+   "lambda": 0.859359242364989,
+   "Tc_mu0.1": 11.106391887077033,
+   "Tc_mu0.2": 5.1972764055173215,
+   "thetaDB_K": 249.08082939192397,
+   "mixture_debye_temperature": 289.55,
+   "eta_mix": 0.13886104277863417,
+   "Ti_Ntot": 13.336610610859648,
+   "Zr_Ntot": 8.825603032122896,
+   "Nb_Ntot": 9.946255936595676,
+   "Hf_Ntot": 8.106398603436272,
+   "Ta_Ntot": 9.079518189618309,
+   "Ti": 0.19,
+   "Zr": 0.2,
+   "Nb": 0.21,
+   "Hf": 0.2,
+   "Ta": 0.2,
+   "Tc_exp_all": [
+    6.0
+   ],
+   "Tc_exp_names": [
+    "Ta20Nb21Hf20Zr20Ti19"
+   ],
+   "Tc_exp": 6.0
+  },
+  "run_params": {
+   "element_labels": [
+    "Ti",
+    "Zr",
+    "Nb",
+    "Hf",
+    "Ta"
+   ],
+   "concentrations": [
+    19.0,
+    20.0,
+    21.0,
+    20.0,
+    20.0
+   ]
+  }
+ },
+ "Ta34Nb33Hf8Zr14Ti11": {
+  "src": "results/comparison.sra.ew0.6.bz10-10-20.gl/Ta34Nb33Hf8Zr14Ti11",
+  "results": {
+   "name": "Ta34Nb33Hf8Zr14Ti11",
+   "a0_bohr": 6.3587902253321955,
+   "KKR_PARAMS_FINALSCF": {
+    "ew": 0.6,
+    "xc": "pbe",
+    "rel": "sra",
+    "bzqlty": 20,
+    "mxl": 3,
+    "magtype": "nmag",
+    "delta": 0.005,
+    "pmix": 0.01,
+    "edelt": 0.001,
+    "subdir": "finalscf",
+    "output": "finalscf",
+    "mcmillan_cutoff_mode": "valence"
+   },
+   "lambda": 0.7733952547622027,
+   "Tc_mu0.1": 9.775290116595942,
+   "Tc_mu0.2": 3.920303614954382,
+   "thetaDB_K": 270.49474246563807,
+   "mixture_debye_temperature": 276.35,
+   "eta_mix": 0.15452283660158786,
+   "Ta_Ntot": 8.203846453695318,
+   "Nb_Ntot": 9.007897230518306,
+   "Hf_Ntot": 7.722266508699958,
+   "Zr_Ntot": 8.436128353633602,
+   "Ti_Ntot": 12.632167947099092,
+   "Ta": 0.34,
+   "Nb": 0.33,
+   "Hf": 0.08,
+   "Zr": 0.14,
+   "Ti": 0.11,
+   "Tc_exp_all": [
+    7.3
+   ],
+   "Tc_exp_names": [
+    "Ta34Nb33Hf8Zr14Ti11"
+   ],
+   "Tc_exp": 7.3
+  },
+  "run_params": {
+   "element_labels": [
+    "Ta",
+    "Nb",
+    "Hf",
+    "Zr",
+    "Ti"
+   ],
+   "concentrations": [
+    34.0,
+    33.0,
+    8.0,
+    14.0,
+    11.0
+   ]
+  }
+ },
+ "TaMoScV67HfZrTi33": {
+  "src": "results/comparison.sra.ew0.6.bz10-10-20.gl/TaMoScV67HfZrTi33",
+  "results": {
+   "name": "TaMoScV67HfZrTi33",
+   "a0_bohr": 6.2743272859180585,
+   "KKR_PARAMS_FINALSCF": {
+    "ew": 0.6,
+    "xc": "pbe",
+    "rel": "sra",
+    "bzqlty": 20,
+    "mxl": 3,
+    "magtype": "nmag",
+    "delta": 0.005,
+    "pmix": 0.01,
+    "edelt": 0.001,
+    "subdir": "finalscf",
+    "output": "finalscf",
+    "mcmillan_cutoff_mode": "valence"
+   },
+   "lambda": 0.695478888146624,
+   "Tc_mu0.1": 7.776940210881018,
+   "Tc_mu0.2": 2.5465695304091653,
+   "thetaDB_K": 274.5215457043053,
+   "mixture_debye_temperature": 331.7645,
+   "eta_mix": 0.11778676932833397,
+   "Ta_Ntot": 7.518600645683399,
+   "Mo_Ntot": 7.736549552246441,
+   "Sc_Ntot": 6.70665753122516,
+   "V_Ntot": 16.11608839899764,
+   "Hf_Ntot": 7.142705216376016,
+   "Zr_Ntot": 7.690689741431246,
+   "Ti_Ntot": 11.913927662283143,
+   "Ta": 0.22329999999999997,
+   "Mo": 0.1117,
+   "Sc": 0.1117,
+   "V": 0.22329999999999997,
+   "Hf": 0.11,
+   "Zr": 0.11,
+   "Ti": 0.11,
+   "Tc_exp_all": [],
+   "Tc_exp_names": [],
+   "Tc_exp": null
+  },
+  "run_params": {
+   "element_labels": [
+    "Ta",
+    "Mo",
+    "Sc",
+    "V",
+    "Hf",
+    "Zr",
+    "Ti"
+   ],
+   "concentrations": [
+    22.33,
+    11.17,
+    11.17,
+    22.33,
+    11.0,
+    11.0,
+    11.0
+   ]
+  }
+ },
+ "TaNb16ZrHfTi84": {
+  "src": "results/comparison.sra.ew0.6.bz10-10-20.gl/TaNb16ZrHfTi84",
+  "results": {
+   "name": "TaNb16ZrHfTi84",
+   "a0_bohr": 6.537587578677195,
+   "KKR_PARAMS_FINALSCF": {
+    "ew": 0.6,
+    "xc": "pbe",
+    "rel": "sra",
+    "bzqlty": 20,
+    "mxl": 3,
+    "magtype": "nmag",
+    "delta": 0.005,
+    "pmix": 0.01,
+    "edelt": 0.001,
+    "subdir": "finalscf",
+    "output": "finalscf",
+    "mcmillan_cutoff_mode": "valence"
+   },
+   "lambda": 0.9992878828902402,
+   "Tc_mu0.1": 12.399584387331414,
+   "Tc_mu0.2": 6.835914436837076,
+   "thetaDB_K": 215.38396534200166,
+   "mixture_debye_temperature": 304.40000000000003,
+   "eta_mix": 0.11270289132326279,
+   "Ta_Ntot": 9.182200917692612,
+   "Nb_Ntot": 10.023967431262951,
+   "Zr_Ntot": 8.834288122025011,
+   "Hf_Ntot": 8.177163512958863,
+   "Ti_Ntot": 13.747532490330682,
+   "Ta": 0.08,
+   "Nb": 0.08,
+   "Zr": 0.28,
+   "Hf": 0.28,
+   "Ti": 0.28,
+   "Tc_exp_all": [
+    4.52
+   ],
+   "Tc_exp_names": [
+    "TaNb16ZrHfTi84"
+   ],
+   "Tc_exp": 4.52
+  },
+  "run_params": {
+   "element_labels": [
+    "Ta",
+    "Nb",
+    "Zr",
+    "Hf",
+    "Ti"
+   ],
+   "concentrations": [
+    8.0,
+    8.0,
+    28.0,
+    28.0,
+    28.0
+   ]
+  }
+ },
+ "TaNb20ZrHfTi80": {
+  "src": "results/comparison.sra.ew0.6.bz10-10-20.gl/TaNb20ZrHfTi80",
+  "results": {
+   "name": "TaNb20ZrHfTi80",
+   "a0_bohr": 6.5215116278148235,
+   "KKR_PARAMS_FINALSCF": {
+    "ew": 0.6,
+    "xc": "pbe",
+    "rel": "sra",
+    "bzqlty": 20,
+    "mxl": 3,
+    "magtype": "nmag",
+    "delta": 0.005,
+    "pmix": 0.01,
+    "edelt": 0.001,
+    "subdir": "finalscf",
+    "output": "finalscf",
+    "mcmillan_cutoff_mode": "valence"
+   },
+   "lambda": 0.969244968857661,
+   "Tc_mu0.1": 12.13137755193679,
+   "Tc_mu0.2": 6.498017595857463,
+   "thetaDB_K": 221.05744989709387,
+   "mixture_debye_temperature": 302.1666778333221,
+   "eta_mix": 0.11643956548781682,
+   "Ti_Ntot": 13.583976132288589,
+   "Zr_Ntot": 8.7805986193846,
+   "Nb_Ntot": 10.012159464376795,
+   "Hf_Ntot": 8.116371637463761,
+   "Ta_Ntot": 9.162956369265771,
+   "Ti": 0.2666667333332666,
+   "Zr": 0.2666667333332666,
+   "Nb": 0.09999990000009999,
+   "Hf": 0.2666667333332666,
+   "Ta": 0.09999990000009999,
+   "Tc_exp_all": [
+    4.64
+   ],
+   "Tc_exp_names": [
+    "TaNb20ZrHfTi80"
+   ],
+   "Tc_exp": 4.64
+  },
+  "run_params": {
+   "element_labels": [
+    "Ti",
+    "Zr",
+    "Nb",
+    "Hf",
+    "Ta"
+   ],
+   "concentrations": [
+    26.6667,
+    26.6667,
+    10.0,
+    26.6667,
+    10.0
+   ]
+  }
+ },
+ "TaNb2HfZrTi": {
+  "src": "results/comparison.sra.ew0.6.bz10-10-20.gl/TaNb2HfZrTi",
+  "results": {
+   "name": "TaNb2HfZrTi",
+   "a0_bohr": 6.411578202987098,
+   "KKR_PARAMS_FINALSCF": {
+    "ew": 0.6,
+    "xc": "pbe",
+    "rel": "sra",
+    "bzqlty": 20,
+    "mxl": 3,
+    "magtype": "nmag",
+    "delta": 0.005,
+    "pmix": 0.01,
+    "edelt": 0.001,
+    "subdir": "finalscf",
+    "output": "finalscf",
+    "mcmillan_cutoff_mode": "valence"
+   },
+   "lambda": 0.8295483170814414,
+   "Tc_mu0.1": 11.041656003417707,
+   "Tc_mu0.2": 4.927947679891693,
+   "thetaDB_K": 264.84479860783864,
+   "mixture_debye_temperature": 288.33334666665337,
+   "eta_mix": 0.14557485256711206,
+   "Ta_Ntot": 8.877258662853286,
+   "Nb_Ntot": 9.732617172982646,
+   "Hf_Ntot": 8.025115673705205,
+   "Zr_Ntot": 8.754249117795624,
+   "Ti_Ntot": 13.150431123474592,
+   "Ta": 0.1666668333331667,
+   "Nb": 0.3333326666673334,
+   "Hf": 0.1666668333331667,
+   "Zr": 0.1666668333331667,
+   "Ti": 0.1666668333331667,
+   "Tc_exp_all": [
+    7.9
+   ],
+   "Tc_exp_names": [
+    "TaNb2HfZrTi"
+   ],
+   "Tc_exp": 7.9
+  },
+  "run_params": {
+   "element_labels": [
+    "Ta",
+    "Nb",
+    "Hf",
+    "Zr",
+    "Ti"
+   ],
+   "concentrations": [
+    16.6667,
+    33.3333,
+    16.6667,
+    16.6667,
+    16.6667
+   ]
+  }
+ },
+ "TaNb30ZrHfTi70": {
+  "src": "results/comparison.sra.ew0.6.bz10-10-20.gl/TaNb30ZrHfTi70",
+  "results": {
+   "name": "TaNb30ZrHfTi70",
+   "a0_bohr": 6.482633545384092,
+   "KKR_PARAMS_FINALSCF": {
+    "ew": 0.6,
+    "xc": "pbe",
+    "rel": "sra",
+    "bzqlty": 20,
+    "mxl": 3,
+    "magtype": "nmag",
+    "delta": 0.005,
+    "pmix": 0.01,
+    "edelt": 0.001,
+    "subdir": "finalscf",
+    "output": "finalscf",
+    "mcmillan_cutoff_mode": "valence"
+   },
+   "lambda": 0.9147680110893717,
+   "Tc_mu0.1": 11.705738593469503,
+   "Tc_mu0.2": 5.903035770271648,
+   "thetaDB_K": 234.76464790618635,
+   "mixture_debye_temperature": 296.5833165833166,
+   "eta_mix": 0.12737962282736273,
+   "Ti_Ntot": 13.424325010315185,
+   "Zr_Ntot": 8.805229513396029,
+   "Nb_Ntot": 10.054770597960593,
+   "Hf_Ntot": 8.107007601513581,
+   "Ta_Ntot": 9.189719833804274,
+   "Ti": 0.23333323333323336,
+   "Zr": 0.23333323333323336,
+   "Nb": 0.15000015000015002,
+   "Hf": 0.23333323333323336,
+   "Ta": 0.15000015000015002,
+   "Tc_exp_all": [
+    5.2
+   ],
+   "Tc_exp_names": [
+    "TaNb30ZrHfTi70"
+   ],
+   "Tc_exp": 5.2
+  },
+  "run_params": {
+   "element_labels": [
+    "Ti",
+    "Zr",
+    "Nb",
+    "Hf",
+    "Ta"
+   ],
+   "concentrations": [
+    23.3333,
+    23.3333,
+    15.0,
+    23.3333,
+    15.0
+   ]
+  }
+ },
+ "TaNb50ZrHfTi50": {
+  "src": "results/comparison.sra.ew0.6.bz10-10-20.gl/TaNb50ZrHfTi50",
+  "results": {
+   "name": "TaNb50ZrHfTi50",
+   "a0_bohr": 6.413636616214307,
+   "KKR_PARAMS_FINALSCF": {
+    "ew": 0.6,
+    "xc": "pbe",
+    "rel": "sra",
+    "bzqlty": 20,
+    "mxl": 3,
+    "magtype": "nmag",
+    "delta": 0.005,
+    "pmix": 0.01,
+    "edelt": 0.001,
+    "subdir": "finalscf",
+    "output": "finalscf",
+    "mcmillan_cutoff_mode": "valence"
+   },
+   "lambda": 0.8314704988871219,
+   "Tc_mu0.1": 10.757740228337102,
+   "Tc_mu0.2": 4.816762858094945,
+   "thetaDB_K": 256.8761203080325,
+   "mixture_debye_temperature": 285.41669458330546,
+   "eta_mix": 0.14609012874214838,
+   "Ta_Ntot": 8.851288251614987,
+   "Nb_Ntot": 9.70152086278084,
+   "Zr_Ntot": 8.76234280363587,
+   "Hf_Ntot": 8.038081776636044,
+   "Ti_Ntot": 13.176541402328535,
+   "Ta": 0.24999975000025007,
+   "Nb": 0.24999975000025007,
+   "Zr": 0.1666668333331667,
+   "Hf": 0.1666668333331667,
+   "Ti": 0.1666668333331667,
+   "Tc_exp_all": [
+    6.46
+   ],
+   "Tc_exp_names": [
+    "TaNb50ZrHfTi50"
+   ],
+   "Tc_exp": 6.46
+  },
+  "run_params": {
+   "element_labels": [
+    "Ta",
+    "Nb",
+    "Zr",
+    "Hf",
+    "Ti"
+   ],
+   "concentrations": [
+    25.0,
+    25.0,
+    16.6667,
+    16.6667,
+    16.6667
+   ]
+  }
+ },
+ "TaNb60ZrHfTi40": {
+  "src": "results/comparison.sra.ew0.6.bz10-10-20.gl/TaNb60ZrHfTi40",
+  "results": {
+   "name": "TaNb60ZrHfTi40",
+   "a0_bohr": 6.381583761143722,
+   "KKR_PARAMS_FINALSCF": {
+    "ew": 0.6,
+    "xc": "pbe",
+    "rel": "sra",
+    "bzqlty": 20,
+    "mxl": 3,
+    "magtype": "nmag",
+    "delta": 0.005,
+    "pmix": 0.01,
+    "edelt": 0.001,
+    "subdir": "finalscf",
+    "output": "finalscf",
+    "mcmillan_cutoff_mode": "valence"
+   },
+   "lambda": 0.8017225769151267,
+   "Tc_mu0.1": 10.246095401779884,
+   "Tc_mu0.2": 4.350906111075404,
+   "thetaDB_K": 263.0394509150247,
+   "mixture_debye_temperature": 279.83329983329986,
+   "eta_mix": 0.15148174055597025,
+   "Ta_Ntot": 8.487955966443371,
+   "Nb_Ntot": 9.309142225684482,
+   "Zr_Ntot": 8.609799913179607,
+   "Hf_Ntot": 7.892197700918103,
+   "Ti_Ntot": 12.923258077376744,
+   "Ta": 0.30000030000030004,
+   "Nb": 0.30000030000030004,
+   "Zr": 0.13333313333313335,
+   "Hf": 0.13333313333313335,
+   "Ti": 0.13333313333313335,
+   "Tc_exp_all": [
+    7.56
+   ],
+   "Tc_exp_names": [
+    "TaNb60ZrHfTi40"
+   ],
+   "Tc_exp": 7.56
+  },
+  "run_params": {
+   "element_labels": [
+    "Ta",
+    "Nb",
+    "Zr",
+    "Hf",
+    "Ti"
+   ],
+   "concentrations": [
+    30.0,
+    30.0,
+    13.3333,
+    13.3333,
+    13.3333
+   ]
+  }
+ },
+ "TaNb65ZrHfTi35": {
+  "src": "results/comparison.sra.ew0.6.bz10-10-20.gl/TaNb65ZrHfTi35",
+  "results": {
+   "name": "TaNb65ZrHfTi35",
+   "a0_bohr": 6.365771707015905,
+   "KKR_PARAMS_FINALSCF": {
+    "ew": 0.6,
+    "xc": "pbe",
+    "rel": "sra",
+    "bzqlty": 20,
+    "mxl": 3,
+    "magtype": "nmag",
+    "delta": 0.005,
+    "pmix": 0.01,
+    "edelt": 0.001,
+    "subdir": "finalscf",
+    "output": "finalscf",
+    "mcmillan_cutoff_mode": "valence"
+   },
+   "lambda": 0.7833497618497145,
+   "Tc_mu0.1": 9.878164801895199,
+   "Tc_mu0.2": 4.045286121389875,
+   "thetaDB_K": 266.0421691273782,
+   "mixture_debye_temperature": 277.04170295829704,
+   "eta_mix": 0.15329664283047384,
+   "Ti_Ntot": 12.73756532013954,
+   "Zr_Ntot": 8.495010780214294,
+   "Nb_Ntot": 9.087887104624752,
+   "Hf_Ntot": 7.7821553287904575,
+   "Ta_Ntot": 8.281253009538307,
+   "Ti": 0.11666688333311667,
+   "Zr": 0.11666688333311667,
+   "Nb": 0.324999675000325,
+   "Hf": 0.11666688333311667,
+   "Ta": 0.324999675000325,
+   "Tc_exp_all": [
+    7.48
+   ],
+   "Tc_exp_names": [
+    "TaNb65ZrHfTi35"
+   ],
+   "Tc_exp": 7.48
+  },
+  "run_params": {
+   "element_labels": [
+    "Ti",
+    "Zr",
+    "Nb",
+    "Hf",
+    "Ta"
+   ],
+   "concentrations": [
+    11.6667,
+    11.6667,
+    32.5,
+    11.6667,
+    32.5
+   ]
+  }
+ },
+ "TaNb67Hf33": {
+  "src": "results/comparison.sra.ew0.6.bz10-10-20.gl/TaNb67Hf33",
+  "results": {
+   "name": "TaNb67Hf33",
+   "a0_bohr": 6.412142665907098,
+   "KKR_PARAMS_FINALSCF": {
+    "ew": 0.6,
+    "xc": "pbe",
+    "rel": "sra",
+    "bzqlty": 20,
+    "mxl": 3,
+    "magtype": "nmag",
+    "delta": 0.005,
+    "pmix": 0.01,
+    "edelt": 0.001,
+    "subdir": "finalscf",
+    "output": "finalscf",
+    "mcmillan_cutoff_mode": "valence"
+   },
+   "lambda": 0.8660899022076182,
+   "Tc_mu0.1": 10.711746859304041,
+   "Tc_mu0.2": 5.062685883353879,
+   "thetaDB_K": 236.78503527821263,
+   "mixture_debye_temperature": 255.025,
+   "eta_mix": 0.16045846538882397,
+   "Nb_Ntot": 9.308792479498056,
+   "Hf_Ntot": 8.0642902586197,
+   "Ta_Ntot": 8.474022542048564,
+   "Nb": 0.335,
+   "Hf": 0.33,
+   "Ta": 0.335,
+   "Tc_exp_all": [
+    7.42
+   ],
+   "Tc_exp_names": [
+    "TaNb67Hf33"
+   ],
+   "Tc_exp": 7.42
+  },
+  "run_params": {
+   "element_labels": [
+    "Nb",
+    "Hf",
+    "Ta"
+   ],
+   "concentrations": [
+    33.5,
+    33.0,
+    33.5
+   ]
+  }
+ },
+ "TaNb67HfZr33": {
+  "src": "results/comparison.sra.ew0.6.bz10-10-20.gl/TaNb67HfZr33",
+  "results": {
+   "name": "TaNb67HfZr33",
+   "a0_bohr": 6.407964652614086,
+   "KKR_PARAMS_FINALSCF": {
+    "ew": 0.6,
+    "xc": "pbe",
+    "rel": "sra",
+    "bzqlty": 20,
+    "mxl": 3,
+    "magtype": "nmag",
+    "delta": 0.005,
+    "pmix": 0.01,
+    "edelt": 0.001,
+    "subdir": "finalscf",
+    "output": "finalscf",
+    "mcmillan_cutoff_mode": "valence"
+   },
+   "lambda": 0.8201337902551186,
+   "Tc_mu0.1": 10.55855326790446,
+   "Tc_mu0.2": 4.636657661586491,
+   "thetaDB_K": 258.99229018402275,
+   "mixture_debye_temperature": 258.32500000000005,
+   "eta_mix": 0.16439774574598423,
+   "Zr_Ntot": 8.79764618971862,
+   "Nb_Ntot": 9.429396374569684,
+   "Hf_Ntot": 8.009161277252865,
+   "Ta_Ntot": 8.567049739127011,
+   "Zr": 0.165,
+   "Nb": 0.335,
+   "Hf": 0.165,
+   "Ta": 0.335,
+   "Tc_exp_all": [
+    7.07
+   ],
+   "Tc_exp_names": [
+    "TaNb67HfZr33"
+   ],
+   "Tc_exp": 7.07
+  },
+  "run_params": {
+   "element_labels": [
+    "Zr",
+    "Nb",
+    "Hf",
+    "Ta"
+   ],
+   "concentrations": [
+    16.5,
+    33.5,
+    16.5,
+    33.5
+   ]
+  }
+ },
+ "TaNb67HfZrTi33": {
+  "src": "results/comparison.sra.ew0.6.bz10-10-20.gl/TaNb67HfZrTi33",
+  "results": {
+   "name": "TaNb67HfZrTi33",
+   "a0_bohr": 6.360432842458658,
+   "KKR_PARAMS_FINALSCF": {
+    "ew": 0.6,
+    "xc": "pbe",
+    "rel": "sra",
+    "bzqlty": 20,
+    "mxl": 3,
+    "magtype": "nmag",
+    "delta": 0.005,
+    "pmix": 0.01,
+    "edelt": 0.001,
+    "subdir": "finalscf",
+    "output": "finalscf",
+    "mcmillan_cutoff_mode": "valence"
+   },
+   "lambda": 0.7769268856116793,
+   "Tc_mu0.1": 9.74215321105178,
+   "Tc_mu0.2": 3.936534015144416,
+   "thetaDB_K": 266.97695640902856,
+   "mixture_debye_temperature": 275.925,
+   "eta_mix": 0.15386430927778746,
+   "Ta_Ntot": 8.2057524979754,
+   "Nb_Ntot": 9.0073317817514,
+   "Hf_Ntot": 7.743386579725655,
+   "Zr_Ntot": 8.455419118475255,
+   "Ti_Ntot": 12.674532506296142,
+   "Ta": 0.335,
+   "Nb": 0.335,
+   "Hf": 0.11,
+   "Zr": 0.11,
+   "Ti": 0.11,
+   "Tc_exp_all": [
+    7.7,
+    7.6
+   ],
+   "Tc_exp_names": [
+    "TaNb67HfZrTi33",
+    "TaNbHfZrTi_PRMat2018"
+   ],
+   "Tc_exp": 7.65
+  },
+  "run_params": {
+   "element_labels": [
+    "Ta",
+    "Nb",
+    "Hf",
+    "Zr",
+    "Ti"
+   ],
+   "concentrations": [
+    0.335,
+    0.335,
+    0.11,
+    0.11,
+    0.11
+   ]
+  }
+ },
+ "TaNb70HfZrTi50_Gao": {
+  "src": "results/comparison.sra.ew0.6.bz10-10-20.gl/TaNb70HfZrTi50_Gao",
+  "results": {
+   "name": "TaNb70HfZrTi50_Gao",
+   "a0_bohr": 6.3868388264098055,
+   "KKR_PARAMS_FINALSCF": {
+    "ew": 0.6,
+    "xc": "pbe",
+    "rel": "sra",
+    "bzqlty": 20,
+    "mxl": 3,
+    "magtype": "nmag",
+    "delta": 0.005,
+    "pmix": 0.01,
+    "edelt": 0.001,
+    "subdir": "finalscf",
+    "output": "finalscf",
+    "mcmillan_cutoff_mode": "valence"
+   },
+   "lambda": 0.8071100215010862,
+   "Tc_mu0.1": 10.349868174146534,
+   "Tc_mu0.2": 4.439570072514828,
+   "thetaDB_K": 262.12093241395564,
+   "mixture_debye_temperature": 280.76388423611576,
+   "eta_mix": 0.15080705574843062,
+   "Ti_Ntot": 12.978896606909895,
+   "Zr_Ntot": 8.64486294634083,
+   "Nb_Ntot": 9.38264551534716,
+   "Hf_Ntot": 7.92537293689746,
+   "Ta_Ntot": 8.556341594123735,
+   "Ti": 0.13888886111113888,
+   "Zr": 0.13888886111113888,
+   "Nb": 0.29166670833329167,
+   "Hf": 0.13888886111113888,
+   "Ta": 0.29166670833329167,
+   "Tc_exp_all": [
+    7.13
+   ],
+   "Tc_exp_names": [
+    "TaNb70HfZrTi50_Gao"
+   ],
+   "Tc_exp": 7.13
+  },
+  "run_params": {
+   "element_labels": [
+    "Ti",
+    "Zr",
+    "Nb",
+    "Hf",
+    "Ta"
+   ],
+   "concentrations": [
+    13.8889,
+    13.8889,
+    29.1667,
+    13.8889,
+    29.1667
+   ]
+  }
+ },
+ "TaNb70ZrHfTi30": {
+  "src": "results/comparison.sra.ew0.6.bz10-10-20.gl/TaNb70ZrHfTi30",
+  "results": {
+   "name": "TaNb70ZrHfTi30",
+   "a0_bohr": 6.350189557985809,
+   "KKR_PARAMS_FINALSCF": {
+    "ew": 0.6,
+    "xc": "pbe",
+    "rel": "sra",
+    "bzqlty": 20,
+    "mxl": 3,
+    "magtype": "nmag",
+    "delta": 0.005,
+    "pmix": 0.01,
+    "edelt": 0.001,
+    "subdir": "finalscf",
+    "output": "finalscf",
+    "mcmillan_cutoff_mode": "valence"
+   },
+   "lambda": 0.7664455393990551,
+   "Tc_mu0.1": 9.5298996938089,
+   "Tc_mu0.2": 3.7643535808068913,
+   "thetaDB_K": 268.86510822115156,
+   "mixture_debye_temperature": 274.25,
+   "eta_mix": 0.15507509797973013,
+   "Ta_Ntot": 8.08316295507085,
+   "Nb_Ntot": 8.875240109022164,
+   "Zr_Ntot": 8.388646846056503,
+   "Hf_Ntot": 7.679616374987313,
+   "Ti_Ntot": 12.570847981469278,
+   "Ta": 0.35,
+   "Nb": 0.35,
+   "Zr": 0.1,
+   "Hf": 0.1,
+   "Ti": 0.1,
+   "Tc_exp_all": [
+    8.03
+   ],
+   "Tc_exp_names": [
+    "TaNb70ZrHfTi30"
+   ],
+   "Tc_exp": 8.03
+  },
+  "run_params": {
+   "element_labels": [
+    "Ta",
+    "Nb",
+    "Zr",
+    "Hf",
+    "Ti"
+   ],
+   "concentrations": [
+    35.0,
+    35.0,
+    10.0,
+    10.0,
+    10.0
+   ]
+  }
+ },
+ "TaNb75ZrHfTi25": {
+  "src": "results/comparison.sra.ew0.6.bz10-10-20.gl/TaNb75ZrHfTi25",
+  "results": {
+   "name": "TaNb75ZrHfTi25",
+   "a0_bohr": 6.3348162159006565,
+   "KKR_PARAMS_FINALSCF": {
+    "ew": 0.6,
+    "xc": "pbe",
+    "rel": "sra",
+    "bzqlty": 20,
+    "mxl": 3,
+    "magtype": "nmag",
+    "delta": 0.005,
+    "pmix": 0.01,
+    "edelt": 0.001,
+    "subdir": "finalscf",
+    "output": "finalscf",
+    "mcmillan_cutoff_mode": "valence"
+   },
+   "lambda": 0.7470778771186962,
+   "Tc_mu0.1": 9.092588329149887,
+   "Tc_mu0.2": 3.433780811318203,
+   "thetaDB_K": 271.36514815716026,
+   "mixture_debye_temperature": 271.45829145829146,
+   "eta_mix": 0.15585384450172815,
+   "Ti_Ntot": 12.401865709427147,
+   "Zr_Ntot": 8.267018773034687,
+   "Nb_Ntot": 8.634907005255382,
+   "Hf_Ntot": 7.566661969897598,
+   "Ta_Ntot": 7.86109978254628,
+   "Ti": 0.08333308333308333,
+   "Zr": 0.08333308333308333,
+   "Nb": 0.37500037500037503,
+   "Hf": 0.08333308333308333,
+   "Ta": 0.37500037500037503,
+   "Tc_exp_all": [
+    7.79
+   ],
+   "Tc_exp_names": [
+    "TaNb75ZrHfTi25"
+   ],
+   "Tc_exp": 7.79
+  },
+  "run_params": {
+   "element_labels": [
+    "Ti",
+    "Zr",
+    "Nb",
+    "Hf",
+    "Ta"
+   ],
+   "concentrations": [
+    8.3333,
+    8.3333,
+    37.5,
+    8.3333,
+    37.5
+   ]
+  }
+ },
+ "TaNb80ZrHfTi20": {
+  "src": "results/comparison.sra.ew0.6.bz10-10-20.gl/TaNb80ZrHfTi20",
+  "results": {
+   "name": "TaNb80ZrHfTi20",
+   "a0_bohr": 6.3204724085144806,
+   "KKR_PARAMS_FINALSCF": {
+    "ew": 0.6,
+    "xc": "pbe",
+    "rel": "sra",
+    "bzqlty": 20,
+    "mxl": 3,
+    "magtype": "nmag",
+    "delta": 0.005,
+    "pmix": 0.01,
+    "edelt": 0.001,
+    "subdir": "finalscf",
+    "output": "finalscf",
+    "mcmillan_cutoff_mode": "valence"
+   },
+   "lambda": 0.7276910876609247,
+   "Tc_mu0.1": 8.631461268595825,
+   "Tc_mu0.2": 3.1027387957890964,
+   "thetaDB_K": 273.47693806793995,
+   "mixture_debye_temperature": 268.6667113332886,
+   "eta_mix": 0.1560344971928631,
+   "Ti_Ntot": 12.16865899752836,
+   "Zr_Ntot": 8.096180185287121,
+   "Nb_Ntot": 8.348433568590227,
+   "Hf_Ntot": 7.410434518246507,
+   "Ta_Ntot": 7.603208604706799,
+   "Ti": 0.06666693333306666,
+   "Zr": 0.06666693333306666,
+   "Nb": 0.39999960000039997,
+   "Hf": 0.06666693333306666,
+   "Ta": 0.39999960000039997,
+   "Tc_exp_all": [
+    7.55
+   ],
+   "Tc_exp_names": [
+    "TaNb80ZrHfTi20"
+   ],
+   "Tc_exp": 7.55
+  },
+  "run_params": {
+   "element_labels": [
+    "Ti",
+    "Zr",
+    "Nb",
+    "Hf",
+    "Ta"
+   ],
+   "concentrations": [
+    6.6667,
+    6.6667,
+    40.0,
+    6.6667,
+    40.0
+   ]
+  }
+ },
+ "TaNbHfSc0.67Mo0.33Ti": {
+  "src": "results/comparison.sra.ew0.6.bz10-10-20.gl/TaNbHfSc0.67Mo0.33Ti",
+  "results": {
+   "name": "TaNbHfSc0.67Mo0.33Ti",
+   "a0_bohr": 6.3358710664430875,
+   "KKR_PARAMS_FINALSCF": {
+    "ew": 0.6,
+    "xc": "pbe",
+    "rel": "sra",
+    "bzqlty": 20,
+    "mxl": 3,
+    "magtype": "nmag",
+    "delta": 0.005,
+    "pmix": 0.01,
+    "edelt": 0.001,
+    "subdir": "finalscf",
+    "output": "finalscf",
+    "mcmillan_cutoff_mode": "valence"
+   },
+   "lambda": 0.7163797537286806,
+   "Tc_mu0.1": 8.159116288754038,
+   "Tc_mu0.2": 2.843331799383262,
+   "thetaDB_K": 268.1603605951161,
+   "mixture_debye_temperature": 288.7235,
+   "eta_mix": 0.13947670981356533,
+   "Ta_Ntot": 7.767035203251666,
+   "Nb_Ntot": 8.513718057081075,
+   "Hf_Ntot": 7.365997740432212,
+   "Sc_Ntot": 6.570063649967673,
+   "Mo_Ntot": 7.898880458482761,
+   "Ti_Ntot": 12.183220207016245,
+   "Ta": 0.335,
+   "Nb": 0.335,
+   "Hf": 0.11,
+   "Sc": 0.0737,
+   "Mo": 0.0363,
+   "Ti": 0.11,
+   "Tc_exp_all": [
+    6.6
+   ],
+   "Tc_exp_names": [
+    "TaNbHfSc0.67Mo0.33Ti"
+   ],
+   "Tc_exp": 6.6
+  },
+  "run_params": {
+   "element_labels": [
+    "Ta",
+    "Nb",
+    "Hf",
+    "Sc",
+    "Mo",
+    "Ti"
+   ],
+   "concentrations": [
+    33.5,
+    33.5,
+    11.0,
+    7.37,
+    3.63,
+    11.0
+   ]
+  }
+ },
+ "TaNbHfScTi": {
+  "src": "results/comparison.sra.ew0.6.bz10-10-20.gl/TaNbHfScTi",
+  "results": {
+   "name": "TaNbHfScTi",
+   "a0_bohr": 6.467191084717891,
+   "KKR_PARAMS_FINALSCF": {
+    "ew": 0.6,
+    "xc": "pbe",
+    "rel": "sra",
+    "bzqlty": 20,
+    "mxl": 3,
+    "magtype": "nmag",
+    "delta": 0.005,
+    "pmix": 0.01,
+    "edelt": 0.001,
+    "subdir": "finalscf",
+    "output": "finalscf",
+    "mcmillan_cutoff_mode": "valence"
+   },
+   "lambda": 0.9338255183792206,
+   "Tc_mu0.1": 11.556546938601596,
+   "Tc_mu0.2": 5.959855534995774,
+   "thetaDB_K": 223.8060788083862,
+   "mixture_debye_temperature": 308.0,
+   "eta_mix": 0.11187087942374822,
+   "Ta_Ntot": 8.982561912400412,
+   "Nb_Ntot": 9.787045288694284,
+   "Hf_Ntot": 8.192798609015192,
+   "Sc_Ntot": 7.322147869943119,
+   "Ti_Ntot": 13.79232519950907,
+   "Ta": 0.2,
+   "Nb": 0.2,
+   "Hf": 0.2,
+   "Sc": 0.2,
+   "Ti": 0.2,
+   "Tc_exp_all": [
+    6.6
+   ],
+   "Tc_exp_names": [
+    "TaNbHfScTi"
+   ],
+   "Tc_exp": 6.6
+  },
+  "run_params": {
+   "element_labels": [
+    "Ta",
+    "Nb",
+    "Hf",
+    "Sc",
+    "Ti"
+   ],
+   "concentrations": [
+    20.0,
+    20.0,
+    20.0,
+    20.0,
+    20.0
+   ]
+  }
+ },
+ "TaNbHfY0.67Mo0.33Ti": {
+  "src": "results/comparison.sra.ew0.6.bz10-10-20.gl/TaNbHfY0.67Mo0.33Ti",
+  "results": {
+   "name": "TaNbHfY0.67Mo0.33Ti",
+   "a0_bohr": 6.359163809556849,
+   "KKR_PARAMS_FINALSCF": {
+    "ew": 0.6,
+    "xc": "pbe",
+    "rel": "sra",
+    "bzqlty": 20,
+    "mxl": 3,
+    "magtype": "nmag",
+    "delta": 0.005,
+    "pmix": 0.01,
+    "edelt": 0.001,
+    "subdir": "finalscf",
+    "output": "finalscf",
+    "mcmillan_cutoff_mode": "valence"
+   },
+   "lambda": 0.6878862122074002,
+   "Tc_mu0.1": 7.481425736415882,
+   "Tc_mu0.2": 2.390858876809355,
+   "thetaDB_K": 271.3761293715443,
+   "mixture_debye_temperature": 283.196,
+   "eta_mix": 0.1407607556076099,
+   "Ti_Ntot": 11.955476227049571,
+   "Nb_Ntot": 8.506503773055904,
+   "Hf_Ntot": 7.227643311026816,
+   "Ta_Ntot": 7.734436478121387,
+   "Mo_Ntot": 8.007235698093712,
+   "Y_Ntot": 5.64818695755244,
+   "Ti": 0.11,
+   "Nb": 0.335,
+   "Hf": 0.11,
+   "Ta": 0.335,
+   "Mo": 0.0363,
+   "Y": 0.0737,
+   "Tc_exp_all": [
+    6.7
+   ],
+   "Tc_exp_names": [
+    "TaNbHfY0.67Mo0.33Ti"
+   ],
+   "Tc_exp": 6.7
+  },
+  "run_params": {
+   "element_labels": [
+    "Ti",
+    "Nb",
+    "Hf",
+    "Ta",
+    "Mo",
+    "Y"
+   ],
+   "concentrations": [
+    11.0,
+    33.5,
+    11.0,
+    33.5,
+    3.63,
+    7.37
+   ]
+  }
+ },
+ "TaNbHfZr": {
+  "src": "results/comparison.sra.ew0.6.bz10-10-20.gl/TaNbHfZr",
+  "results": {
+   "name": "TaNbHfZr",
+   "a0_bohr": 6.490967610717065,
+   "KKR_PARAMS_FINALSCF": {
+    "ew": 0.6,
+    "xc": "pbe",
+    "rel": "sra",
+    "bzqlty": 20,
+    "mxl": 3,
+    "magtype": "nmag",
+    "delta": 0.005,
+    "pmix": 0.01,
+    "edelt": 0.001,
+    "subdir": "finalscf",
+    "output": "finalscf",
+    "mcmillan_cutoff_mode": "valence"
+   },
+   "lambda": 0.8908761448610559,
+   "Tc_mu0.1": 11.691259868568741,
+   "Tc_mu0.2": 5.7194726969233,
+   "thetaDB_K": 245.57348213951926,
+   "mixture_debye_temperature": 258.75,
+   "eta_mix": 0.16014200806710038,
+   "Zr_Ntot": 9.33203971054997,
+   "Nb_Ntot": 10.510061610152984,
+   "Hf_Ntot": 8.482007803369727,
+   "Ta_Ntot": 9.545116573869334,
+   "Zr": 0.25,
+   "Nb": 0.25,
+   "Hf": 0.25,
+   "Ta": 0.25,
+   "Tc_exp_all": [
+    7.64,
+    8.1
+   ],
+   "Tc_exp_names": [
+    "TaNbHfZr_Krishnan",
+    "TaNbHfZr_Wu2024"
+   ],
+   "Tc_exp": 7.869999999999999
+  },
+  "run_params": {
+   "element_labels": [
+    "Zr",
+    "Nb",
+    "Hf",
+    "Ta"
+   ],
+   "concentrations": [
+    25.0,
+    25.0,
+    25.0,
+    25.0
+   ]
+  }
+ },
+ "TaNbHfZrSc": {
+  "src": "results/comparison.sra.ew0.6.bz10-10-20.gl/TaNbHfZrSc",
+  "results": {
+   "name": "TaNbHfZrSc",
+   "a0_bohr": 6.570441685573701,
+   "KKR_PARAMS_FINALSCF": {
+    "ew": 0.6,
+    "xc": "pbe",
+    "rel": "sra",
+    "bzqlty": 20,
+    "mxl": 3,
+    "magtype": "nmag",
+    "delta": 0.005,
+    "pmix": 0.01,
+    "edelt": 0.001,
+    "subdir": "finalscf",
+    "output": "finalscf",
+    "mcmillan_cutoff_mode": "valence"
+   },
+   "lambda": 0.9848271593372403,
+   "Tc_mu0.1": 12.189449629948001,
+   "Tc_mu0.2": 6.629801920541073,
+   "thetaDB_K": 216.58041492815443,
+   "mixture_debye_temperature": 278.0,
+   "eta_mix": 0.11926784953485839,
+   "Ta_Ntot": 9.533581637034764,
+   "Nb_Ntot": 10.466653410476852,
+   "Hf_Ntot": 8.40919916339478,
+   "Zr_Ntot": 9.194780485628822,
+   "Sc_Ntot": 7.288286309133432,
+   "Ta": 0.2,
+   "Nb": 0.2,
+   "Hf": 0.2,
+   "Zr": 0.2,
+   "Sc": 0.2,
+   "Tc_exp_all": [
+    7.4
+   ],
+   "Tc_exp_names": [
+    "TaNbHfZrSc"
+   ],
+   "Tc_exp": 7.4
+  },
+  "run_params": {
+   "element_labels": [
+    "Ta",
+    "Nb",
+    "Hf",
+    "Zr",
+    "Sc"
+   ],
+   "concentrations": [
+    20.0,
+    20.0,
+    20.0,
+    20.0,
+    20.0
+   ]
+  }
+ },
+ "TaNbHfZrSc0.67Mo0.33": {
+  "src": "results/comparison.sra.ew0.6.bz10-10-20.gl/TaNbHfZrSc0.67Mo0.33",
+  "results": {
+   "name": "TaNbHfZrSc0.67Mo0.33",
+   "a0_bohr": 6.382786254377198,
+   "KKR_PARAMS_FINALSCF": {
+    "ew": 0.6,
+    "xc": "pbe",
+    "rel": "sra",
+    "bzqlty": 20,
+    "mxl": 3,
+    "magtype": "nmag",
+    "delta": 0.005,
+    "pmix": 0.01,
+    "edelt": 0.001,
+    "subdir": "finalscf",
+    "output": "finalscf",
+    "mcmillan_cutoff_mode": "valence"
+   },
+   "lambda": 0.7521168881487249,
+   "Tc_mu0.1": 9.00176129344773,
+   "Tc_mu0.2": 3.440821004882665,
+   "thetaDB_K": 264.66674577071626,
+   "mixture_debye_temperature": 272.2235,
+   "eta_mix": 0.14815266217828563,
+   "Ta_Ntot": 8.030864530282646,
+   "Nb_Ntot": 8.831092328075584,
+   "Hf_Ntot": 7.514257643390994,
+   "Zr_Ntot": 8.226810386023777,
+   "Sc_Ntot": 6.575901809009981,
+   "Mo_Ntot": 8.220955388012937,
+   "Ta": 0.335,
+   "Nb": 0.335,
+   "Hf": 0.11,
+   "Zr": 0.11,
+   "Sc": 0.0737,
+   "Mo": 0.0363,
+   "Tc_exp_all": [
+    7.5
+   ],
+   "Tc_exp_names": [
+    "TaNbHfZrSc0.67Mo0.33"
+   ],
+   "Tc_exp": 7.5
+  },
+  "run_params": {
+   "element_labels": [
+    "Ta",
+    "Nb",
+    "Hf",
+    "Zr",
+    "Sc",
+    "Mo"
+   ],
+   "concentrations": [
+    33.5,
+    33.5,
+    11.0,
+    11.0,
+    7.37,
+    3.63
+   ]
+  }
+ },
+ "TaNbHfZrTiSc": {
+  "src": "results/comparison.sra.ew0.6.bz10-10-20.gl/TaNbHfZrTiSc",
+  "results": {
+   "name": "TaNbHfZrTiSc",
+   "a0_bohr": 6.516155075474206,
+   "KKR_PARAMS_FINALSCF": {
+    "ew": 0.6,
+    "xc": "pbe",
+    "rel": "sra",
+    "bzqlty": 20,
+    "mxl": 3,
+    "magtype": "nmag",
+    "delta": 0.005,
+    "pmix": 0.01,
+    "edelt": 0.001,
+    "subdir": "finalscf",
+    "output": "finalscf",
+    "mcmillan_cutoff_mode": "valence"
+   },
+   "lambda": 0.981183969643175,
+   "Tc_mu0.1": 12.406022251204162,
+   "Tc_mu0.2": 6.7239660535954755,
+   "thetaDB_K": 221.71503653625456,
+   "mixture_debye_temperature": 301.66666666666674,
+   "eta_mix": 0.11221489535799593,
+   "Ta_Ntot": 9.20731387241992,
+   "Nb_Ntot": 10.058582828193591,
+   "Hf_Ntot": 8.271656975286476,
+   "Zr_Ntot": 8.973051014700891,
+   "Ti_Ntot": 13.934547710566775,
+   "Sc_Ntot": 7.356566344712261,
+   "Ta": 0.16666666666666669,
+   "Nb": 0.16666666666666669,
+   "Hf": 0.16666666666666669,
+   "Zr": 0.16666666666666669,
+   "Ti": 0.16666666666666669,
+   "Sc": 0.16666666666666669,
+   "Tc_exp_all": [
+    7.2
+   ],
+   "Tc_exp_names": [
+    "TaNbHfZrTiSc"
+   ],
+   "Tc_exp": 7.2
+  },
+  "run_params": {
+   "element_labels": [
+    "Ta",
+    "Nb",
+    "Hf",
+    "Zr",
+    "Ti",
+    "Sc"
+   ],
+   "concentrations": [
+    16.6667,
+    16.6667,
+    16.6667,
+    16.6667,
+    16.6667,
+    16.6667
+   ]
+  }
+ },
+ "TaNbHfZrTi_PRMat2018": {
+  "src": "results/comparison.sra.ew0.6.bz10-10-20.gl/TaNbHfZrTi_PRMat2018",
+  "results": {
+   "name": "TaNbHfZrTi_PRMat2018",
+   "a0_bohr": 6.360433832187061,
+   "KKR_PARAMS_FINALSCF": {
+    "ew": 0.6,
+    "xc": "pbe",
+    "rel": "sra",
+    "bzqlty": 20,
+    "mxl": 3,
+    "magtype": "nmag",
+    "delta": 0.005,
+    "pmix": 0.01,
+    "edelt": 0.001,
+    "subdir": "finalscf",
+    "output": "finalscf",
+    "mcmillan_cutoff_mode": "valence"
+   },
+   "lambda": 0.7769254881412642,
+   "Tc_mu0.1": 9.742119292130829,
+   "Tc_mu0.2": 3.936508677601644,
+   "thetaDB_K": 266.977045666057,
+   "mixture_debye_temperature": 275.92499999999995,
+   "eta_mix": 0.15386413540082627,
+   "Ti_Ntot": 12.674540477398274,
+   "Nb_Ntot": 9.007336482770429,
+   "Zr_Ntot": 8.45542349568385,
+   "Hf_Ntot": 7.743390388907599,
+   "Ta_Ntot": 8.205756652026714,
+   "Ti": 0.11,
+   "Nb": 0.335,
+   "Zr": 0.11,
+   "Hf": 0.11,
+   "Ta": 0.335,
+   "Tc_exp_all": [
+    7.7,
+    7.6
+   ],
+   "Tc_exp_names": [
+    "TaNb67HfZrTi33",
+    "TaNbHfZrTi_PRMat2018"
+   ],
+   "Tc_exp": 7.65
+  },
+  "run_params": {
+   "element_labels": [
+    "Ti",
+    "Nb",
+    "Zr",
+    "Hf",
+    "Ta"
+   ],
+   "concentrations": [
+    11.0,
+    33.5,
+    11.0,
+    11.0,
+    33.5
+   ]
+  }
+ },
+ "TaNbHfZrTi_equimolar": {
+  "src": "results/comparison.sra.ew0.6.bz10-10-20.gl/TaNbHfZrTi_equimolar",
+  "results": {
+   "name": "TaNbHfZrTi_equimolar",
+   "a0_bohr": 6.447569132104826,
+   "KKR_PARAMS_FINALSCF": {
+    "ew": 0.6,
+    "xc": "pbe",
+    "rel": "sra",
+    "bzqlty": 20,
+    "mxl": 3,
+    "magtype": "nmag",
+    "delta": 0.005,
+    "pmix": 0.01,
+    "edelt": 0.001,
+    "subdir": "finalscf",
+    "output": "finalscf",
+    "mcmillan_cutoff_mode": "valence"
+   },
+   "lambda": 0.8625953597405707,
+   "Tc_mu0.1": 11.13339877185471,
+   "Tc_mu0.2": 5.235048822475438,
+   "thetaDB_K": 247.95044148447803,
+   "mixture_debye_temperature": 291.0,
+   "eta_mix": 0.13759784122722263,
+   "Ta_Ntot": 9.07221591243032,
+   "Nb_Ntot": 9.934744943024857,
+   "Hf_Ntot": 8.100112359278892,
+   "Zr_Ntot": 8.813567122086962,
+   "Ti_Ntot": 13.33594501093532,
+   "Ta": 0.2,
+   "Nb": 0.2,
+   "Hf": 0.2,
+   "Zr": 0.2,
+   "Ti": 0.2,
+   "Tc_exp_all": [
+    7.12,
+    6.24
+   ],
+   "Tc_exp_names": [
+    "TaNbHfZrTi_equimolar",
+    "TaNb40ZrHfTi60"
+   ],
+   "Tc_exp": 6.68
+  },
+  "run_params": {
+   "element_labels": [
+    "Ta",
+    "Nb",
+    "Hf",
+    "Zr",
+    "Ti"
+   ],
+   "concentrations": [
+    20.0,
+    20.0,
+    20.0,
+    20.0,
+    20.0
+   ]
+  }
+ },
+ "TaNbHfZrY0.67Mo0.33": {
+  "src": "results/comparison.sra.ew0.6.bz10-10-20.gl/TaNbHfZrY0.67Mo0.33",
+  "results": {
+   "name": "TaNbHfZrY0.67Mo0.33",
+   "a0_bohr": 6.40525406479043,
+   "KKR_PARAMS_FINALSCF": {
+    "ew": 0.6,
+    "xc": "pbe",
+    "rel": "sra",
+    "bzqlty": 20,
+    "mxl": 3,
+    "magtype": "nmag",
+    "delta": 0.005,
+    "pmix": 0.01,
+    "edelt": 0.001,
+    "subdir": "finalscf",
+    "output": "finalscf",
+    "mcmillan_cutoff_mode": "valence"
+   },
+   "lambda": 0.727532327247376,
+   "Tc_mu0.1": 8.452473510073087,
+   "Tc_mu0.2": 3.037111685126148,
+   "thetaDB_K": 267.94124142166123,
+   "mixture_debye_temperature": 266.696,
+   "eta_mix": 0.15058996701886637,
+   "Nb_Ntot": 8.884422322154595,
+   "Zr_Ntot": 8.154328227265658,
+   "Hf_Ntot": 7.422399446894966,
+   "Ta_Ntot": 8.056153667948752,
+   "Mo_Ntot": 8.38293394851353,
+   "Y_Ntot": 5.742264489743729,
+   "Nb": 0.335,
+   "Zr": 0.11,
+   "Hf": 0.11,
+   "Ta": 0.335,
+   "Mo": 0.0363,
+   "Y": 0.0737,
+   "Tc_exp_all": [
+    7.5
+   ],
+   "Tc_exp_names": [
+    "TaNbHfZrY0.67Mo0.33"
+   ],
+   "Tc_exp": 7.5
+  },
+  "run_params": {
+   "element_labels": [
+    "Nb",
+    "Zr",
+    "Hf",
+    "Ta",
+    "Mo",
+    "Y"
+   ],
+   "concentrations": [
+    33.5,
+    11.0,
+    11.0,
+    33.5,
+    3.63,
+    7.37
+   ]
+  }
+ },
+ "TaNbSc0.67Mo0.33ZrTi": {
+  "src": "results/comparison.sra.ew0.6.bz10-10-20.gl/TaNbSc0.67Mo0.33ZrTi",
+  "results": {
+   "name": "TaNbSc0.67Mo0.33ZrTi",
+   "a0_bohr": 6.33305374977696,
+   "KKR_PARAMS_FINALSCF": {
+    "ew": 0.6,
+    "xc": "pbe",
+    "rel": "sra",
+    "bzqlty": 20,
+    "mxl": 3,
+    "magtype": "nmag",
+    "delta": 0.005,
+    "pmix": 0.01,
+    "edelt": 0.001,
+    "subdir": "finalscf",
+    "output": "finalscf",
+    "mcmillan_cutoff_mode": "valence"
+   },
+   "lambda": 0.7268481727012274,
+   "Tc_mu0.1": 8.76684556506389,
+   "Tc_mu0.2": 3.144314369358888,
+   "thetaDB_K": 278.5131500038037,
+   "mixture_debye_temperature": 290.9235,
+   "eta_mix": 0.1407750809997668,
+   "Ta_Ntot": 7.754287131732939,
+   "Nb_Ntot": 8.50860562786045,
+   "Sc_Ntot": 6.512677915420737,
+   "Mo_Ntot": 7.938588604011038,
+   "Zr_Ntot": 7.960259969978284,
+   "Ti_Ntot": 12.064659663890744,
+   "Ta": 0.335,
+   "Nb": 0.335,
+   "Sc": 0.0737,
+   "Mo": 0.0363,
+   "Zr": 0.11,
+   "Ti": 0.11,
+   "Tc_exp_all": [
+    7.5
+   ],
+   "Tc_exp_names": [
+    "TaNbSc0.67Mo0.33ZrTi"
+   ],
+   "Tc_exp": 7.5
+  },
+  "run_params": {
+   "element_labels": [
+    "Ta",
+    "Nb",
+    "Sc",
+    "Mo",
+    "Zr",
+    "Ti"
+   ],
+   "concentrations": [
+    33.5,
+    33.5,
+    7.37,
+    3.63,
+    11.0,
+    11.0
+   ]
+  }
+ },
+ "TaNbScZrTi": {
+  "src": "results/comparison.sra.ew0.6.bz10-10-20.gl/TaNbScZrTi",
+  "results": {
+   "name": "TaNbScZrTi",
+   "a0_bohr": 6.459225132342801,
+   "KKR_PARAMS_FINALSCF": {
+    "ew": 0.6,
+    "xc": "pbe",
+    "rel": "sra",
+    "bzqlty": 20,
+    "mxl": 3,
+    "magtype": "nmag",
+    "delta": 0.005,
+    "pmix": 0.01,
+    "edelt": 0.001,
+    "subdir": "finalscf",
+    "output": "finalscf",
+    "mcmillan_cutoff_mode": "valence"
+   },
+   "lambda": 0.9459215512707557,
+   "Tc_mu0.1": 12.793688074353298,
+   "Tc_mu0.2": 6.687302877765313,
+   "thetaDB_K": 242.5247587374488,
+   "mixture_debye_temperature": 312.0,
+   "eta_mix": 0.11175770777887471,
+   "Ta_Ntot": 8.815809098652561,
+   "Nb_Ntot": 9.62821197895688,
+   "Sc_Ntot": 7.170591426618868,
+   "Zr_Ntot": 8.626909286940744,
+   "Ti_Ntot": 13.39075040313638,
+   "Ta": 0.2,
+   "Nb": 0.2,
+   "Sc": 0.2,
+   "Zr": 0.2,
+   "Ti": 0.2,
+   "Tc_exp_all": [
+    7.9
+   ],
+   "Tc_exp_names": [
+    "TaNbScZrTi"
+   ],
+   "Tc_exp": 7.9
+  },
+  "run_params": {
+   "element_labels": [
+    "Ta",
+    "Nb",
+    "Sc",
+    "Zr",
+    "Ti"
+   ],
+   "concentrations": [
+    20.0,
+    20.0,
+    20.0,
+    20.0,
+    20.0
+   ]
+  }
+ },
+ "TaNbV67HfZrTi33": {
+  "src": "results/comparison.sra.ew0.6.bz10-10-20.gl/TaNbV67HfZrTi33",
+  "results": {
+   "name": "TaNbV67HfZrTi33",
+   "a0_bohr": 6.266544027767079,
+   "KKR_PARAMS_FINALSCF": {
+    "ew": 0.6,
+    "xc": "pbe",
+    "rel": "sra",
+    "bzqlty": 20,
+    "mxl": 3,
+    "magtype": "nmag",
+    "delta": 0.005,
+    "pmix": 0.01,
+    "edelt": 0.001,
+    "subdir": "finalscf",
+    "output": "finalscf",
+    "mcmillan_cutoff_mode": "valence"
+   },
+   "lambda": 0.7091019650940388,
+   "Tc_mu0.1": 8.479243689529321,
+   "Tc_mu0.2": 2.8937130670479125,
+   "thetaDB_K": 285.538306652779,
+   "mixture_debye_temperature": 303.2915,
+   "eta_mix": 0.13628195394104475,
+   "Ta_Ntot": 7.672759484769146,
+   "Nb_Ntot": 8.379360544705989,
+   "V_Ntot": 16.385614375935063,
+   "Hf_Ntot": 7.366694746012561,
+   "Zr_Ntot": 7.954897882562798,
+   "Ti_Ntot": 12.077902859275044,
+   "Ta": 0.22329999999999997,
+   "Nb": 0.22329999999999997,
+   "V": 0.2234,
+   "Hf": 0.11,
+   "Zr": 0.11,
+   "Ti": 0.11,
+   "Tc_exp_all": [
+    4.3
+   ],
+   "Tc_exp_names": [
+    "TaNbV67HfZrTi33"
+   ],
+   "Tc_exp": 4.3
+  },
+  "run_params": {
+   "element_labels": [
+    "Ta",
+    "Nb",
+    "V",
+    "Hf",
+    "Zr",
+    "Ti"
+   ],
+   "concentrations": [
+    22.33,
+    22.33,
+    22.34,
+    11.0,
+    11.0,
+    11.0
+   ]
+  }
+ },
+ "TaNbY0.67Mo0.33ZrTi": {
+  "src": "results/comparison.sra.ew0.6.bz10-10-20.gl/TaNbY0.67Mo0.33ZrTi",
+  "results": {
+   "name": "TaNbY0.67Mo0.33ZrTi",
+   "a0_bohr": 6.355252836412209,
+   "KKR_PARAMS_FINALSCF": {
+    "ew": 0.6,
+    "xc": "pbe",
+    "rel": "sra",
+    "bzqlty": 20,
+    "mxl": 3,
+    "magtype": "nmag",
+    "delta": 0.005,
+    "pmix": 0.01,
+    "edelt": 0.001,
+    "subdir": "finalscf",
+    "output": "finalscf",
+    "mcmillan_cutoff_mode": "valence"
+   },
+   "lambda": 0.7033948484657335,
+   "Tc_mu0.1": 8.186583545184591,
+   "Tc_mu0.2": 2.7468505207869964,
+   "thetaDB_K": 281.10446773193576,
+   "mixture_debye_temperature": 285.396,
+   "eta_mix": 0.14272958970205687,
+   "Ti_Ntot": 11.876339375567316,
+   "Nb_Ntot": 8.522241307527796,
+   "Zr_Ntot": 7.863433019727803,
+   "Ta_Ntot": 7.742926251662261,
+   "Mo_Ntot": 8.061274877500558,
+   "Y_Ntot": 5.615301145347958,
+   "Ti": 0.11,
+   "Nb": 0.335,
+   "Zr": 0.11,
+   "Ta": 0.335,
+   "Mo": 0.0363,
+   "Y": 0.0737,
+   "Tc_exp_all": [
+    7.6
+   ],
+   "Tc_exp_names": [
+    "TaNbY0.67Mo0.33ZrTi"
+   ],
+   "Tc_exp": 7.6
+  },
+  "run_params": {
+   "element_labels": [
+    "Ti",
+    "Nb",
+    "Zr",
+    "Ta",
+    "Mo",
+    "Y"
+   ],
+   "concentrations": [
+    11.0,
+    33.5,
+    11.0,
+    33.5,
+    3.63,
+    7.37
+   ]
+  }
+ },
+ "TaSc0.33Mo0.67HfZrTi": {
+  "src": "results/comparison.sra.ew0.6.bz10-10-20.gl/TaSc0.33Mo0.67HfZrTi",
+  "results": {
+   "name": "TaSc0.33Mo0.67HfZrTi",
+   "a0_bohr": 6.329096476316565,
+   "KKR_PARAMS_FINALSCF": {
+    "ew": 0.6,
+    "xc": "pbe",
+    "rel": "sra",
+    "bzqlty": 20,
+    "mxl": 3,
+    "magtype": "nmag",
+    "delta": 0.005,
+    "pmix": 0.01,
+    "edelt": 0.001,
+    "subdir": "finalscf",
+    "output": "finalscf",
+    "mcmillan_cutoff_mode": "valence"
+   },
+   "lambda": 0.6445654870110945,
+   "Tc_mu0.1": 6.309009487146662,
+   "Tc_mu0.2": 1.7176472136169645,
+   "thetaDB_K": 271.2493857533389,
+   "mixture_debye_temperature": 324.04775,
+   "eta_mix": 0.12696677379926324,
+   "Ta_Ntot": 7.447049911169114,
+   "Sc_Ntot": 6.309123562932269,
+   "Mo_Ntot": 7.762660779057771,
+   "Hf_Ntot": 6.956388437873393,
+   "Zr_Ntot": 7.5704508438000495,
+   "Ti_Ntot": 11.636930371625814,
+   "Ta": 0.335,
+   "Sc": 0.11055,
+   "Mo": 0.22445,
+   "Hf": 0.11,
+   "Zr": 0.11,
+   "Ti": 0.11,
+   "Tc_exp_all": [
+    2.9
+   ],
+   "Tc_exp_names": [
+    "TaSc0.33Mo0.67HfZrTi"
+   ],
+   "Tc_exp": 2.9
+  },
+  "run_params": {
+   "element_labels": [
+    "Ta",
+    "Sc",
+    "Mo",
+    "Hf",
+    "Zr",
+    "Ti"
+   ],
+   "concentrations": [
+    33.5,
+    11.055,
+    22.445,
+    11.0,
+    11.0,
+    11.0
+   ]
+  }
+ },
+ "TaV67HfZrTi33": {
+  "src": "results/comparison.sra.ew0.6.bz10-10-20.gl/TaV67HfZrTi33",
+  "results": {
+   "name": "TaV67HfZrTi33",
+   "a0_bohr": 6.215744400932048,
+   "KKR_PARAMS_FINALSCF": {
+    "ew": 0.6,
+    "xc": "pbe",
+    "rel": "sra",
+    "bzqlty": 20,
+    "mxl": 3,
+    "magtype": "nmag",
+    "delta": 0.005,
+    "pmix": 0.01,
+    "edelt": 0.001,
+    "subdir": "finalscf",
+    "output": "finalscf",
+    "mcmillan_cutoff_mode": "valence"
+   },
+   "lambda": 0.6755164104466165,
+   "Tc_mu0.1": 7.391460748145588,
+   "Tc_mu0.2": 2.265242150287697,
+   "thetaDB_K": 280.7045392919227,
+   "mixture_debye_temperature": 311.1,
+   "eta_mix": 0.13147862107806946,
+   "Ta_Ntot": 7.324542187723301,
+   "V_Ntot": 15.578888720793984,
+   "Hf_Ntot": 7.191495855806781,
+   "Zr_Ntot": 7.704157689218947,
+   "Ti_Ntot": 11.81311968620437,
+   "Ta": 0.335,
+   "V": 0.335,
+   "Hf": 0.11,
+   "Zr": 0.11,
+   "Ti": 0.11,
+   "Tc_exp_all": [
+    4.0
+   ],
+   "Tc_exp_names": [
+    "TaV67HfZrTi33"
+   ],
+   "Tc_exp": 4.0
+  },
+  "run_params": {
+   "element_labels": [
+    "Ta",
+    "V",
+    "Hf",
+    "Zr",
+    "Ti"
+   ],
+   "concentrations": [
+    33.5,
+    33.5,
+    11.0,
+    11.0,
+    11.0
+   ]
+  }
+ },
+ "TaY0.33Mo0.67HfZrTi": {
+  "src": "results/comparison.sra.ew0.6.bz10-10-20.gl/TaY0.33Mo0.67HfZrTi",
+  "results": {
+   "name": "TaY0.33Mo0.67HfZrTi",
+   "a0_bohr": 6.3667464205507684,
+   "KKR_PARAMS_FINALSCF": {
+    "ew": 0.6,
+    "xc": "pbe",
+    "rel": "sra",
+    "bzqlty": 20,
+    "mxl": 3,
+    "magtype": "nmag",
+    "delta": 0.005,
+    "pmix": 0.01,
+    "edelt": 0.001,
+    "subdir": "finalscf",
+    "output": "finalscf",
+    "mcmillan_cutoff_mode": "valence"
+   },
+   "lambda": 0.6384164882182044,
+   "Tc_mu0.1": 6.109173863477414,
+   "Tc_mu0.2": 1.6203011582318985,
+   "thetaDB_K": 269.676383081898,
+   "mixture_debye_temperature": 315.7565,
+   "eta_mix": 0.12925062925112407,
+   "Ti_Ntot": 11.454570434062909,
+   "Zr_Ntot": 7.478122360469653,
+   "Hf_Ntot": 6.837914985680367,
+   "Ta_Ntot": 7.456390008930303,
+   "Mo_Ntot": 7.942564989316288,
+   "Y_Ntot": 5.361741480167112,
+   "Ti": 0.11,
+   "Zr": 0.11,
+   "Hf": 0.11,
+   "Ta": 0.335,
+   "Mo": 0.22445,
+   "Y": 0.11055,
+   "Tc_exp_all": [
+    3.5
+   ],
+   "Tc_exp_names": [
+    "TaY0.33Mo0.67HfZrTi"
+   ],
+   "Tc_exp": 3.5
+  },
+  "run_params": {
+   "element_labels": [
+    "Ti",
+    "Zr",
+    "Hf",
+    "Ta",
+    "Mo",
+    "Y"
+   ],
+   "concentrations": [
+    11.0,
+    11.0,
+    11.0,
+    33.5,
+    22.445,
+    11.055
+   ]
+  }
+ },
+ "Ti15Hf5Nb35Ta35Re10": {
+  "src": "results/comparison.sra.ew0.6.bz10-10-20.gl/Ti15Hf5Nb35Ta35Re10",
+  "results": {
+   "name": "Ti15Hf5Nb35Ta35Re10",
+   "a0_bohr": 6.219039554832948,
+   "KKR_PARAMS_FINALSCF": {
+    "ew": 0.6,
+    "xc": "pbe",
+    "rel": "sra",
+    "bzqlty": 20,
+    "mxl": 3,
+    "magtype": "nmag",
+    "delta": 0.005,
+    "pmix": 0.01,
+    "edelt": 0.001,
+    "subdir": "finalscf",
+    "output": "finalscf",
+    "mcmillan_cutoff_mode": "valence"
+   },
+   "lambda": 0.473688146357022,
+   "Tc_mu0.1": 2.522333903309134,
+   "Tc_mu0.2": 0.17311794034562442,
+   "thetaDB_K": 313.54738485743866,
+   "mixture_debye_temperature": 297.35,
+   "eta_mix": 0.13337655669281298,
+   "Ti_Ntot": 10.33278108120546,
+   "Hf_Ntot": 6.21245515298074,
+   "Nb_Ntot": 6.8918878667553605,
+   "Ta_Ntot": 6.282077512077658,
+   "Re_Ntot": 4.845654665238858,
+   "Ti": 0.15,
+   "Hf": 0.05,
+   "Nb": 0.35,
+   "Ta": 0.35,
+   "Re": 0.1,
+   "Tc_exp_all": [
+    3.25
+   ],
+   "Tc_exp_names": [
+    "Ti15Hf5Nb35Ta35Re10"
+   ],
+   "Tc_exp": 3.25
+  },
+  "run_params": {
+   "element_labels": [
+    "Ti",
+    "Hf",
+    "Nb",
+    "Ta",
+    "Re"
+   ],
+   "concentrations": [
+    15.0,
+    5.0,
+    35.0,
+    35.0,
+    10.0
+   ]
+  }
+ },
+ "Ti15Zr15Nb35Ta35": {
+  "src": "results/comparison.sra.ew0.6.bz10-10-20.gl/Ti15Zr15Nb35Ta35",
+  "results": {
+   "name": "Ti15Zr15Nb35Ta35",
+   "a0_bohr": 6.326490735074476,
+   "KKR_PARAMS_FINALSCF": {
+    "ew": 0.6,
+    "xc": "pbe",
+    "rel": "sra",
+    "bzqlty": 20,
+    "mxl": 3,
+    "magtype": "nmag",
+    "delta": 0.005,
+    "pmix": 0.01,
+    "edelt": 0.001,
+    "subdir": "finalscf",
+    "output": "finalscf",
+    "mcmillan_cutoff_mode": "valence"
+   },
+   "lambda": 0.746315334166436,
+   "Tc_mu0.1": 9.430294029155473,
+   "Tc_mu0.2": 3.5547157652787478,
+   "thetaDB_K": 282.0872850554536,
+   "mixture_debye_temperature": 283.75,
+   "eta_mix": 0.15202336236520422,
+   "Ti_Ntot": 12.336544896036164,
+   "Zr_Ntot": 8.222562960527718,
+   "Nb_Ntot": 8.720937379236442,
+   "Ta_Ntot": 7.9469093462589715,
+   "Ti": 0.15,
+   "Zr": 0.15,
+   "Nb": 0.35,
+   "Ta": 0.35,
+   "Tc_exp_all": [
+    8.0
+   ],
+   "Tc_exp_names": [
+    "Ti15Zr15Nb35Ta35"
+   ],
+   "Tc_exp": 8.0
+  },
+  "run_params": {
+   "element_labels": [
+    "Ti",
+    "Zr",
+    "Nb",
+    "Ta"
+   ],
+   "concentrations": [
+    15.0,
+    15.0,
+    35.0,
+    35.0
+   ]
+  }
+ },
+ "Ti20Hf10Nb35Ta25Re10": {
+  "src": "results/comparison.sra.ew0.6.bz10-10-20.gl/Ti20Hf10Nb35Ta25Re10",
+  "results": {
+   "name": "Ti20Hf10Nb35Ta25Re10",
+   "a0_bohr": 6.237793139504961,
+   "KKR_PARAMS_FINALSCF": {
+    "ew": 0.6,
+    "xc": "pbe",
+    "rel": "sra",
+    "bzqlty": 20,
+    "mxl": 3,
+    "magtype": "nmag",
+    "delta": 0.005,
+    "pmix": 0.01,
+    "edelt": 0.001,
+    "subdir": "finalscf",
+    "output": "finalscf",
+    "mcmillan_cutoff_mode": "valence"
+   },
+   "lambda": 0.5402865924699819,
+   "Tc_mu0.1": 4.05784082749893,
+   "Tc_mu0.2": 0.5927707304620915,
+   "thetaDB_K": 301.9088827978526,
+   "mixture_debye_temperature": 306.85,
+   "eta_mix": 0.13372910289511153,
+   "Ti_Ntot": 10.86953342095725,
+   "Hf_Ntot": 6.534360664453167,
+   "Nb_Ntot": 7.353180225440454,
+   "Ta_Ntot": 6.709324402266127,
+   "Re_Ntot": 5.207255957097049,
+   "Ti": 0.2,
+   "Hf": 0.1,
+   "Nb": 0.35,
+   "Ta": 0.25,
+   "Re": 0.1,
+   "Tc_exp_all": [
+    3.62
+   ],
+   "Tc_exp_names": [
+    "Ti20Hf10Nb35Ta25Re10"
+   ],
+   "Tc_exp": 3.62
+  },
+  "run_params": {
+   "element_labels": [
+    "Ti",
+    "Hf",
+    "Nb",
+    "Ta",
+    "Re"
+   ],
+   "concentrations": [
+    20.0,
+    10.0,
+    35.0,
+    25.0,
+    10.0
+   ]
+  }
+ },
+ "Ti25Hf15Nb35Ta15Re10": {
+  "src": "results/comparison.sra.ew0.6.bz10-10-20.gl/Ti25Hf15Nb35Ta15Re10",
+  "results": {
+   "name": "Ti25Hf15Nb35Ta15Re10",
+   "a0_bohr": 6.255775664230599,
+   "KKR_PARAMS_FINALSCF": {
+    "ew": 0.6,
+    "xc": "pbe",
+    "rel": "sra",
+    "bzqlty": 20,
+    "mxl": 3,
+    "magtype": "nmag",
+    "delta": 0.005,
+    "pmix": 0.01,
+    "edelt": 0.001,
+    "subdir": "finalscf",
+    "output": "finalscf",
+    "mcmillan_cutoff_mode": "valence"
+   },
+   "lambda": 0.6001237711554421,
+   "Tc_mu0.1": 5.565578317581751,
+   "Tc_mu0.2": 1.224121890996973,
+   "thetaDB_K": 293.84323320637156,
+   "mixture_debye_temperature": 316.35,
+   "eta_mix": 0.13301172385650428,
+   "Ti_Ntot": 11.332986509236603,
+   "Hf_Ntot": 6.818841869836342,
+   "Nb_Ntot": 7.775049068870143,
+   "Ta_Ntot": 7.103877883421905,
+   "Re_Ntot": 5.55495392556413,
+   "Ti": 0.25,
+   "Hf": 0.15,
+   "Nb": 0.35,
+   "Ta": 0.15,
+   "Re": 0.1,
+   "Tc_exp_all": [
+    4.1
+   ],
+   "Tc_exp_names": [
+    "Ti25Hf15Nb35Ta15Re10"
+   ],
+   "Tc_exp": 4.1
+  },
+  "run_params": {
+   "element_labels": [
+    "Ti",
+    "Hf",
+    "Nb",
+    "Ta",
+    "Re"
+   ],
+   "concentrations": [
+    25.0,
+    15.0,
+    35.0,
+    15.0,
+    10.0
+   ]
+  }
+ },
+ "Ti25Hf25Nb25Ta25": {
+  "src": "results/comparison.sra.ew0.6.bz10-10-20.gl/Ti25Hf25Nb25Ta25",
+  "results": {
+   "name": "Ti25Hf25Nb25Ta25",
+   "a0_bohr": 6.3775377042577475,
+   "KKR_PARAMS_FINALSCF": {
+    "ew": 0.6,
+    "xc": "pbe",
+    "rel": "sra",
+    "bzqlty": 20,
+    "mxl": 3,
+    "magtype": "nmag",
+    "delta": 0.005,
+    "pmix": 0.01,
+    "edelt": 0.001,
+    "subdir": "finalscf",
+    "output": "finalscf",
+    "mcmillan_cutoff_mode": "valence"
+   },
+   "lambda": 0.8081409412355701,
+   "Tc_mu0.1": 9.978607449266113,
+   "Tc_mu0.2": 4.288482426844046,
+   "thetaDB_K": 252.06873728719683,
+   "mixture_debye_temperature": 296.25,
+   "eta_mix": 0.1408536725200847,
+   "Ti_Ntot": 13.168649407784706,
+   "Nb_Ntot": 9.434138024488508,
+   "Hf_Ntot": 8.007937681210853,
+   "Ta_Ntot": 8.64400769710652,
+   "Ti": 0.25,
+   "Nb": 0.25,
+   "Hf": 0.25,
+   "Ta": 0.25,
+   "Tc_exp_all": [
+    6.3
+   ],
+   "Tc_exp_names": [
+    "Ti25Hf25Nb25Ta25"
+   ],
+   "Tc_exp": 6.3
+  },
+  "run_params": {
+   "element_labels": [
+    "Ti",
+    "Nb",
+    "Hf",
+    "Ta"
+   ],
+   "concentrations": [
+    25.0,
+    25.0,
+    25.0,
+    25.0
+   ]
+  }
+ },
+ "Ti25V25Nb40Ta10": {
+  "src": "results/comparison.sra.ew0.6.bz10-10-20.gl/Ti25V25Nb40Ta10",
+  "results": {
+   "name": "Ti25V25Nb40Ta10",
+   "a0_bohr": 6.136265316782496,
+   "KKR_PARAMS_FINALSCF": {
+    "ew": 0.6,
+    "xc": "pbe",
+    "rel": "sra",
+    "bzqlty": 20,
+    "mxl": 3,
+    "magtype": "nmag",
+    "delta": 0.005,
+    "pmix": 0.01,
+    "edelt": 0.001,
+    "subdir": "finalscf",
+    "output": "finalscf",
+    "mcmillan_cutoff_mode": "valence"
+   },
+   "lambda": 0.6918031835276691,
+   "Tc_mu0.1": 9.200081181020849,
+   "Tc_mu0.2": 2.9776333318415036,
+   "thetaDB_K": 329.03571688731125,
+   "mixture_debye_temperature": 334.0,
+   "eta_mix": 0.13136695607221544,
+   "Ti_Ntot": 11.31838357427081,
+   "V_Ntot": 14.75719399493152,
+   "Nb_Ntot": 7.560055493724941,
+   "Ta_Ntot": 6.955326245719649,
+   "Ti": 0.25,
+   "V": 0.25,
+   "Nb": 0.4,
+   "Ta": 0.1,
+   "Tc_exp_all": [
+    5.2
+   ],
+   "Tc_exp_names": [
+    "Ti25V25Nb40Ta10"
+   ],
+   "Tc_exp": 5.2
+  },
+  "run_params": {
+   "element_labels": [
+    "Ti",
+    "V",
+    "Nb",
+    "Ta"
+   ],
+   "concentrations": [
+    25.0,
+    25.0,
+    40.0,
+    10.0
+   ]
+  }
+ },
+ "Ti30Hf20Nb35Ta5Re10": {
+  "src": "results/comparison.sra.ew0.6.bz10-10-20.gl/Ti30Hf20Nb35Ta5Re10",
+  "results": {
+   "name": "Ti30Hf20Nb35Ta5Re10",
+   "a0_bohr": 6.272746035781175,
+   "KKR_PARAMS_FINALSCF": {
+    "ew": 0.6,
+    "xc": "pbe",
+    "rel": "sra",
+    "bzqlty": 20,
+    "mxl": 3,
+    "magtype": "nmag",
+    "delta": 0.005,
+    "pmix": 0.01,
+    "edelt": 0.001,
+    "subdir": "finalscf",
+    "output": "finalscf",
+    "mcmillan_cutoff_mode": "valence"
+   },
+   "lambda": 0.6482551402907539,
+   "Tc_mu0.1": 6.812112915032244,
+   "Tc_mu0.2": 1.8831067776607042,
+   "thetaDB_K": 288.36468229605174,
+   "mixture_debye_temperature": 325.85,
+   "eta_mix": 0.13036430594835108,
+   "Ti_Ntot": 11.710411635550049,
+   "Hf_Ntot": 7.0393431420164685,
+   "Nb_Ntot": 8.12915835978462,
+   "Ta_Ntot": 7.441178297556874,
+   "Re_Ntot": 5.866651203030672,
+   "Ti": 0.3,
+   "Hf": 0.2,
+   "Nb": 0.35,
+   "Ta": 0.05,
+   "Re": 0.1,
+   "Tc_exp_all": [
+    4.38
+   ],
+   "Tc_exp_names": [
+    "Ti30Hf20Nb35Ta5Re10"
+   ],
+   "Tc_exp": 4.38
+  },
+  "run_params": {
+   "element_labels": [
+    "Ti",
+    "Hf",
+    "Nb",
+    "Ta",
+    "Re"
+   ],
+   "concentrations": [
+    30.0,
+    20.0,
+    35.0,
+    5.0,
+    10.0
+   ]
+  }
+ },
+ "Ti35Hf25Nb25Ta5Re10": {
+  "src": "results/comparison.sra.ew0.6.bz10-10-20.gl/Ti35Hf25Nb25Ta5Re10",
+  "results": {
+   "name": "Ti35Hf25Nb25Ta5Re10",
+   "a0_bohr": 6.29386908450602,
+   "KKR_PARAMS_FINALSCF": {
+    "ew": 0.6,
+    "xc": "pbe",
+    "rel": "sra",
+    "bzqlty": 20,
+    "mxl": 3,
+    "magtype": "nmag",
+    "delta": 0.005,
+    "pmix": 0.01,
+    "edelt": 0.001,
+    "subdir": "finalscf",
+    "output": "finalscf",
+    "mcmillan_cutoff_mode": "valence"
+   },
+   "lambda": 0.6797389312789714,
+   "Tc_mu0.1": 7.365809791630688,
+   "Tc_mu0.2": 2.2906072012392897,
+   "thetaDB_K": 275.3208156368409,
+   "mixture_debye_temperature": 331.85,
+   "eta_mix": 0.12690170990908564,
+   "Ti_Ntot": 12.10735641077436,
+   "Hf_Ntot": 7.261982152443841,
+   "Nb_Ntot": 8.426796376479459,
+   "Ta_Ntot": 7.727311489761645,
+   "Re_Ntot": 6.1034583687625,
+   "Ti": 0.35,
+   "Hf": 0.25,
+   "Nb": 0.25,
+   "Ta": 0.05,
+   "Re": 0.1,
+   "Tc_exp_all": [
+    3.95
+   ],
+   "Tc_exp_names": [
+    "Ti35Hf25Nb25Ta5Re10"
+   ],
+   "Tc_exp": 3.95
+  },
+  "run_params": {
+   "element_labels": [
+    "Ti",
+    "Hf",
+    "Nb",
+    "Ta",
+    "Re"
+   ],
+   "concentrations": [
+    35.0,
+    25.0,
+    25.0,
+    5.0,
+    10.0
+   ]
+  }
+ },
+ "Ti47.5ZrNbTaHf47.5Sc5": {
+  "src": "results/comparison.sra.ew0.6.bz10-10-20.gl/Ti47.5ZrNbTaHf47.5Sc5",
+  "results": {
+   "name": "Ti47.5ZrNbTaHf47.5Sc5",
+   "a0_bohr": 6.385184022012145,
+   "KKR_PARAMS_FINALSCF": {
+    "ew": 0.6,
+    "xc": "pbe",
+    "rel": "sra",
+    "bzqlty": 20,
+    "mxl": 3,
+    "magtype": "nmag",
+    "delta": 0.005,
+    "pmix": 0.01,
+    "edelt": 0.001,
+    "subdir": "finalscf",
+    "output": "finalscf",
+    "mcmillan_cutoff_mode": "valence"
+   },
+   "lambda": 0.943140295660418,
+   "Tc_mu0.1": 12.823515907273249,
+   "Tc_mu0.2": 6.682506253897702,
+   "thetaDB_K": 244.27455390311871,
+   "mixture_debye_temperature": 340.15625,
+   "eta_mix": 0.11052720917846785,
+   "Ti_Ntot": 13.144767050741748,
+   "Zr_Ntot": 8.35361541518846,
+   "Nb_Ntot": 9.13865702822839,
+   "Ta_Ntot": 8.436809224705673,
+   "Hf_Ntot": 7.810683278214824,
+   "Sc_Ntot": 7.298831718963109,
+   "Ti": 0.475,
+   "Zr": 0.11875,
+   "Nb": 0.11875,
+   "Ta": 0.11875,
+   "Hf": 0.11875,
+   "Sc": 0.05,
+   "Tc_exp_all": [],
+   "Tc_exp_names": [],
+   "Tc_exp": null
+  },
+  "run_params": {
+   "element_labels": [
+    "Ti",
+    "Zr",
+    "Nb",
+    "Ta",
+    "Hf",
+    "Sc"
+   ],
+   "concentrations": [
+    47.5,
+    11.875,
+    11.875,
+    11.875,
+    11.875,
+    5.0
+   ]
+  }
+ },
+ "Ti50VNbHfTa50": {
+  "src": "results/comparison.sra.ew0.6.bz10-10-20.gl/Ti50VNbHfTa50",
+  "results": {
+   "name": "Ti50VNbHfTa50",
+   "a0_bohr": 6.23203882174286,
+   "KKR_PARAMS_FINALSCF": {
+    "ew": 0.6,
+    "xc": "pbe",
+    "rel": "sra",
+    "bzqlty": 20,
+    "mxl": 3,
+    "magtype": "nmag",
+    "delta": 0.005,
+    "pmix": 0.01,
+    "edelt": 0.001,
+    "subdir": "finalscf",
+    "output": "finalscf",
+    "mcmillan_cutoff_mode": "valence"
+   },
+   "lambda": 0.8514091652543065,
+   "Tc_mu0.1": 12.034089105145302,
+   "Tc_mu0.2": 5.563744919256512,
+   "thetaDB_K": 274.6227520665284,
+   "mixture_debye_temperature": 353.125,
+   "eta_mix": 0.12232539079958399,
+   "Ti_Ntot": 12.464933631015684,
+   "V_Ntot": 16.736966246346526,
+   "Nb_Ntot": 8.487055061880188,
+   "Hf_Ntot": 7.472048568929599,
+   "Ta_Ntot": 7.872914855744202,
+   "Ti": 0.5,
+   "V": 0.125,
+   "Nb": 0.125,
+   "Hf": 0.125,
+   "Ta": 0.125,
+   "Tc_exp_all": [
+    5.9
+   ],
+   "Tc_exp_names": [
+    "Ti50VNbHfTa50"
+   ],
+   "Tc_exp": 5.9
+  },
+  "run_params": {
+   "element_labels": [
+    "Ti",
+    "V",
+    "Nb",
+    "Hf",
+    "Ta"
+   ],
+   "concentrations": [
+    50.0,
+    12.5,
+    12.5,
+    12.5,
+    12.5
+   ]
+  }
+ },
+ "Ti50ZrNbHfTa50": {
+  "src": "results/comparison.sra.ew0.6.bz10-10-20.gl/Ti50ZrNbHfTa50",
+  "results": {
+   "name": "Ti50ZrNbHfTa50",
+   "a0_bohr": 6.362432546329033,
+   "KKR_PARAMS_FINALSCF": {
+    "ew": 0.6,
+    "xc": "pbe",
+    "rel": "sra",
+    "bzqlty": 20,
+    "mxl": 3,
+    "magtype": "nmag",
+    "delta": 0.005,
+    "pmix": 0.01,
+    "edelt": 0.001,
+    "subdir": "finalscf",
+    "output": "finalscf",
+    "mcmillan_cutoff_mode": "valence"
+   },
+   "lambda": 0.9000304346255058,
+   "Tc_mu0.1": 12.256356723757463,
+   "Tc_mu0.2": 6.067971064476934,
+   "thetaDB_K": 252.83805117793753,
+   "mixture_debye_temperature": 339.375,
+   "eta_mix": 0.11596129170596567,
+   "Ti_Ntot": 12.881777787685202,
+   "Zr_Ntot": 8.242094290092126,
+   "Nb_Ntot": 9.072439586709436,
+   "Hf_Ntot": 7.701256766420819,
+   "Ta_Ntot": 8.370842973601235,
+   "Ti": 0.5,
+   "Zr": 0.125,
+   "Nb": 0.125,
+   "Hf": 0.125,
+   "Ta": 0.125,
+   "Tc_exp_all": [
+    6.0
+   ],
+   "Tc_exp_names": [
+    "Ti50ZrNbHfTa50"
+   ],
+   "Tc_exp": 6.0
+  },
+  "run_params": {
+   "element_labels": [
+    "Ti",
+    "Zr",
+    "Nb",
+    "Hf",
+    "Ta"
+   ],
+   "concentrations": [
+    50.0,
+    12.5,
+    12.5,
+    12.5,
+    12.5
+   ]
+  }
+ },
+ "TiHfNbTaMo": {
+  "src": "results/comparison.sra.ew0.6.bz10-10-20.gl/TiHfNbTaMo",
+  "results": {
+   "name": "TiHfNbTaMo",
+   "a0_bohr": 6.271665793289644,
+   "KKR_PARAMS_FINALSCF": {
+    "ew": 0.6,
+    "xc": "pbe",
+    "rel": "sra",
+    "bzqlty": 20,
+    "mxl": 3,
+    "magtype": "nmag",
+    "delta": 0.005,
+    "pmix": 0.01,
+    "edelt": 0.001,
+    "subdir": "finalscf",
+    "output": "finalscf",
+    "mcmillan_cutoff_mode": "valence"
+   },
+   "lambda": 0.6170731101734691,
+   "Tc_mu0.1": 5.944457594925307,
+   "Tc_mu0.2": 1.4283597274293653,
+   "thetaDB_K": 288.9794026217306,
+   "mixture_debye_temperature": 327.0,
+   "eta_mix": 0.1347781634991675,
+   "Ti_Ntot": 11.501431533853289,
+   "Hf_Ntot": 6.930956231413458,
+   "Nb_Ntot": 7.895003037283066,
+   "Ta_Ntot": 7.209556778693491,
+   "Mo_Ntot": 7.340420985078472,
+   "Ti": 0.2,
+   "Hf": 0.2,
+   "Nb": 0.2,
+   "Ta": 0.2,
+   "Mo": 0.2,
+   "Tc_exp_all": [
+    3.42
+   ],
+   "Tc_exp_names": [
+    "TiHfNbTaMo"
+   ],
+   "Tc_exp": 3.42
+  },
+  "run_params": {
+   "element_labels": [
+    "Ti",
+    "Hf",
+    "Nb",
+    "Ta",
+    "Mo"
+   ],
+   "concentrations": [
+    20.0,
+    20.0,
+    20.0,
+    20.0,
+    20.0
+   ]
+  }
+ },
+ "TiHfTa1-xNbx_x0": {
+  "src": "results/comparison.sra.ew0.6.bz10-10-20.gl/TiHfTa1-xNbx_x0",
+  "results": {
+   "name": "TiHfTa1-xNbx_x0",
+   "a0_bohr": 6.424947369781977,
+   "KKR_PARAMS_FINALSCF": {
+    "ew": 0.6,
+    "xc": "pbe",
+    "rel": "sra",
+    "bzqlty": 20,
+    "mxl": 3,
+    "magtype": "nmag",
+    "delta": 0.005,
+    "pmix": 0.01,
+    "edelt": 0.001,
+    "subdir": "finalscf",
+    "output": "finalscf",
+    "mcmillan_cutoff_mode": "valence"
+   },
+   "lambda": 0.8902083091787424,
+   "Tc_mu0.1": 10.532176619176393,
+   "Tc_mu0.2": 5.147868405065421,
+   "thetaDB_K": 221.5222457058669,
+   "mixture_debye_temperature": 303.33333333333337,
+   "eta_mix": 0.1300986969081154,
+   "Ti_Ntot": 13.705855370404697,
+   "Hf_Ntot": 8.268363433151515,
+   "Ta_Ntot": 9.006008022979806,
+   "Ti": 0.33333333333333337,
+   "Hf": 0.33333333333333337,
+   "Ta": 0.33333333333333337,
+   "Tc_exp_all": [
+    5.31
+   ],
+   "Tc_exp_names": [
+    "(TiHfTa)1-xNbx_x0"
+   ],
+   "Tc_exp": 5.31
+  },
+  "run_params": {
+   "element_labels": [
+    "Ti",
+    "Hf",
+    "Ta"
+   ],
+   "concentrations": [
+    33.3333,
+    33.3333,
+    33.3333
+   ]
+  }
+ },
+ "TiHfTa1-xNbx_x0.035": {
+  "src": "results/comparison.sra.ew0.6.bz10-10-20.gl/TiHfTa1-xNbx_x0.035",
+  "results": {
+   "name": "TiHfTa1-xNbx_x0.035",
+   "a0_bohr": 6.418549734565232,
+   "KKR_PARAMS_FINALSCF": {
+    "ew": 0.6,
+    "xc": "pbe",
+    "rel": "sra",
+    "bzqlty": 20,
+    "mxl": 3,
+    "magtype": "nmag",
+    "delta": 0.005,
+    "pmix": 0.01,
+    "edelt": 0.001,
+    "subdir": "finalscf",
+    "output": "finalscf",
+    "mcmillan_cutoff_mode": "valence"
+   },
+   "lambda": 0.8721587755408816,
+   "Tc_mu0.1": 10.373666110752055,
+   "Tc_mu0.2": 4.945964363566768,
+   "thetaDB_K": 226.39365670460256,
+   "mixture_debye_temperature": 302.3416676583323,
+   "eta_mix": 0.13165744678879743,
+   "Ti_Ntot": 13.63634622190425,
+   "Nb_Ntot": 9.754093213468613,
+   "Hf_Ntot": 8.238761334139594,
+   "Ta_Ntot": 8.972692336800474,
+   "Ti": 0.32166667833332163,
+   "Nb": 0.034999965000035,
+   "Hf": 0.32166667833332163,
+   "Ta": 0.32166667833332163,
+   "Tc_exp_all": [
+    5.61
+   ],
+   "Tc_exp_names": [
+    "(TiHfTa)1-xNbx_x0.035"
+   ],
+   "Tc_exp": 5.61
+  },
+  "run_params": {
+   "element_labels": [
+    "Ti",
+    "Nb",
+    "Hf",
+    "Ta"
+   ],
+   "concentrations": [
+    32.1667,
+    3.5,
+    32.1667,
+    32.1667
+   ]
+  }
+ },
+ "TiHfTa1-xNbx_x0.125": {
+  "src": "results/comparison.sra.ew0.6.bz10-10-20.gl/TiHfTa1-xNbx_x0.125",
+  "results": {
+   "name": "TiHfTa1-xNbx_x0.125",
+   "a0_bohr": 6.400052071620921,
+   "KKR_PARAMS_FINALSCF": {
+    "ew": 0.6,
+    "xc": "pbe",
+    "rel": "sra",
+    "bzqlty": 20,
+    "mxl": 3,
+    "magtype": "nmag",
+    "delta": 0.005,
+    "pmix": 0.01,
+    "edelt": 0.001,
+    "subdir": "finalscf",
+    "output": "finalscf",
+    "mcmillan_cutoff_mode": "valence"
+   },
+   "lambda": 0.8354385379211817,
+   "Tc_mu0.1": 10.070615858936508,
+   "Tc_mu0.2": 4.538899035461056,
+   "thetaDB_K": 238.262915204272,
+   "mixture_debye_temperature": 299.79167020832983,
+   "eta_mix": 0.13567164005742421,
+   "Ti_Ntot": 13.4341891900685,
+   "Nb_Ntot": 9.622926198589964,
+   "Hf_Ntot": 8.142249720001804,
+   "Ta_Ntot": 8.838661218176345,
+   "Ti": 0.29166670833329167,
+   "Nb": 0.124999875000125,
+   "Hf": 0.29166670833329167,
+   "Ta": 0.29166670833329167,
+   "Tc_exp_all": [
+    5.82
+   ],
+   "Tc_exp_names": [
+    "(TiHfTa)1-xNbx_x0.125"
+   ],
+   "Tc_exp": 5.82
+  },
+  "run_params": {
+   "element_labels": [
+    "Ti",
+    "Nb",
+    "Hf",
+    "Ta"
+   ],
+   "concentrations": [
+    29.1667,
+    12.5,
+    29.1667,
+    29.1667
+   ]
+  }
+ },
+ "TiHfTa1-xNbx_x0.33": {
+  "src": "results/comparison.sra.ew0.6.bz10-10-20.gl/TiHfTa1-xNbx_x0.33",
+  "results": {
+   "name": "TiHfTa1-xNbx_x0.33",
+   "a0_bohr": 6.363341366514743,
+   "KKR_PARAMS_FINALSCF": {
+    "ew": 0.6,
+    "xc": "pbe",
+    "rel": "sra",
+    "bzqlty": 20,
+    "mxl": 3,
+    "magtype": "nmag",
+    "delta": 0.005,
+    "pmix": 0.01,
+    "edelt": 0.001,
+    "subdir": "finalscf",
+    "output": "finalscf",
+    "mcmillan_cutoff_mode": "valence"
+   },
+   "lambda": 0.7994801985072784,
+   "Tc_mu0.1": 10.059287458340744,
+   "Tc_mu0.2": 4.253371842454704,
+   "thetaDB_K": 259.72312676013007,
+   "mixture_debye_temperature": 293.983323983324,
+   "eta_mix": 0.14387913114255294,
+   "Ti_Ntot": 13.011047803274597,
+   "Nb_Ntot": 9.294778009064208,
+   "Hf_Ntot": 7.925001188859945,
+   "Ta_Ntot": 8.50582293838206,
+   "Ti": 0.22333322333322336,
+   "Nb": 0.33000033000033,
+   "Hf": 0.22333322333322336,
+   "Ta": 0.22333322333322336,
+   "Tc_exp_all": [
+    7.06
+   ],
+   "Tc_exp_names": [
+    "(TiHfTa)1-xNbx_x0.33"
+   ],
+   "Tc_exp": 7.06
+  },
+  "run_params": {
+   "element_labels": [
+    "Ti",
+    "Nb",
+    "Hf",
+    "Ta"
+   ],
+   "concentrations": [
+    22.3333,
+    33.0,
+    22.3333,
+    22.3333
+   ]
+  }
+ },
+ "TiHfTa1-xNbx_x0.44": {
+  "src": "results/comparison.sra.ew0.6.bz10-10-20.gl/TiHfTa1-xNbx_x0.44",
+  "results": {
+   "name": "TiHfTa1-xNbx_x0.44",
+   "a0_bohr": 6.343426880900948,
+   "KKR_PARAMS_FINALSCF": {
+    "ew": 0.6,
+    "xc": "pbe",
+    "rel": "sra",
+    "bzqlty": 20,
+    "mxl": 3,
+    "magtype": "nmag",
+    "delta": 0.005,
+    "pmix": 0.01,
+    "edelt": 0.001,
+    "subdir": "finalscf",
+    "output": "finalscf",
+    "mcmillan_cutoff_mode": "valence"
+   },
+   "lambda": 0.7754862730086154,
+   "Tc_mu0.1": 9.886124081392659,
+   "Tc_mu0.2": 3.98251955520141,
+   "thetaDB_K": 271.99253469115985,
+   "mixture_debye_temperature": 290.8666791333208,
+   "eta_mix": 0.14712521815734803,
+   "Ti_Ntot": 12.750979702992916,
+   "Nb_Ntot": 9.044761110418518,
+   "Hf_Ntot": 7.776813665466147,
+   "Ta_Ntot": 8.264548549114842,
+   "Ti": 0.18666681333318666,
+   "Nb": 0.43999956000044,
+   "Hf": 0.18666681333318666,
+   "Ta": 0.18666681333318666,
+   "Tc_exp_all": [
+    7.41
+   ],
+   "Tc_exp_names": [
+    "(TiHfTa)1-xNbx_x0.44"
+   ],
+   "Tc_exp": 7.41
+  },
+  "run_params": {
+   "element_labels": [
+    "Ti",
+    "Nb",
+    "Hf",
+    "Ta"
+   ],
+   "concentrations": [
+    18.6667,
+    44.0,
+    18.6667,
+    18.6667
+   ]
+  }
+ },
+ "TiHfTa1-xNbx_x0.57": {
+  "src": "results/comparison.sra.ew0.6.bz10-10-20.gl/TiHfTa1-xNbx_x0.57",
+  "results": {
+   "name": "TiHfTa1-xNbx_x0.57",
+   "a0_bohr": 6.3223037511657445,
+   "KKR_PARAMS_FINALSCF": {
+    "ew": 0.6,
+    "xc": "pbe",
+    "rel": "sra",
+    "bzqlty": 20,
+    "mxl": 3,
+    "magtype": "nmag",
+    "delta": 0.005,
+    "pmix": 0.01,
+    "edelt": 0.001,
+    "subdir": "finalscf",
+    "output": "finalscf",
+    "mcmillan_cutoff_mode": "valence"
+   },
+   "lambda": 0.7317147485614717,
+   "Tc_mu0.1": 9.273615057047818,
+   "Tc_mu0.2": 3.369179800192389,
+   "thetaDB_K": 290.11022012240744,
+   "mixture_debye_temperature": 287.18331718331723,
+   "eta_mix": 0.15040388494604268,
+   "Ti_Ntot": 12.483254096055436,
+   "Nb_Ntot": 8.756350220899302,
+   "Hf_Ntot": 7.612248510684461,
+   "Ta_Ntot": 7.9882122864573315,
+   "Ti": 0.14333314333314334,
+   "Nb": 0.5700005700005701,
+   "Hf": 0.14333314333314334,
+   "Ta": 0.14333314333314334,
+   "Tc_exp_all": [
+    8.19
+   ],
+   "Tc_exp_names": [
+    "(TiHfTa)1-xNbx_x0.57"
+   ],
+   "Tc_exp": 8.19
+  },
+  "run_params": {
+   "element_labels": [
+    "Ti",
+    "Nb",
+    "Hf",
+    "Ta"
+   ],
+   "concentrations": [
+    14.3333,
+    57.0,
+    14.3333,
+    14.3333
+   ]
+  }
+ },
+ "TiHfTa1-xNbx_x0.75": {
+  "src": "results/comparison.sra.ew0.6.bz10-10-20.gl/TiHfTa1-xNbx_x0.75",
+  "results": {
+   "name": "TiHfTa1-xNbx_x0.75",
+   "a0_bohr": 6.292896684310222,
+   "KKR_PARAMS_FINALSCF": {
+    "ew": 0.6,
+    "xc": "pbe",
+    "rel": "sra",
+    "bzqlty": 20,
+    "mxl": 3,
+    "magtype": "nmag",
+    "delta": 0.005,
+    "pmix": 0.01,
+    "edelt": 0.001,
+    "subdir": "finalscf",
+    "output": "finalscf",
+    "mcmillan_cutoff_mode": "valence"
+   },
+   "lambda": 0.6112912416672243,
+   "Tc_mu0.1": 6.578051291100008,
+   "Tc_mu0.2": 1.5352803071706707,
+   "thetaDB_K": 328.7084993167718,
+   "mixture_debye_temperature": 282.08331208331214,
+   "eta_mix": 0.15013242190639683,
+   "Ti_Ntot": 11.9002022249071,
+   "Nb_Ntot": 8.162773304205176,
+   "Hf_Ntot": 7.225060055047574,
+   "Ta_Ntot": 7.437923164667016,
+   "Ti": 0.08333308333308334,
+   "Nb": 0.7500007500007502,
+   "Hf": 0.08333308333308334,
+   "Ta": 0.08333308333308334,
+   "Tc_exp_all": [
+    8.82
+   ],
+   "Tc_exp_names": [
+    "(TiHfTa)1-xNbx_x0.75"
+   ],
+   "Tc_exp": 8.82
+  },
+  "run_params": {
+   "element_labels": [
+    "Ti",
+    "Nb",
+    "Hf",
+    "Ta"
+   ],
+   "concentrations": [
+    8.3333,
+    75.0,
+    8.3333,
+    8.3333
+   ]
+  }
+ },
+ "TiHfTa1-xNbx_x0.9": {
+  "src": "results/comparison.sra.ew0.6.bz10-10-20.gl/TiHfTa1-xNbx_x0.9",
+  "results": {
+   "name": "TiHfTa1-xNbx_x0.9",
+   "a0_bohr": 6.270706441997341,
+   "KKR_PARAMS_FINALSCF": {
+    "ew": 0.6,
+    "xc": "pbe",
+    "rel": "sra",
+    "bzqlty": 20,
+    "mxl": 3,
+    "magtype": "nmag",
+    "delta": 0.005,
+    "pmix": 0.01,
+    "edelt": 0.001,
+    "subdir": "finalscf",
+    "output": "finalscf",
+    "mcmillan_cutoff_mode": "valence"
+   },
+   "lambda": 0.5174643560902188,
+   "Tc_mu0.1": 4.24336268487724,
+   "Tc_mu0.2": 0.5015668308170966,
+   "thetaDB_K": 369.43896776602134,
+   "mixture_debye_temperature": 277.8333078333079,
+   "eta_mix": 0.15057516104186644,
+   "Ti_Ntot": 11.759470196580576,
+   "Nb_Ntot": 7.775602359576701,
+   "Hf_Ntot": 7.078052178138184,
+   "Ta_Ntot": 7.098762807274204,
+   "Ti": 0.033333033333033335,
+   "Nb": 0.9000009000009002,
+   "Hf": 0.033333033333033335,
+   "Ta": 0.033333033333033335,
+   "Tc_exp_all": [
+    9.11
+   ],
+   "Tc_exp_names": [
+    "(TiHfTa)1-xNbx_x0.9"
+   ],
+   "Tc_exp": 9.11
+  },
+  "run_params": {
+   "element_labels": [
+    "Ti",
+    "Nb",
+    "Hf",
+    "Ta"
+   ],
+   "concentrations": [
+    3.3333,
+    90.0,
+    3.3333,
+    3.3333
+   ]
+  }
+ },
+ "TiVNbTa": {
+  "src": "results/comparison.sra.ew0.6.bz10-10-20.gl/TiVNbTa",
+  "results": {
+   "name": "TiVNbTa",
+   "a0_bohr": 6.143313870682849,
+   "KKR_PARAMS_FINALSCF": {
+    "ew": 0.6,
+    "xc": "pbe",
+    "rel": "sra",
+    "bzqlty": 20,
+    "mxl": 3,
+    "magtype": "nmag",
+    "delta": 0.005,
+    "pmix": 0.01,
+    "edelt": 0.001,
+    "subdir": "finalscf",
+    "output": "finalscf",
+    "mcmillan_cutoff_mode": "valence"
+   },
+   "lambda": 0.6718572898653972,
+   "Tc_mu0.1": 8.043532950977793,
+   "Tc_mu0.2": 2.4333890326959846,
+   "thetaDB_K": 309.76280581847874,
+   "mixture_debye_temperature": 328.75,
+   "eta_mix": 0.13173935527074054,
+   "Ti_Ntot": 11.418399370873235,
+   "V_Ntot": 14.789313369464695,
+   "Nb_Ntot": 7.557122557213972,
+   "Ta_Ntot": 6.957002119799887,
+   "Ti": 0.25,
+   "V": 0.25,
+   "Nb": 0.25,
+   "Ta": 0.25,
+   "Tc_exp_all": [
+    4.65
+   ],
+   "Tc_exp_names": [
+    "TiVNbTa"
+   ],
+   "Tc_exp": 4.65
+  },
+  "run_params": {
+   "element_labels": [
+    "Ti",
+    "V",
+    "Nb",
+    "Ta"
+   ],
+   "concentrations": [
+    25.0,
+    25.0,
+    25.0,
+    25.0
+   ]
+  }
+ },
+ "TiZrHfNb": {
+  "src": "results/comparison.sra.ew0.6.bz10-10-20.gl/TiZrHfNb",
+  "results": {
+   "name": "TiZrHfNb",
+   "a0_bohr": 6.494949348466853,
+   "KKR_PARAMS_FINALSCF": {
+    "ew": 0.6,
+    "xc": "pbe",
+    "rel": "sra",
+    "bzqlty": 20,
+    "mxl": 3,
+    "magtype": "nmag",
+    "delta": 0.005,
+    "pmix": 0.01,
+    "edelt": 0.001,
+    "subdir": "finalscf",
+    "output": "finalscf",
+    "mcmillan_cutoff_mode": "valence"
+   },
+   "lambda": 0.924406449936837,
+   "Tc_mu0.1": 12.226722890006412,
+   "Tc_mu0.2": 6.237208471472344,
+   "thetaDB_K": 240.86460957599576,
+   "mixture_debye_temperature": 303.75,
+   "eta_mix": 0.12073017499679764,
+   "Ti_Ntot": 13.319462637784678,
+   "Zr_Ntot": 8.698497156601903,
+   "Nb_Ntot": 10.032960498947098,
+   "Hf_Ntot": 8.01583682214185,
+   "Ti": 0.25,
+   "Zr": 0.25,
+   "Nb": 0.25,
+   "Hf": 0.25,
+   "Tc_exp_all": [
+    6.0,
+    6.3,
+    6.3
+   ],
+   "Tc_exp_names": [
+    "HfNbZrTi_crystal",
+    "TiZrHfNb_Uporov",
+    "TiZrNbHf_Kosuth"
+   ],
+   "Tc_exp": 6.3
+  },
+  "run_params": {
+   "element_labels": [
+    "Ti",
+    "Zr",
+    "Nb",
+    "Hf"
+   ],
+   "concentrations": [
+    25.0,
+    25.0,
+    25.0,
+    25.0
+   ]
+  }
+ },
+ "V21.2Nb42Ta36.8": {
+  "src": "results/comparison.sra.ew0.6.bz10-10-20.gl/V21.2Nb42Ta36.8",
+  "results": {
+   "name": "V21.2Nb42Ta36.8",
+   "a0_bohr": 6.185118171144257,
+   "KKR_PARAMS_FINALSCF": {
+    "ew": 0.6,
+    "xc": "pbe",
+    "rel": "sra",
+    "bzqlty": 20,
+    "mxl": 3,
+    "magtype": "nmag",
+    "delta": 0.005,
+    "pmix": 0.01,
+    "edelt": 0.001,
+    "subdir": "finalscf",
+    "output": "finalscf",
+    "mcmillan_cutoff_mode": "valence"
+   },
+   "lambda": 0.6200734258410074,
+   "Tc_mu0.1": 6.248168379202643,
+   "Tc_mu0.2": 1.5235427162429993,
+   "thetaDB_K": 299.50754695155484,
+   "mixture_debye_temperature": 284.38,
+   "eta_mix": 0.14202150231156568,
+   "V_Ntot": 14.621292497387266,
+   "Nb_Ntot": 7.413754125565173,
+   "Ta_Ntot": 6.751884189507278,
+   "V": 0.212,
+   "Nb": 0.42,
+   "Ta": 0.368,
+   "Tc_exp_all": [
+    4.41
+   ],
+   "Tc_exp_names": [
+    "V21.2Nb42Ta36.8"
+   ],
+   "Tc_exp": 4.41
+  },
+  "run_params": {
+   "element_labels": [
+    "V",
+    "Nb",
+    "Ta"
+   ],
+   "concentrations": [
+    21.2,
+    42.0,
+    36.8
+   ]
+  }
+ },
+ "V25.1Nb57.8Ta17.1": {
+  "src": "results/comparison.sra.ew0.6.bz10-10-20.gl/V25.1Nb57.8Ta17.1",
+  "results": {
+   "name": "V25.1Nb57.8Ta17.1",
+   "a0_bohr": 6.165119473399704,
+   "KKR_PARAMS_FINALSCF": {
+    "ew": 0.6,
+    "xc": "pbe",
+    "rel": "sra",
+    "bzqlty": 20,
+    "mxl": 3,
+    "magtype": "nmag",
+    "delta": 0.005,
+    "pmix": 0.01,
+    "edelt": 0.001,
+    "subdir": "finalscf",
+    "output": "finalscf",
+    "mcmillan_cutoff_mode": "valence"
+   },
+   "lambda": 0.5924916498849626,
+   "Tc_mu0.1": 5.987002827439526,
+   "Tc_mu0.2": 1.2612098637446756,
+   "thetaDB_K": 328.68115559892277,
+   "mixture_debye_temperature": 295.37,
+   "eta_mix": 0.1367879251478225,
+   "V_Ntot": 14.399485090913403,
+   "Nb_Ntot": 7.1809081504476575,
+   "Ta_Ntot": 6.5786981371736974,
+   "V": 0.251,
+   "Nb": 0.578,
+   "Ta": 0.171,
+   "Tc_exp_all": [
+    4.67
+   ],
+   "Tc_exp_names": [
+    "V25.1Nb57.8Ta17.1"
+   ],
+   "Tc_exp": 4.67
+  },
+  "run_params": {
+   "element_labels": [
+    "V",
+    "Nb",
+    "Ta"
+   ],
+   "concentrations": [
+    25.1,
+    57.8,
+    17.1
+   ]
+  }
+ },
+ "V57Ti29W14": {
+  "src": "results/comparison.sra.ew0.6.bz10-10-20.gl/V57Ti29W14",
+  "results": {
+   "name": "V57Ti29W14",
+   "a0_bohr": 5.892501361217029,
+   "KKR_PARAMS_FINALSCF": {
+    "ew": 0.6,
+    "xc": "pbe",
+    "rel": "sra",
+    "bzqlty": 20,
+    "mxl": 3,
+    "magtype": "nmag",
+    "delta": 0.005,
+    "pmix": 0.01,
+    "edelt": 0.001,
+    "subdir": "finalscf",
+    "output": "finalscf",
+    "mcmillan_cutoff_mode": "valence"
+   },
+   "lambda": 0.6344053196666726,
+   "Tc_mu0.1": 8.156299501610103,
+   "Tc_mu0.2": 2.12553263405137,
+   "thetaDB_K": 366.4109417529726,
+   "mixture_debye_temperature": 394.28599999999994,
+   "eta_mix": 0.12901611982001546,
+   "V_Ntot": 11.963698080578666,
+   "Ti_Ntot": 10.186987954438514,
+   "W_Ntot": 4.985076586292522,
+   "V": 0.5714,
+   "Ti": 0.2857,
+   "W": 0.1429,
+   "Tc_exp_all": [
+    5.0
+   ],
+   "Tc_exp_names": [
+    "V57Ti29W14"
+   ],
+   "Tc_exp": 5.0
+  },
+  "run_params": {
+   "element_labels": [
+    "V",
+    "Ti",
+    "W"
+   ],
+   "concentrations": [
+    57.14,
+    28.57,
+    14.29
+   ]
+  }
+ },
+ "V9.5Nb29.8Ta60.7": {
+  "src": "results/comparison.sra.ew0.6.bz10-10-20.gl/V9.5Nb29.8Ta60.7",
+  "results": {
+   "name": "V9.5Nb29.8Ta60.7",
+   "a0_bohr": 6.233260854802098,
+   "KKR_PARAMS_FINALSCF": {
+    "ew": 0.6,
+    "xc": "pbe",
+    "rel": "sra",
+    "bzqlty": 20,
+    "mxl": 3,
+    "magtype": "nmag",
+    "delta": 0.005,
+    "pmix": 0.01,
+    "edelt": 0.001,
+    "subdir": "finalscf",
+    "output": "finalscf",
+    "mcmillan_cutoff_mode": "valence"
+   },
+   "lambda": 0.42600670758801457,
+   "Tc_mu0.1": 1.5510518416121393,
+   "Tc_mu0.2": 0.04181896518811171,
+   "thetaDB_K": 317.5645866990944,
+   "mixture_debye_temperature": 263.73,
+   "eta_mix": 0.1341410972396829,
+   "V_Ntot": 13.322682652996228,
+   "Nb_Ntot": 6.759016012381066,
+   "Ta_Ntot": 6.127502376590408,
+   "V": 0.095,
+   "Nb": 0.298,
+   "Ta": 0.607,
+   "Tc_exp_all": [
+    4.47
+   ],
+   "Tc_exp_names": [
+    "V9.5Nb29.8Ta60.7"
+   ],
+   "Tc_exp": 4.47
+  },
+  "run_params": {
+   "element_labels": [
+    "V",
+    "Nb",
+    "Ta"
+   ],
+   "concentrations": [
+    9.5,
+    29.8,
+    60.7
+   ]
+  }
+ },
+ "YNbTiZrHf": {
+  "src": "results/comparison.sra.ew0.6.bz10-10-20.gl/YNbTiZrHf",
+  "results": {
+   "name": "YNbTiZrHf",
+   "a0_bohr": 6.6647369059037604,
+   "KKR_PARAMS_FINALSCF": {
+    "ew": 0.6,
+    "xc": "pbe",
+    "rel": "sra",
+    "bzqlty": 20,
+    "mxl": 3,
+    "magtype": "nmag",
+    "delta": 0.005,
+    "pmix": 0.01,
+    "edelt": 0.001,
+    "subdir": "finalscf",
+    "output": "finalscf",
+    "mcmillan_cutoff_mode": "valence"
+   },
+   "lambda": 1.2055052881796444,
+   "Tc_mu0.1": 14.412918933812328,
+   "Tc_mu0.2": 9.151130230123147,
+   "thetaDB_K": 193.43779131829749,
+   "mixture_debye_temperature": 299.0,
+   "eta_mix": 0.09883138407910388,
+   "Ti_Ntot": 14.673477948083972,
+   "Y_Ntot": 6.375629014214056,
+   "Zr_Ntot": 9.296011214875428,
+   "Nb_Ntot": 10.531906777826649,
+   "Hf_Ntot": 8.56211766650441,
+   "Ti": 0.2,
+   "Y": 0.2,
+   "Zr": 0.2,
+   "Nb": 0.2,
+   "Hf": 0.2,
+   "Tc_exp_all": [
+    6.1
+   ],
+   "Tc_exp_names": [
+    "YNbTiZrHf"
+   ],
+   "Tc_exp": 6.1
+  },
+  "run_params": {
+   "element_labels": [
+    "Ti",
+    "Y",
+    "Zr",
+    "Nb",
+    "Hf"
+   ],
+   "concentrations": [
+    20.0,
+    20.0,
+    20.0,
+    20.0,
+    20.0
+   ]
+  }
+ }
+}

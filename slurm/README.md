@@ -204,3 +204,28 @@ even alone, packing pays (3 alloys ≈ 1.3 × the wall time of 1). MaxRSS 4.35 G
 Cost ≈ 9 allocated core-h per 5-component alloy (the 30–70 CPU-h of the grant estimate came from the
 unreliable AkaiKKR `cpu(sec)` line). Defaults changed: `PER_TASK=5`, `--mem=12G`, `--time=12:00:00`.
 `sacct` TotalCPU / (Elapsed × cpus) is the reliable utilisation measure.
+
+## Hc2 / Maki on the baseline set (branch `rtop/hc2`; NOT a Tc run)
+
+AkaiKKR A(k,E) chain from `scripts/hc2_spc/` (pilot: `DOCS/ROZMOWA_2026-11-03_Hc2.md`): SCF → 47 radial rays →
+Fermi-surface crossings → star/gradient/cone lines (|v| by least squares) → D, ρ0, dHc2/dT. Run directories live in
+`hc2_runs/<set>/<name>/` (git-ignored, never under `results/`; `make_spc_inputs.py` refuses `results/`, `*.ratios*`).
+Inputs come from the committed `scripts/hc2_spc/baseline_bundle.json` (113 alloys, pure elements skipped; built on
+the workstation by `make_baseline_bundle.py`, which reads `results/` and `Tc_literature.xlsx`).
+
+```
+cd /lu/topola/home/rtop/heaml
+env ONLY="HfNbTa Ta34Nb33Hf8Zr14Ti11" slurm/submit_hc2_baseline.sh     # test on 2 systems first
+env DRY=1 slurm/submit_hc2_baseline.sh                                 # list pending, no sbatch
+slurm/submit_hc2_baseline.sh                                           # all pending, 5 per task, 14 cpus
+```
+
+`run_hc2_pipeline.sh` is resumable (`<sys>/.hc2_steps/*.done`); status in `<sys>/hc2_status.txt` (DONE/FAILED step),
+log in `<sys>/hc2_pipeline.log`; resubmitting skips DONE systems. Raw spc runs are packed at the end
+(`fs/fs_runs.tar.gz`; star/cone spc deleted unless `KEEP_SPC=1`), leaving ~30 files per system.
+Analysis on the workstation:
+
+```
+rsync -av topola:/lu/topola/home/rtop/heaml/hc2_runs/ /home/rafal/WORK/HEA/ML/hc2_runs/
+python scripts/hc2_spc/collect_hc2.py hc2_runs/baseline.sra.ew0.6.bz10-10-20.gl      # -> hc2_table.csv there
+```

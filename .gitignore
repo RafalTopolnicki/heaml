@@ -7,3 +7,6 @@ scripts/OLD/
 slurm/logs/
 /bash.old/
 /opt.ratios.gl/
+/hc2_runs/
+/hc2_spc/
+/hc2_sprkkr/

@@ -631,3 +631,60 @@ Kontekst: Idczak chce wyznaczać Hc2(T) w modelu WHH (α_M, λ_SO) z teorii. Not
 - (NbTa)₀.₆₇(MoHfW)₀.₃₃, PRB 106, 184512 (2022): KKR-CPA tylko do struktury elektronowej, Hc2 z pomiaru
   ([UWr](https://wfa.uwr.edu.pl/en/?p=81425)). `ABS`.
 - AlTiVNb / AlTiCrMo: KKR-CPA + Kubo–Greenwood, arXiv [2503.13235](https://arxiv.org/pdf/2503.13235). `ABS`.
+
+### 4.5 Dane eksperymentalne do walidacji Hc2 (zebrane 2026-11-10)
+- P. Koželj i in., *Phys. Rev. Lett.* **113**, 107001 (2014), doi [10.1103/PhysRevLett.113.107001](https://doi.org/10.1103/PhysRevLett.113.107001).
+  Ta34Nb33Hf8Zr14Ti11: Tc ≈ 7.3 K, μ0Hc2 ≈ 8.2 T. `ABS`. ρ0 = 36 μΩcm, γ = 8.3 mJ/mol K², Θ_D = 243 K: `SEC` (przez 4.6).
+- K. Jasiewicz i in., *Phys. Status Solidi RRL* **10**, 415 (2016), arXiv [1603.07274](https://arxiv.org/abs/1603.07274).
+  KKR-CPA dla Ta34Nb33Hf8Zr14Ti11, λ = 0.98 z γ; cytuje dane Koželja. `PEŁNY`.
+- F. von Rohr i in., *PNAS* **113**, E7144 (2016), doi [10.1073/pnas.1615926113](https://doi.org/10.1073/pnas.1615926113).
+  [TaNb]0.67(ZrHfTi)0.33: Tc 7.75 K, μ0|dHc2/dT| 1.449 T/K, μ0Hc2(0) 7.75 T (WHH), γ 7.97 mJ/mol K², λ 0.83. `PEŁNY`.
+- H. J. Muller, *The Upper Critical Field of Niobium-Titanium*, PhD thesis, Univ. Wisconsin (1989),
+  [PDF](https://fs.magnet.fsu.edu/~lee/asc/pdf_papers/theses/hjm89phd.pdf). Nb–Ti 35–50 at.% Nb: Tc, nachylenie, ρ(Tc),
+  Hc2, γ, λ, α_M, λ_so. `PEŁNY` (ρ i Hc2 odczytane z wykresów, ±3 μΩcm, ±0.3 T).
+
+### 4.6 Nb: ħω_p i v_F; renormalizacja nachylenia Hc2 (zebrane 2026-11-10)
+- S. Y. Savrasov, D. Y. Savrasov, *Phys. Rev. B* **54**, 16487 (1996), arXiv [cond-mat/9604124](https://arxiv.org/abs/cond-mat/9604124).
+  Nb LDA: ħω_p = 9.47 eV, N(E_F) = 20.42 st/Ry/komórkę. Wzorzec dla naszego ħω_p. `PEŁNY`.
+- M. Zarea, H. Ueki, J. A. Sauls, arXiv [2201.07403](https://arxiv.org/abs/2201.07403). v_F po płatach dla Nb
+  (v_rms ≈ 7.3·10⁵ m/s po ważeniu DOS — rachunek agenta). `PEŁNY`.
+- T. P. Orlando, E. J. McNiff, S. Foner, M. R. Beasley, *Phys. Rev. B* **19**, 4545 (1979), doi [10.1103/PhysRevB.19.4545](https://doi.org/10.1103/PhysRevB.19.4545).
+  Renormalizacja parametrów stanu normalnego w Hc2; −μ0dHc2/dT = 4.48·10³ γρ0 (cytat przez Tran i in. arXiv 0803.2948). `ABS`/`SEC`.
+- P. Li, L. Gao, *Sci. Rep.* **7**, 1133 (2017), doi [10.1038/s41598-017-01292-4](https://doi.org/10.1038/s41598-017-01292-4).
+  Nb₃Sn: twierdzą, że γ w nachyleniu nie jest renormalizowane (głos przeciw). `PEŁNY` (wg agenta).
+
+---
+
+## 4. Stopy dwuskładnikowe Nb–Zr, Nb–Ti, Nb–Hf — źródła do publikacji (dodane 2026-11-10)
+
+Kontekst: rozdział „Validation” w `PAPER/main.tex` (Fig. 2) porównuje linie KKR Nb–Zr / Nb–Ti / Nb–Hf z eksperymentem.
+Wiersze Nb85X15 dopisane do `results/Tc_literature.xlsx` (status `candidate`, Origin „binary references for the paper”).
+Skrypt na Topolę dla brakujących punktów KKR (Nb85Zr15, Nb85Ti15, Nb85Hf15, Nb75Zr25): `slurm/submit_binaries_extra_gl.sh`.
+
+### 4.1 Kushwaha i in., arXiv:2512.18821 (2025) — Nb0.85X0.15, X = Ti, Zr, Hf
+- R. K. Kushwaha, S. Jangid, P. Mishra, S. Sharma, R. P. Singh, „High Critical Temperature and Field Superconductivity in
+  Nb0.85X0.15 (X = Ti, Zr, Hf) Alloys: Promising Candidates for Superconducting Devices”, arXiv:2512.18821 [cond-mat.supr-con],
+  doi 10.48550/arXiv.2512.18821. Wersja czasopismowa (Materials Advances 2026, d5ma01057h) nie została potwierdzona (RSC 403).
+- **Co bierzemy:** Tc z oporu (zero pola): Nb85Ti15 9.68(2) K, Nb85Zr15 11.06(4) K, Nb85Hf15 9.78(3) K; z magnetyzacji
+  9.65 / 11.05 / 9.67 K; wszystkie bcc (α-W), as-cast, a = 3.306(8) / 3.350(1) / 3.349(5) Å.
+- **Weryfikacja:** `PEŁNY` (HTML arXiv v1 przeczytany przez agenta 2026-11-10: wstęp, wyniki, dyskusja, referencje 1–62).
+
+### 4.2 Hulm i Blaugher, Phys. Rev. 123, 1569 (1961) — przegląd roztworów stałych metali przejściowych
+- J. K. Hulm, R. D. Blaugher, „Superconducting Solid Solution Alloys of the Transition Elements”, *Phys. Rev.* **123**, 1569–1580
+  (1961), doi 10.1103/PhysRev.123.1569.
+- **Co bierzemy:** dwa maksima Tc w funkcji liczby elektronów walencyjnych, e/a ≈ 4.7 i ≈ 6.4 (reguła Matthiasa w stopach);
+  w pracy cytowane jako źródło maksimów Nb–Zr (~11 K), Nb–Ti (~10 K), Nb–Hf (~9.5 K) — **wartości liczbowe z tabel tej pracy
+  NIE zostały zweryfikowane** (pełny tekst za paywallem APS; abstrakt potwierdzony). W manuskrypcie liczby binarne są
+  oparte na 4.1, a Hulm & Blaugher cytowani za ogólny obraz.
+- **Weryfikacja:** `ABS`.
+
+### 4.3 Junod, Jorda, Muller, J. Low Temp. Phys. 62, 301 (1986) — Eliashberg dla Nb0.75Zr0.25
+- doi 10.1007/BF00683466. **Co bierzemy:** ω_log = 109 K dla Nb0.75Zr0.25 wobec 146 K dla Nb (zmiękczenie fononów przez Zr),
+  λ − μ* = 1.13. Abstrakt nie podaje Tc. Cytowane w SI (reguła mieszaniny θ_D pomija zmiękczenie).
+- **Weryfikacja:** `ABS` (OSTI).
+
+### 4.4 Inne wzmianki (niecytowane, do ewentualnego użycia)
+- McMillan–Rowell tunneling in the Nb–Zr system, *Solid State Commun.* (1979), PII 0038-1098(79)90658-6: wg wyszukiwarki
+  Tc rośnie z 9.22 K (x = 0) do 10.8 K (x = 0.25), „x = 0.25 odpowiada maksimum Tc w układzie Nb–Zr”. `SEC` (snippet).
+- Sitaraman i in., arXiv:2208.10678 (2022), teoria Nb–Zr dla wnęk SRF: wg wyszukiwarki powołuje się na literaturowe 11 K
+  dla objętościowego Nb–Zr; pełny tekst nie został odczytany (PDF bez warstwy tekstowej w naszym narzędziu).
