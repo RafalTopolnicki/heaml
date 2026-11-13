@@ -688,3 +688,32 @@ Skrypt na Topolę dla brakujących punktów KKR (Nb85Zr15, Nb85Ti15, Nb85Hf15, N
   Tc rośnie z 9.22 K (x = 0) do 10.8 K (x = 0.25), „x = 0.25 odpowiada maksimum Tc w układzie Nb–Zr”. `SEC` (snippet).
 - Sitaraman i in., arXiv:2208.10678 (2022), teoria Nb–Zr dla wnęk SRF: wg wyszukiwarki powołuje się na literaturowe 11 K
   dla objętościowego Nb–Zr; pełny tekst nie został odczytany (PDF bez warstwy tekstowej w naszym narzędziu).
+
+### 4.5 Muller, PhD thesis, Univ. Wisconsin–Madison (1989) — Nb–Ti, Tc w funkcji składu (dodane 2026-11-12)
+- H. J. Muller, „The Upper Critical Field of Niobium-Titanium”, brak DOI;
+  https://fs.magnet.fsu.edu/~lee/asc/pdf_papers/theses/hjm89phd.pdf
+- **Co bierzemy:** Table 2 (s. 39), Tc oporowe stopów at.% Nb: 70 → 10.00, 60 → 9.94, 50 → 9.71, 40 → 9.47, 35 → 9.16,
+  30 → 8.91 K (wszystkie bcc; próbki homogenizowane i rekrystalizowane, nie as-cast). 25 i 20 at.% Nb pominięte
+  (martenzyt α''). W tezie także: maksimum 9.88 K (indukcyjnie) przy 70 at.% Nb, zgodne z Suenaga & Ralls (10 K).
+- Użyte w `PAPER/figures/make_fig_binaries.py` (Fig. S2 w SI), klucz bib `Muller1989` (wpis ręczny w `make_bib.py: MANUAL`).
+  Nie dopisane do `Tc_literature.xlsx`.
+- **Weryfikacja:** `PEŁNY` (tabela odczytana ze skanu strony 2026-11-12).
+
+### 4.6 Nb–Zr, Nb–Hf — nie znaleziono nowych zweryfikowanych punktów (2026-11-12)
+- Corsan i in., J. Less-Common Met. 15, 437 (1968), doi 10.1016/0022-5088(68)90109-4 — kluczowa praca Tc(x) dla Nb–Zr, paywall.
+- Kunzler & Matthias, patent US 3,281,736: Nb90Zr10 ≈ 10.5 K, maksimum ≈ 11.6 K przy 60–80 % Nb — wartości przybliżone
+  z tekstu patentu, **nieużyte**.
+
+### 4.7 Eksperymentalne Hc2 dla stopów z Tc_literature.xlsx (zebrane 2026-11-13)
+- Plik `results/HC2_literature.xlsx` (budowany przez `scripts/hc2_spc/make_hc2_literature_xlsx.py` z
+  `results/HC2_literature_entries.json`): 99 wartości μ0Hc2(0) — 81 dla wierszy Tc_literature.xlsx + 18 dodatkowych
+  próbek z tych samych prac (wygrzewane NbScTiZr i Hf–Nb–Sc–Ti–Zr Kubo/Kitagawa, SPS Hidayati, Al-Sobota APL 2026).
+  Źródła: prace cytowane w Tc_literature.xlsx (lokalne PDF z `papers_data/` + arXiv / PMC / HTML wydawców).
+- Weryfikacja: TAB 85, ABS 10, SEC 2 (Kim 2020, Uporov — przez przegląd Kitagawy arXiv:2504.06454), FIG-EST 2 (Maran).
+- Metoda Hc2(0) różna między pracami (kolumna „Hc2 method”): pełny WHH (α_M, λ_SO) 39, WHH 0.69·Tc·nachylenie 11,
+  GL 22, empiryczna potęgowa (Krnel, β 1.0–1.6) 19, nieznana 8 → porównania z naszym WHH tylko w obrębie metody.
+- Bez Hc2 / niedostępne (arkusz `checked_no_Hc2`): von Rohr PRMat 2018, Senga, Ishizu, Seki (brak Hc2 w pracy);
+  Krishnan ×2, Vrtnik, Wu PRL 2024, Sang, Wang 1978 (paywall). Wu 2018: tylko pola przy 2–5 K z pętli M(H).
+- Niespójności w pracach: V57Ti29W14 (Li 2024: „WHH” 9.93 T ≠ 0.693·Tc·nachylenie ≈ 6.9 T), TiVNbTa (tekst 5.9 T,
+  tabela 4.8 T), Kitagawa HfMoNbTiZr (tekst 5.55 T, podsumowanie 5.82 T); Tc z arXiv różne od Tc_literature
+  dla Sharma PRM (6.19/5.0 vs 5.13/4 K) i Li Nb2TiW/Nb2TiMo (4.86/3.22 vs 4.2/2.8 K) — do sprawdzenia.
