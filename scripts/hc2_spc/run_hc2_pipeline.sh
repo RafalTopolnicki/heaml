@@ -38,7 +38,9 @@ scf() {
     cd "${SYS}"
     "${AKAIMODBIN}" < scf.inp > scf.out
     [ -f "${POT}" ] || { echo "no potential ${POT}"; return 1; }
-    if grep -q "itr=499" scf.out || grep -qi "no convergence" scf.out; then echo "SCF not converged"; return 1; fi
+    # only the scf loop hitting maxitr=500 counts; "***wrn in cstate...no convergence" (core states of 5d
+    # elements in the first iterations) is a harmless transient warning and must NOT fail the step
+    if grep -qE "^ +itr=(499|500) " scf.out; then echo "SCF not converged (maxitr)"; return 1; fi
     grep -q "def=" scf.out || { echo "no Lloyd DOS (def=) in scf.out"; return 1; }
 }
 
