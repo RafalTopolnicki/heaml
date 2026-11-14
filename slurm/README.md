@@ -182,6 +182,16 @@ the rows without `structure_summary.json`: one composition per task, 7 cpus, 8G,
 with `KKR_PARAMS_LATTICE` (sra, pbe, ew 0.6, bzqlty 10, mxl 3, nmag — the settings of all earlier `thermodynamic/` runs).
 No restart inside a composition.  After more set-B `Tc_mu0.1` runs finish: rerun the list script, commit, resubmit.
 
+## Champions recomputed with LDA (2026-11-14)
+
+`bash slurm/submit_lda_champions.sh` (login node; `DRY=1`, `ONLY="tag ..."`, `XC=vwn|vbh|mjw`, default `vwn` = closest to the Perdew–Wang LDA of Jaśkiewicz 2019; `vbh` = Jaśkiewicz 2016) submits
+`topola_lda_champions.sbatch` for the 27 champion rows of `slurm/compositions/td_champions_gl.csv` (set A `Tc_mu0.1`,
+set B corr2, set B `Tc_mu0.1`, mincomp 2–10; `el_*` rows skipped).  Only the composition is taken over: `process_hea.py`
+runs from scratch (bcc lattice scan 0.95–1.05 × mixture lattice, final SCF, η GL, θ_D mix, Tc) with `--xc ${XC}`; all
+other settings are the production ones.  One composition per task, 7 cpus, 8G, 1 day; output
+`lda.champions.<xc>/<run>/<composition>/results.json` (git-ignored); finished rows are skipped, unfinished directories
+are renamed `.partial_<date>` and redone.
+
 ## Status log
 
 **2026-10-23** — first array 9383051 (`0_compare_with_known_V.sh`, 7 tasks × 3 alloys, 14 cpus, 8G, 2 d)
