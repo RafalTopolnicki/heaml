@@ -6,6 +6,9 @@
 # KKR settings = consts.KKR_PARAMS_LATTICE (sra, pbe, ew 0.6, bzqlty 10, mxl 3, nmag) — the same as the lattice stage
 # of the optimisation runs and as all earlier thermodynamic/ results (structure_compare.py takes no overrides here).
 # 49 SCF runs per composition (bcc 7, fcc 7, hcp 5 c/a x 7), one specx at a time.
+# Optional EW (energy-window width in Ry, e.g. EW=1.0) is passed as --ew; default = KKR_PARAMS_LATTICE (0.6).
+# ew 0.6 is too narrow for pure Re (and W): the valence band bottom falls below the contour and the bcc E(a) curve
+# breaks (test 2026-11-14: ew 1.0 and 1.3 agree to 0.3 mRy, ew 0.6 is off by ~1 Ry at a = 5.74 bohr).
 # Submit with slurm/submit_td_champions.sh (only the pending rows).
 #SBATCH --job-name=td_cmp
 #SBATCH --account=g107-2962
@@ -23,6 +26,7 @@ cd "${ROOT}" || exit 1
 source "${ROOT}/venv/bin/activate"
 
 LIST=${LIST:-slurm/compositions/td_champions_gl.csv}
+EW=${EW:-}                         # optional energy window (Ry); empty = consts default
 ROWS=${ROWS:-}                     # optional: space-separated data-row numbers; task i takes the i-th of them
 row=${SLURM_ARRAY_TASK_ID}
 [ -n "${ROWS}" ] && row=$(awk -v i="${SLURM_ARRAY_TASK_ID}" '{print $i}' <<< "${ROWS}")
@@ -40,12 +44,13 @@ export OMP_THREAD_LIMIT=${SLURM_CPUS_PER_TASK}
 export OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 MKL_NUM_THREADS=1 NUMEXPR_NUM_THREADS=1
 export PYTHONUNBUFFERED=1
 mkdir -p "${outdir}"
-echo "[$(date +%F_%T)] host $(hostname) cpus ${SLURM_CPUS_PER_TASK}  row ${row}  ${tag}  ${target} ${tc} K  -> ${outdir}/${dirname}"
+echo "[$(date +%F_%T)] host $(hostname) cpus ${SLURM_CPUS_PER_TASK}  row ${row}  ${tag}  ${target} ${tc} K  ew ${EW:-default}  -> ${outdir}/${dirname}"
 # shellcheck disable=SC2086   (element and concentration lists are space-separated on purpose)
 python scripts/structure_compare.py \
     --element_labels ${elements} \
     --concentrations ${conc} \
-    --outdir "${outdir}"
+    --outdir "${outdir}" \
+    ${EW:+--ew ${EW}}
 rc=$?
 echo "[$(date +%F_%T)] ${tag}: structure_compare.py exit ${rc}"
 [ -f "${outdir}/${dirname}/structure_summary.json" ] || { echo "${tag}: no structure_summary.json"; exit 3; }

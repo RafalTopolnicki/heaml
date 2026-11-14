@@ -1,0 +1,14 @@
+tag,run,target,Tc,n_el,elements,concentrations,outdir,dirname
+A_mu0.1_mc2,sra.TiNbZrHfTaMoWYReRu.kp10.ew0.6.gl.mu0.1.acqbeta2.stonerbeta0.mixdebye.mincomp2.r0.05.max0.7.face0.1,Tc_mu0.1,18.9866,2,Nb Zr,0.594152 0.405848,thermodynamic.ew1.0/sra.TiNbZrHfTaMoWYReRu.kp10.ew0.6.gl.mu0.1.acqbeta2.stonerbeta0.mixdebye.mincomp2.r0.05.max0.7.face0.1,Nb0.5942Zr0.4058
+A_mu0.1_mc9,sra.TiNbZrHfTaMoWYReRu.kp10.ew0.6.gl.mu0.1.acqbeta2.stonerbeta0.mixdebye.mincomp9.r0.05.max0.7.face0.1,Tc_mu0.1,7.2179,9,Ti Nb Zr Hf Ta Mo W Y Re,0.056311 0.445136 0.141964 0.082100 0.067832 0.051005 0.052911 0.051216 0.051526,thermodynamic.ew1.0/sra.TiNbZrHfTaMoWYReRu.kp10.ew0.6.gl.mu0.1.acqbeta2.stonerbeta0.mixdebye.mincomp9.r0.05.max0.7.face0.1,Ti0.0563Nb0.4451Zr0.1420Hf0.0821Ta0.0678Mo0.0510W0.0529Y0.0512Re0.0515
+A_mu0.1_mc10,sra.TiNbZrHfTaMoWYReRu.kp10.ew0.6.gl.mu0.1.acqbeta2.stonerbeta0.mixdebye.mincomp10.r0.05.max0.7.face0.1,Tc_mu0.1,4.3562,10,Ti Nb Zr Hf Ta Mo W Y Re Ru,0.058058 0.148916 0.413325 0.056683 0.064732 0.050705 0.050814 0.054258 0.051518 0.050993,thermodynamic.ew1.0/sra.TiNbZrHfTaMoWYReRu.kp10.ew0.6.gl.mu0.1.acqbeta2.stonerbeta0.mixdebye.mincomp10.r0.05.max0.7.face0.1,Ti0.0581Nb0.1489Zr0.4133Hf0.0567Ta0.0647Mo0.0507W0.0508Y0.0543Re0.0515Ru0.0510
+el_Ti,,,,1,Ti,1.000000,thermodynamic.ew1.0/elements.sra.topola,Ti1.0000
+el_Nb,,,,1,Nb,1.000000,thermodynamic.ew1.0/elements.sra.topola,Nb1.0000
+el_Zr,,,,1,Zr,1.000000,thermodynamic.ew1.0/elements.sra.topola,Zr1.0000
+el_Hf,,,,1,Hf,1.000000,thermodynamic.ew1.0/elements.sra.topola,Hf1.0000
+el_Ta,,,,1,Ta,1.000000,thermodynamic.ew1.0/elements.sra.topola,Ta1.0000
+el_Mo,,,,1,Mo,1.000000,thermodynamic.ew1.0/elements.sra.topola,Mo1.0000
+el_W,,,,1,W,1.000000,thermodynamic.ew1.0/elements.sra.topola,W1.0000
+el_Y,,,,1,Y,1.000000,thermodynamic.ew1.0/elements.sra.topola,Y1.0000
+el_Re,,,,1,Re,1.000000,thermodynamic.ew1.0/elements.sra.topola,Re1.0000
+el_Ru,,,,1,Ru,1.000000,thermodynamic.ew1.0/elements.sra.topola,Ru1.0000

@@ -182,6 +182,29 @@ the rows without `structure_summary.json`: one composition per task, 7 cpus, 8G,
 with `KKR_PARAMS_LATTICE` (sra, pbe, ew 0.6, bzqlty 10, mxl 3, nmag — the settings of all earlier `thermodynamic/` runs).
 No restart inside a composition.  After more set-B `Tc_mu0.1` runs finish: rerun the list script, commit, resubmit.
 
+### Re reference with a wider energy window (2026-11-14)
+
+With the production energy window ew = 0.6 Ry the pure-Re scan is broken (bcc E(a) jumps by > 1 Ry, B ≈ 19 000 GPa,
+bcc ground state): the bottom of the Re valence band lies below the contour.  Local test (bcc Re, a = 5.74 / 5.84 /
+6.03 bohr): ew 1.0 and 1.3 Ry agree to 0.3 mRy and give a normal minimum near 5.86 bohr.  The W scan (minimum at the
+upper edge, 6.28 vs exp 5.98 bohr) shows the same symptom more weakly.  So that the mixing enthalpies of the two
+Re-containing champions are evaluated with one energy window, `slurm/compositions/td_re_ew1.0.csv` holds A mc9, A mc10,
+the control A mc2 (Nb–Zr, to see how much ΔH changes between ew 0.6 and 1.0) and the ten set-A element references,
+all with outdirs under `thermodynamic.ew1.0/` (git-ignored):
+
+    env LIST=slurm/compositions/td_re_ew1.0.csv EW=1.0 DRY=1 bash slurm/submit_td_champions.sh
+    env LIST=slurm/compositions/td_re_ew1.0.csv EW=1.0 bash slurm/submit_td_champions.sh
+
+`submit_td_champions.sh` refuses to mix windows: with `EW` set every outdir must start with `thermodynamic.ew<EW>/`,
+without it none may.  The list was cut from `td_champions_gl.csv` (rows A_mu0.1_mc2/9/10 and el_* of set A, outdir
+prefix `thermodynamic/` → `thermodynamic.ew1.0/`, elements → `thermodynamic.ew1.0/elements.sra.topola`).
+
+Whether ew 0.6 also spoils the **Tc** of Re-containing alloys is tested by `sbatch slurm/topola_re_ew_tc.sbatch`
+(4 tasks, full `process_hea.py` pipeline, PBE, production settings except `--ew`): A mc9 and A mc10 at ew 1.0
+(the ew 0.6 values are the optimisation champions) and Mo60Re40 at ew 0.6 and 1.0 (no GL ew 0.6 Mo–Re result exists;
+exp. Tc 12–13 K, the KKR value at ew 0.6 was ≈ 0).  Output `re_ew_tc/<tag>.ew<ew>/<composition>/results.json`
+(git-ignored).
+
 ## Champions recomputed with LDA (2026-11-14)
 
 `bash slurm/submit_lda_champions.sh` (login node; `DRY=1`, `ONLY="tag ..."`, `XC=vwn|vbh|mjw`, default `vwn` = closest to the Perdew–Wang LDA of Jaśkiewicz 2019; `vbh` = Jaśkiewicz 2016) submits
