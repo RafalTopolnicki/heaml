@@ -199,11 +199,17 @@ all with outdirs under `thermodynamic.ew1.0/` (git-ignored):
 without it none may.  The list was cut from `td_champions_gl.csv` (rows A_mu0.1_mc2/9/10 and el_* of set A, outdir
 prefix `thermodynamic/` → `thermodynamic.ew1.0/`, elements → `thermodynamic.ew1.0/elements.sra.topola`).
 
-Whether ew 0.6 also spoils the **Tc** of Re-containing alloys is tested by `sbatch slurm/topola_re_ew_tc.sbatch`
-(4 tasks, full `process_hea.py` pipeline, PBE, production settings except `--ew`): A mc9 and A mc10 at ew 1.0
-(the ew 0.6 values are the optimisation champions) and Mo60Re40 at ew 0.6 and 1.0 (no GL ew 0.6 Mo–Re result exists;
-exp. Tc 12–13 K, the KKR value at ew 0.6 was ≈ 0).  Output `re_ew_tc/<tag>.ew<ew>/<composition>/results.json`
-(git-ignored).
+Outcome (2026-11-15): Hf does not converge at ew >= 0.75 (its 4f level enters the contour), so the ew 1.0 rows with
+Hf (A mc9, A mc10, el_Hf) fail; pure W needs ew >= 0.75 and pure Re >= 0.9, while the champions A mc9/mc10 give the
+same energy at ew 0.6 and 0.7 (< 0.1 mRy).  Table I uses W and Re references from ew 1.0 and everything else at ew 0.6.
+
+### Second-maximum binaries vs energy window (2026-11-15)
+
+`sbatch slurm/topola_binary_ew.sbatch` (40 tasks; full `process_hea.py` pipeline, PBE, production settings except
+`--ew`): Mo1-xRex (x = 0.1-0.5), Mo1-xRux (x = 0.1-0.4) and the control Nb60Zr40 at ew = 0.6, 0.7, 0.8, 1.0 Ry.
+Questions: is the underestimate of Re-rich alloys (old ew 0.6 result Mo60Re40 ~ 0 K, exp. 12-13 K) an energy-window
+artefact, and is ew 0.7 (the widest window at which Hf converges) enough?  Output
+`binary_ew/ew<ew>/<composition>/results.json` (git-ignored).  Task = i_ew * 10 + i_comp, e.g. `--array=0-9` = ew 0.6.
 
 ## Champions recomputed with LDA (2026-11-14)
 
