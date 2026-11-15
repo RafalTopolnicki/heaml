@@ -1,0 +1,243 @@
+{
+ "metrics": {
+  "A_mu0.1": {
+   "n": 74,
+   "tau": 0.659,
+   "rho": 0.8551,
+   "pair_acc_all": 0.8279,
+   "pair_acc_1K": 0.9351,
+   "r": 0.8432,
+   "slope": 0.4542,
+   "intercept": 3.3823,
+   "slope0": 0.876,
+   "MAE": 1.3988,
+   "bias": 0.3315,
+   "median_ratio": 1.053
+  },
+  "A_mu0.2": {
+   "n": 74,
+   "tau": 0.6449,
+   "rho": 0.8474,
+   "pair_acc_all": 0.8208,
+   "pair_acc_1K": 0.9363,
+   "r": 0.806,
+   "slope": 0.7653,
+   "intercept": 4.8438,
+   "slope0": 2.1988,
+   "MAE": 4.3439,
+   "bias": -4.3439,
+   "median_ratio": 0.303
+  },
+  "A_single": {
+   "n": 65,
+   "tau": 0.6942,
+   "rho": 0.8746,
+   "pair_acc_all": 0.846,
+   "pair_acc_1K": 0.9496,
+   "r": 0.8668,
+   "slope": 0.4639,
+   "intercept": 3.3902,
+   "slope0": 0.8868,
+   "MAE": 1.3701,
+   "bias": 0.3128,
+   "median_ratio": 1.0614
+  },
+  "A_kkr_theta": {
+   "n": 74,
+   "tau": 0.2323,
+   "rho": 0.3654,
+   "pair_acc_all": 0.6145,
+   "pair_acc_1K": 0.6669,
+   "r": 0.5173,
+   "slope": 0.2883,
+   "intercept": 3.7496,
+   "slope0": 0.6535,
+   "MAE": 3.2814,
+   "bias": 2.9756,
+   "median_ratio": 1.4725
+  },
+  "B_corr2": {
+   "n": 112,
+   "tau": 0.6558,
+   "rho": 0.8519,
+   "pair_acc_all": 0.8279,
+   "pair_acc_1K": 0.9289,
+   "r": 0.8102,
+   "slope": 0.4232,
+   "intercept": 3.6712,
+   "slope0": 0.889,
+   "MAE": 1.459,
+   "bias": 0.1942,
+   "median_ratio": 1.0469
+  },
+  "B_plain": {
+   "n": 112,
+   "tau": 0.4575,
+   "rho": 0.6466,
+   "pair_acc_all": 0.7284,
+   "pair_acc_1K": 0.8021,
+   "r": 0.6074,
+   "slope": 0.336,
+   "intercept": 4.3206,
+   "slope0": 0.9051,
+   "MAE": 1.6667,
+   "bias": 0.0009,
+   "median_ratio": 1.0307
+  },
+  "B_single_corr2": {
+   "n": 80,
+   "tau": 0.6816,
+   "rho": 0.8713,
+   "pair_acc_all": 0.8403,
+   "pair_acc_1K": 0.9402,
+   "r": 0.8681,
+   "slope": 0.4995,
+   "intercept": 3.0445,
+   "slope0": 0.8961,
+   "MAE": 1.3054,
+   "bias": 0.2042,
+   "median_ratio": 1.055
+  },
+  "B_VSc_corr2": {
+   "n": 47,
+   "tau": 0.6369,
+   "rho": 0.8183,
+   "pair_acc_all": 0.8208,
+   "pair_acc_1K": 0.8863,
+   "r": 0.7513,
+   "slope": 0.4056,
+   "intercept": 3.7342,
+   "slope0": 0.9198,
+   "MAE": 1.5378,
+   "bias": -0.1328,
+   "median_ratio": 0.9577
+  },
+  "B_VSc_plain": {
+   "n": 47,
+   "tau": 0.159,
+   "rho": 0.2251,
+   "pair_acc_all": 0.5786,
+   "pair_acc_1K": 0.5207,
+   "r": 0.1547,
+   "slope": 0.1059,
+   "intercept": 5.5984,
+   "slope0": 0.9797,
+   "MAE": 2.0328,
+   "bias": -0.5935,
+   "median_ratio": 0.9037
+  },
+  "AB_corr2": {
+   "n": 121,
+   "tau": 0.6485,
+   "rho": 0.849,
+   "pair_acc_all": 0.8243,
+   "pair_acc_1K": 0.9205,
+   "r": 0.8118,
+   "slope": 0.4358,
+   "intercept": 3.5246,
+   "slope0": 0.8908,
+   "MAE": 1.4528,
+   "bias": 0.1511,
+   "median_ratio": 1.038
+  }
+ },
+ "counts": {
+  "rows_total": 121,
+  "A_rows": 74,
+  "A_comps": 65,
+  "A_caution": 9,
+  "B_rows": 112,
+  "B_comps": 100,
+  "B_caution": 32,
+  "both": 65,
+  "B_with_VSc": 47,
+  "B_with_V": 18,
+  "B_with_Sc": 30,
+  "A_papers": 33,
+  "B_papers": 42,
+  "theta_kkr_range": [
+   179.6958,
+   369.439
+  ],
+  "theta_mix_range": [
+   255.0,
+   394.286
+  ],
+  "n_theta_kkr_below_200": 3,
+  "n_comps": 109
+ },
+ "top_exp_A": [
+  {
+   "name": "Nb67HfZrTi33",
+   "Tc_exp": 9.36,
+   "Tc_mu0.1": 13.311,
+   "author": "von Rohr",
+   "caution": false
+  },
+  {
+   "name": "(TiHfTa)1-xNbx_x0.9",
+   "Tc_exp": 9.11,
+   "Tc_mu0.1": 13.8579,
+   "author": "Li",
+   "caution": false
+  },
+  {
+   "name": "(TiHfTa)1-xNbx_x0.75",
+   "Tc_exp": 8.82,
+   "Tc_mu0.1": 11.7748,
+   "author": "Li",
+   "caution": false
+  },
+  {
+   "name": "NbTaTiZr_Wu2018",
+   "Tc_exp": 8.29,
+   "Tc_mu0.1": 8.4049,
+   "author": "Wu",
+   "caution": true
+  },
+  {
+   "name": "TiZrNb_Kosuth",
+   "Tc_exp": 8.2,
+   "Tc_mu0.1": 9.6275,
+   "author": "Košuth",
+   "caution": false
+  }
+ ],
+ "top_exp_B": [
+  {
+   "name": "Nb67HfZrTi33",
+   "Tc_exp": 9.36,
+   "Tc_corr2": 13.311,
+   "author": "von Rohr",
+   "caution": false
+  },
+  {
+   "name": "(TiHfTa)1-xNbx_x0.9",
+   "Tc_exp": 9.11,
+   "Tc_corr2": 13.8579,
+   "author": "Li",
+   "caution": false
+  },
+  {
+   "name": "(TiHfTa)1-xNbx_x0.75",
+   "Tc_exp": 8.82,
+   "Tc_corr2": 11.7748,
+   "author": "Li",
+   "caution": false
+  },
+  {
+   "name": "ScNbTiZr",
+   "Tc_exp": 8.4,
+   "Tc_corr2": 10.1338,
+   "author": "Krnel",
+   "caution": true
+  },
+  {
+   "name": "ScNbTiZr_nominal",
+   "Tc_exp": 8.4,
+   "Tc_corr2": 9.546,
+   "author": "Krnel",
+   "caution": true
+  }
+ ]
+}

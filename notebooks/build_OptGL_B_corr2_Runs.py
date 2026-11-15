@@ -19,7 +19,27 @@ TD_LIST = Path('../slurm/compositions/td_champions_gl.csv')
 EL_TD = Path('../thermodynamic/elements.sra.ew0.6.topola')
 RY_MEV = 13.605693122994 * 1000
 STRUCT = ('bcc', 'fcc', 'hcp')
-REF_BROKEN = {'Re'}          # Topola Re run: B_bcc ~ 19 000 GPa, bcc ground state, E_bcc 2.79 eV below ebulk
+Z_TO_EL = {22: 'Ti', 41: 'Nb', 40: 'Zr', 72: 'Hf', 73: 'Ta', 42: 'Mo', 74: 'W', 39: 'Y', 75: 'Re', 44: 'Ru', 23: 'V', 21: 'Sc'}
+EL_TD_WIDE = Path('../thermodynamic.ew1.0/elements.sra.topola')
+REF_WIDE_EW = {'W', 'Re'}    # pure W and Re are not converged at ew 0.6 (valence band below the contour) -> ew 1.0 scans
+
+
+def kkr_input_composition(inp):
+    # concentrations exactly as AkaiKKR used them: the rounded values of the .inp, normalised as in specx.f.  Total
+    # energies are ~1e4 Ry, so ΔH must use these and not the unrounded composition (5e-7 × 3e4 Ry ≈ 200 meV).
+    comp, block = {}, False
+    for line in Path(inp).read_text().splitlines():
+        if 'anclr' in line and line.lstrip().startswith('c'):
+            block = True
+            continue
+        if block:
+            if line.lstrip().startswith('c'):
+                break
+            f = line.split()
+            if len(f) == 2:
+                comp[Z_TO_EL[int(round(float(f[0])))]] = float(f[1])
+    norm = sum(comp.values())
+    return {el: x / norm for el, x in comp.items()}
 
 
 def read_td(d):
@@ -27,19 +47,28 @@ def read_td(d):
     t = {f'E_{st}': s[st]['energy_per_atom_ry'] for st in STRUCT}
     a_scan = [float(re.findall(r'_(\d+\.\d+)', f.name)[-1]) for f in (d / 'bcc').glob('*.inp')]
     t.update(most_stable=s['most_stable'], a_bcc=s['bcc']['lattice_constant_bohr'], B_bcc=s['bcc']['bulk_modulus_gpa'],
-             dE_fcc=(t['E_fcc'] - t['E_bcc']) * RY_MEV, dE_hcp=(t['E_hcp'] - t['E_bcc']) * RY_MEV, comp=s['composition'])
+             dE_fcc=(t['E_fcc'] - t['E_bcc']) * RY_MEV, dE_hcp=(t['E_hcp'] - t['E_bcc']) * RY_MEV,
+             comp=kkr_input_composition(sorted((d / 'bcc').glob('*.inp'))[0]))
     t['a_in_scan'] = min(a_scan) < t['a_bcc'] < max(a_scan)
     return t
+
+
+def element_td(el):
+    return read_td((EL_TD_WIDE if el in REF_WIDE_EW else EL_TD) / f'{el}1.0000')
+
+
+def e_bcc_ref(el):
+    return element_td(el)['E_bcc'] if el in REF_WIDE_EW else ELEMENT_DATA[el].ebulk
 
 
 def element_refs(elements):
     rows = []
     for el in elements:
-        t = read_td(EL_TD / f'{el}1.0000')
+        t = element_td(el)
         rows.append({'el': el, 'gs_KKR': min(STRUCT, key=lambda st: t[f'E_{st}']),
                      'E_fcc−E_bcc': t['dE_fcc'], 'E_hcp−E_bcc': t['dE_hcp'], 'a_bcc': t['a_bcc'], 'B_bcc': t['B_bcc'],
-                     'a in scan': t['a_in_scan'], 'E_bcc−ebulk': (t['E_bcc'] - ELEMENT_DATA[el].ebulk) * RY_MEV,
-                     'E_gs−E_bcc': np.nan if el in REF_BROKEN else min(0.0, t['dE_fcc'], t['dE_hcp'])})
+                     'a in scan': t['a_in_scan'], 'ew': 1.0 if el in REF_WIDE_EW else 0.6, 'E_bcc−ref': (t['E_bcc'] - e_bcc_ref(el)) * RY_MEV,
+                     'E_gs−E_bcc': min(0.0, t['dE_fcc'], t['dE_hcp'])})
     return pd.DataFrame(rows).set_index('el')
 
 
@@ -55,15 +84,13 @@ def champions_td(prefix, champ=None):
         if champ is not None:
             dev = max(abs(c.get(el, 0.0) - champ.loc[mc, el]) for el in ELEMENTS)
             assert dev < 1e-3, f'{r.tag}: TD composition differs from the notebook champion by {dev:.4f}'
-        e_bcc_ref = sum(x * ELEMENT_DATA[el].ebulk for el, x in c.items())
+        e_ref = sum(x * e_bcc_ref(el) for el, x in c.items())
         e_min = min(t[f'E_{st}'] for st in STRUCT)
-        ok = not (set(c) & REF_BROKEN)
         rows.append({'mincomp': mc, 'Tc': r.Tc, 'champion': comp_str(pd.Series(c)), 'most_stable': t['most_stable'],
                      'E_fcc−E_bcc': t['dE_fcc'], 'E_hcp−E_bcc': t['dE_hcp'], 'a_bcc': t['a_bcc'], 'B_bcc': t['B_bcc'],
                      'a in scan': t['a_in_scan'],
-                     'ΔH_bcc': (t['E_bcc'] - e_bcc_ref) * RY_MEV if ok else np.nan,
-                     'ΔH_gs': ((e_min - e_bcc_ref) * RY_MEV - sum(x * REF.loc[el, 'E_gs−E_bcc'] for el, x in c.items())
-                               if ok else np.nan)})
+                     'ΔH_bcc': (t['E_bcc'] - e_ref) * RY_MEV,
+                     'ΔH_gs': (e_min - e_ref) * RY_MEV - sum(x * REF.loc[el, 'E_gs−E_bcc'] for el, x in c.items())})
     return pd.DataFrame(rows).set_index('mincomp').sort_index()
 
 
@@ -83,7 +110,7 @@ def td_plot(series):
 
 
 REF = element_refs(['Ti', 'Nb', 'Zr', 'Hf', 'Ta', 'Mo', 'W', 'Y', 'Re', 'Ru', 'V', 'Sc'])
-REF_FMT = {'E_fcc−E_bcc': '{:.1f}', 'E_hcp−E_bcc': '{:.1f}', 'a_bcc': '{:.3f}', 'B_bcc': '{:.0f}', 'E_bcc−ebulk': '{:.1f}',
+REF_FMT = {'E_fcc−E_bcc': '{:.1f}', 'E_hcp−E_bcc': '{:.1f}', 'a_bcc': '{:.3f}', 'B_bcc': '{:.0f}', 'ew': '{:.1f}', 'E_bcc−ref': '{:.1f}',
            'E_gs−E_bcc': '{:.1f}'}
 TD_FMT = {'Tc': '{:.2f}', 'E_fcc−E_bcc': '{:.1f}', 'E_hcp−E_bcc': '{:.1f}', 'a_bcc': '{:.3f}', 'B_bcc': '{:.0f}',
           'ΔH_bcc': '{:+.1f}', 'ΔH_gs': '{:+.1f}'}
@@ -471,8 +498,12 @@ wartości c/a. Wyniki są w `thermodynamic/<run>/<skład>/structure_summary.json
 
 **Definicje:**
 - **E_fcc − E_bcc, E_hcp − E_bcc** [meV/atom]: wartość > 0 oznacza, że bcc ma niższą energię.
-- **ΔH_bcc** = E_bcc(stop) − Σ c_i E_bcc(i), z referencjami bcc. Referencje to `ebulk` z `src/elements.py`, tak jak
-  w dG pipeline'u. Energie bcc z Topoli zgadzają się z `ebulk` do ≤ 2 meV, z wyjątkiem W (53 meV).
+- **ΔH_bcc** = E_bcc(stop) − Σ c_i E_bcc(i), z referencjami bcc. Referencje to `ebulk` z `src/elements.py` (ew 0.6),
+  z wyjątkiem W, który przy ew 0.6 nie jest zbieżny względem okna energii (dno pasma pod konturem; a0 6.26 zamiast
+  6.01 bohr) i pochodzi ze skanu ew 1.0 (`thermodynamic.ew1.0/elements.sra.topola/`), jak w Table I pracy.
+- **Stężenia c_i** są te z wejścia KKR (6 cyfr, znormalizowane przez AkaiKKR), a nie nieobcięty skład: energie
+  całkowite są rzędu 1e4 Ry, więc różnica 5e-7 w c_i między ciężkim (W, Hf, Ta) a lekkim (Ti, Sc, Y) pierwiastkiem
+  zmienia ΔH nawet o ~200 meV.
 - **ΔH_gs** = min po strukturach E(stop) − Σ c_i E_gs(i), z referencją w stanie podstawowym KKR każdego
   pierwiastka (hcp dla Ti, Zr, Hf, Y, Sc).
 """)
@@ -493,12 +524,12 @@ pd.DataFrame({'ΔH_bcc corr2': TD_C2['ΔH_bcc'], 'ΔH_bcc mu0.1': TD_MU['ΔH_bcc
 md(r"""
 **Obserwacje.**
 - **Struktura.** Wszyscy mistrzowie obu serii są bcc. fcc leży 190–236, a hcp 218–266 meV/atom wyżej.
-- **ΔH_bcc jest dodatnie i rośnie z mincomp.** Dla B corr2 wynosi od +72 meV (Nb61Zr39) do +230 meV (mc10).
-  Na mc2–3 jest takie samo jak w składzie A (+73, +77 meV). Dla mc4–8 różni się od A o −23…+47 meV, bez stałego
-  znaku (A: +48, +131, +105, +152, +118 meV).
-- **Bez poprawki (B mu0.1) dodatkiem jest V:** w mc4–7 zamiast Sc, w mc8 obok Sc. Dla mc4–8 daje to ΔH_bcc wyższe o 40–95 meV niż w corr2
+- **ΔH_bcc jest dodatnie i rośnie z mincomp.** Dla B corr2 wynosi od +72 meV (Nb61Zr39) do +261 meV (mc10).
+  Na mc2–3 jest takie samo jak w składzie A (+73, +77 meV). Dla mc4–8 jest wyższe niż w A o 9–24 meV
+  (A: +79, +103, +105, +152, +160 meV).
+- **Bez poprawki (B mu0.1) dodatkiem jest V:** w mc4–7 zamiast Sc, w mc8 obok Sc. Dla mc4–8 daje to ΔH_bcc wyższe o 35–55 meV niż w corr2
   przy podobnym Tc (każda seria liczona swoim celem, różnica ≤ 0.4 K). Dla mc9–10, gdzie oba warianty zawierają V i Sc,
-  różnica spada do −7…+15 meV.
+  różnica spada do −6…−4 meV.
 - **Wyjątek: mistrz mc2 bez poprawki (V68Ti32).** To inny basen, z a = 5.8 bohr i ΔH_bcc +66 meV.
 - **Referencje.** Wybór stanu podstawowego zamiast bcc dodaje tylko 2–17 meV.
 """)

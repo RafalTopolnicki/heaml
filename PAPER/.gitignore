@@ -1,0 +1,14 @@
+# LaTeX build products (make main.pdf supplement.pdf)
+*.aux
+*.bbl
+*.blg
+*.log
+*.out
+*.toc
+*Notes.bib
+main.pdf
+supplement.pdf
+__pycache__/
+# working notes, not part of the manuscript
+prompt*.txt
+refs_missing.txt
