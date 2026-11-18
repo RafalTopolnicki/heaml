@@ -245,3 +245,14 @@ even alone, packing pays (3 alloys ≈ 1.3 × the wall time of 1). MaxRSS 4.35 G
 Cost ≈ 9 allocated core-h per 5-component alloy (the 30–70 CPU-h of the grant estimate came from the
 unreliable AkaiKKR `cpu(sec)` line). Defaults changed: `PER_TASK=5`, `--mem=12G`, `--time=12:00:00`.
 `sacct` TotalCPU / (Elapsed × cpus) is the reliable utilisation measure.
+
+## Set C (Ti Nb Zr Hf Ta Mo W Y) — init database and optimisation runs (2026-11-18)
+
+- Random dataset `random.ratios/sra.TiNbZrHfTaMoWY.kp10.ew0.6.gl`: 1200/1200 finished (list `TiNbZrHfTaMoWY_gl.csv`).
+- `python scripts/make_database.py random.ratios/sra.TiNbZrHfTaMoWY.kp10.ew0.6.gl --out databases/sra.TiNbZrHfTaMoWY.kp10.ew0.6.gl.csv`
+  → 1200 rows, 1179 usable (thetaDB present).
+  - Same `gg+lloyd` η and KKR parameters as the A/B databases.
+  - Best random point in θ_D mix: Zr55Nb45 17.6 K.
+- `bash slurm/submit_opt_gl_TiNbZrHfTaMoWY.sh`: 7 runs, mincomp 2…8 (8 = all elements), CHAIN 3.
+  - Settings as the set-A runs: target Tc_mu0.1, β 2, max 0.7, min 0.05, 10 champions, seed 100.
+  - Output `opt.ratios.gl/sra.TiNbZrHfTaMoWY.kp10.ew0.6.gl.mu0.1.acqbeta2.stonerbeta0.mixdebye.mincomp<m>.r0.05.max0.7.face0.1`.
