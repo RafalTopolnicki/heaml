@@ -104,6 +104,14 @@ TC_CORR_THETA_BCC_K = {"Sc": 215.0}
 TC_CORR_SF_ALPHA = {"V": 0.4}   # per element, 0 for elements not listed
 TC_CORR_MU = 0.1
 
+# Tc variants with another phonon-moment convention and mu* (added 2026-11-20).  lambda (key 'lambda', _C_THEORETICAL) uses
+# the Debye-model <omega^2> = (3/5) omega_D^2; with <omega^2> = f omega_D^2 the coupling is lambda * (3/5) / f.
+# Key 'Tc_f<f>_mu<mu>' = McMillan(thetaDB, lambda * 0.6 / f, mu); computed for every (f, mu) listed here, and the optimizer
+# accepts any key of this form as --target (computed on the fly).  f = 0.6 reproduces Tc_mu<mu>.
+# (0.5, 0.16): <omega^2> = omega_D^2 / 2 (Jaskiewicz 2016 and other RMTA work) with mu* recalibrated on the literature
+# baseline (median calc/exp = 1 at mu* 0.158-0.162 for sets A, B, C; MAE min 1.42-1.45 K, tau unchanged).
+TC_OMEGA2_VARIANTS = [(0.5, 0.16)]
+
 # Stoner acquisition penalty (Option C).
 # STONER_BETA = 0.0 disables the penalty entirely (no effect on optimization).
 # When enabled: penalty = exp(-STONER_BETA * max(S_mix - STONER_S_THRESHOLD, 0))

@@ -2,12 +2,13 @@
   python3 build_Tc_Baseline_Sets.py A  Tc_Baseline_A.ipynb         (μ* = 0.1 and 0.2; Tc_corr2 == Tc_mu0.1 on A)
   python3 build_Tc_Baseline_Sets.py B  Tc_Baseline_B_corr2.ipynb   (Tc_mu0.1 vs Tc_corr2)
   python3 build_Tc_Baseline_Sets.py AB Tc_Baseline_AB_corr2.ipynb  (Tc_mu0.1 vs Tc_corr2)
+  python3 build_Tc_Baseline_Sets.py C  Tc_Baseline_C.ipynb         (μ* = 0.1 and 0.2; no V/Sc, so Tc_corr2 == Tc_mu0.1)
 then: jupyter nbconvert --to notebook --execute --inplace <notebook>"""
 import sys
 import nbformat as nbf
 
 SET, OUT = sys.argv[1], sys.argv[2]
-assert SET in ('A', 'B', 'AB')
+assert SET in ('A', 'B', 'AB', 'C')
 _VSC = r"""
 **Gdzie corr2 pomaga, a gdzie nie.** Zmienia się tylko 47 wierszy z V lub Sc; pozostałe (65 wspólnych z A, 9 z Re/Ru) są
 identyczne.
@@ -69,16 +70,38 @@ składzie A daje ten sam wynik co `Tc_mu0.1`.
 """ + _VSC,
 }
 
+CONCL['C'] = r"""
+## Wnioski (2026-11-20)
+
+| podzbiór | n | τ | R² | MAE [K] | LR: exp = a·KKR + b | mediana KKR/exp |
+|---|---|---|---|---|---|---|
+| skład C | 65 | 0.67 | 0.71 | 1.40 | 0.43·x + 3.65 | 1.06 |
+| single-phase bcc | 60 | 0.70 | 0.77 | 1.31 | 0.47·x + 3.35 | 1.06 |
+| z Mo lub W | 12 | 0.61 | 0.72 | 0.85 | 0.69·x + 1.69 | 0.93 |
+| z Ti ≥ 20 % | 28 | 0.67 | 0.65 | 1.22 | 0.55·x + 3.19 | 0.87 |
+| z Nb ≥ 30 % | 36 | 0.52 | 0.56 | 1.55 | 0.39·x + 4.01 | 1.15 |
+
+- **Bez żadnych poprawek** skład C jest odtwarzany tak samo dobrze jak A i B z corr2 (τ 0.66).
+- **μ\* = 0.2:** prawie ta sama kolejność (τ 0.65; τ między rankingami μ\* 0.1 i 0.2 = 0.96), Tc zaniżone ok. 3×.
+- **Najsłabiej w obszarze bogatym w Nb (≥ 30 %),** czyli tam, gdzie leżą zwycięzcy optymalizacji: τ 0.52 i systematyczne
+  zawyżenie (bias +1.2 K, mediana 1.15). Najbardziej zawyżone są stopy z największym λ (Nb67HfZrTi33, (TiHfTa)Nb0.9,
+  TaNb67HfZr33: 1.4–1.5×). Rozpiętość eksperymentalnych Tc w tym obszarze jest mała (7–9.4 K), więc τ jest wrażliwe na
+  rozrzut danych.
+- Wartości bezwzględne są ściśnięte (nachylenie 0.43): KKR rozciąga skalę Tc ok. 2.3× względem eksperymentu.
+"""
+
 C = []
 md = lambda s: C.append(nbf.v4.new_markdown_cell(s.strip('\n')))
 code = lambda s: C.append(nbf.v4.new_code_cell(s.strip('\n')))
 
 TITLE = {'A': 'skład A (Ti, Nb, Zr, Hf, Ta, Mo, W, Y, Re, Ru)',
          'B': 'skład B (Ti, Nb, Zr, Hf, Ta, Mo, W, Y, V, Sc), z poprawką corr2',
-         'AB': 'A ∪ B, z poprawką corr2'}[SET]
+         'AB': 'A ∪ B, z poprawką corr2',
+         'C': 'skład C (Ti, Nb, Zr, Hf, Ta, Mo, W, Y)'}[SET]
 VARIANTS = {'A': "[('Tc_mu0.1', 'μ* = 0.1'), ('Tc_mu0.2', 'μ* = 0.2')]",
             'B': "[('Tc_mu0.1', 'Tc_mu0.1 (bez poprawki)'), ('Tc_corr2', 'Tc_corr2')]",
-            'AB': "[('Tc_mu0.1', 'Tc_mu0.1 (bez poprawki)'), ('Tc_corr2', 'Tc_corr2')]"}[SET]
+            'AB': "[('Tc_mu0.1', 'Tc_mu0.1 (bez poprawki)'), ('Tc_corr2', 'Tc_corr2')]",
+            'C': "[('Tc_mu0.1', 'μ* = 0.1'), ('Tc_mu0.2', 'μ* = 0.2')]"}[SET]
 
 md(rf"""
 # Baseline: KKR (GL) vs eksperymentalne $T_c$, {TITLE}
@@ -91,7 +114,8 @@ md(rf"""
 - **Zbiory pierwiastków:** stop należy do zbioru, jeśli wszystkie jego pierwiastki są w zbiorze.
   - skład A = Ti, Nb, Zr, Hf, Ta, Mo, W, Y, Re, Ru;
   - skład B = Ti, Nb, Zr, Hf, Ta, Mo, W, Y, V, Sc;
-  - A ∪ B = stopy należące do A lub do B.
+  - A ∪ B = stopy należące do A lub do B;
+  - skład C = Ti, Nb, Zr, Hf, Ta, Mo, W, Y (część wspólna A i B).
 
 **Poprawka corr2** (`Tc_corr2`, `process_kkr.compute_tc_corrected`, parametry `TC_CORR_*` w `consts.py`, cel optymalizacji
 `--target Tc_corr` od 2026-11-02): McMillan z μ\* = 0.1 i dwiema zmianami:
@@ -127,6 +151,7 @@ RESULTS = pathlib.Path('../results/comparison.sra.ew0.6.bz10-10-20.gl')
 EXCLUDE = {{'NbTa67MoHfW33'}}
 SET_A = ['Ti', 'Nb', 'Zr', 'Hf', 'Ta', 'Mo', 'W', 'Y', 'Re', 'Ru']
 SET_B = ['Ti', 'Nb', 'Zr', 'Hf', 'Ta', 'Mo', 'W', 'Y', 'V', 'Sc']
+SET_C = ['Ti', 'Nb', 'Zr', 'Hf', 'Ta', 'Mo', 'W', 'Y']
 
 # kolumny xlsx (arkusz 'Tc_literature'): A nazwa, B–N skład, S Tc_exp, Z autor, AE status
 ELEMENTS = ['Sc', 'Ti', 'Y', 'Zr', 'Nb', 'Mo', 'Ru', 'La', 'Hf', 'Ta', 'W', 'Re', 'V']
@@ -178,7 +203,7 @@ for r in range(4, ws.max_row + 1):
     status = ws.cell(r, COL_STATUS).value or ''
     rows.append(dict(name=name, author=ws.cell(r, COL_AUTHOR).value or '', kkr_dir=k, Tc_exp=tc,
                      group='caution (multiphase etc.)' if status.startswith('caution') else 'single-phase bcc',
-                     in_A=els <= set(SET_A), in_B=els <= set(SET_B), has_VSc=bool(els & {'V', 'Sc'}), **comp,
+                     in_A=els <= set(SET_A), in_B=els <= set(SET_B), in_C=els <= set(SET_C), has_VSc=bool(els & {'V', 'Sc'}), **comp,
                      theta_mix=j['mixture_debye_temperature'], lambda_mix=lam_mix,
                      **{'Tc_mu0.1': mcmillan(j['mixture_debye_temperature'], lam_mix, 0.1),
                         'Tc_mu0.2': mcmillan(j['mixture_debye_temperature'], lam_mix, 0.2),
@@ -191,8 +216,8 @@ noVSc = ~ALL.has_VSc
 assert np.allclose(ALL.loc[noVSc, 'Tc_corr2'], ALL.loc[noVSc, 'Tc_mu0.1'], atol=1e-12, rtol=0)
 print(f"Tc_corr2 == Tc_mu0.1 dla wszystkich {noVSc.sum()} wierszy bez V i Sc (w tym całego składu A: {ALL.in_A.sum()})")
 
-DF = {'A': ALL[ALL.in_A], 'B': ALL[ALL.in_B], 'AB': ALL[ALL.in_A | ALL.in_B]}[SET].reset_index(drop=True)
-ELSET = {'A': SET_A, 'B': SET_B, 'AB': sorted(set(SET_A) | set(SET_B), key=ELEMENTS.index)}[SET]
+DF = {'A': ALL[ALL.in_A], 'B': ALL[ALL.in_B], 'AB': ALL[ALL.in_A | ALL.in_B], 'C': ALL[ALL.in_C]}[SET].reset_index(drop=True)
+ELSET = {'A': SET_A, 'B': SET_B, 'AB': sorted(set(SET_A) | set(SET_B), key=ELEMENTS.index), 'C': SET_C}[SET]
 print(f"wiersze z Tc_exp i wynikiem KKR (wszystkie): {len(ALL)} (bez wyniku KKR: {unmatched or 'brak'})")
 print(f"zbiór {SET}: {len(DF)} wierszy ({(DF.group != 'single-phase bcc').sum()} 'caution'), {DF.kkr_dir.nunique()} składów KKR, "
       f"z V: {(DF.V > 0).sum()}, ze Sc: {(DF.Sc > 0).sum()}, z Re/Ru: {((DF.Re > 0) | (DF.Ru > 0)).sum()}")
@@ -330,6 +355,9 @@ SUBSETS = {
           "    'tylko A (z Re/Ru)': DF[DF.in_A & ~DF.in_B], 'A ∩ B': DF[DF.in_A & DF.in_B],\n"
           "    'tylko B (z V/Sc)': DF[DF.in_B & ~DF.in_A], 'z V': DF[DF.V > 0], 'ze Sc': DF[DF.Sc > 0],\n"
           "    'z Ti ≥ 20 %': DF[DF.Ti >= 0.2]}",
+    'C': "{'skład C, wszystkie': DF, 'tylko single-phase bcc': DF[DF.group == 'single-phase bcc'],\n"
+         "    'z Mo lub W': DF[(DF.Mo > 0) | (DF.W > 0)], 'bez Mo i W': DF[(DF.Mo == 0) & (DF.W == 0)],\n"
+         "    'z Y': DF[DF.Y > 0], 'z Ti ≥ 20 %': DF[DF.Ti >= 0.2], 'z Nb ≥ 30 %': DF[DF.Nb >= 0.3]}",
 }[SET]
 
 md("## 1. Metryki")
@@ -350,7 +378,7 @@ md("## 4. Zachowanie kolejności")
 code("ordering_plot(DF)")
 md("## 5. Tabela stopów (posortowana po Tc_exp)")
 code("alloy_table(DF)")
-if SET != 'A':
+if SET not in ('A', 'C'):
     md(r"""
 ## 6. Stopy, które poprawka zmienia najbardziej
 

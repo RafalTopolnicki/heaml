@@ -256,3 +256,16 @@ unreliable AkaiKKR `cpu(sec)` line). Defaults changed: `PER_TASK=5`, `--mem=12G`
 - `bash slurm/submit_opt_gl_TiNbZrHfTaMoWY.sh`: 7 runs, mincomp 2…8 (8 = all elements), CHAIN 3.
   - Settings as the set-A runs: target Tc_mu0.1, β 2, max 0.7, min 0.05, 10 champions, seed 100.
   - Output `opt.ratios.gl/sra.TiNbZrHfTaMoWY.kp10.ew0.6.gl.mu0.1.acqbeta2.stonerbeta0.mixdebye.mincomp<m>.r0.05.max0.7.face0.1`.
+
+## Phonon-moment convention / μ* sensitivity runs (2026-11-20)
+
+`submit_opt_gl_omega2.sh` (run with bash on the login node; `SET=C` or `SET=D`, `ONLY=`, `DRY=1`, `CHAIN=3`).
+Target `Tc_f0.5_mu0.16` = McMillan with ⟨ω²⟩ = ½ω_D² (λ × 1.2) and μ* 0.16, recalibrated on the literature baseline
+(median calc/exp = 1 at μ* 0.158–0.162 for sets A, B, C). Production `Tc_mu0.1` uses ⟨ω²⟩ = (3/5)ω_D². Any
+`Tc_f<f>_mu<mu>` is accepted by `run_opt_compositions.py --target` (computed from thetaDB and λ, no new KKR input;
+`src.process_kkr.add_tc_variants`, default list `consts.TC_OMEGA2_VARIANTS`). Databases C and D re-derived with the new
+column; all other columns unchanged.
+- **C:** `Tc_f0.5_mu0.16`, mincomp 2 4 6 8, compared with the existing `Tc_mu0.1` runs.
+- **D:** both targets, mincomp 2 4 6 8 10 12 (12 runs). Wait for the spurious-η filter before submitting.
+- Output `opt.ratios.gl/<db>.f0.5.mu0.16.acqbeta2.stonerbeta0.mixdebye.mincomp<m>.r0.05.max0.7.face0.1`
+  (`.mu0.1.` for the D reference runs).

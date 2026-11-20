@@ -1,10 +1,11 @@
+import re
 import numpy as np
 import io
 import json
 import os
 import pandas as pd
 from src.features import compute_hea_features
-from src.consts import composition_labels, PHYSICAL_CP_MIN_GPA, PHYSICAL_THETA_MIN_K, ATOMS_PER_CELL, DG_T_K, STONER_I_EV, E_SF_MEV, C_REF_CP_GPA, STONER_S_REF, STONER_MU_BASE, TC_CORR_THETA_BCC_K, TC_CORR_SF_ALPHA, TC_CORR_MU
+from src.consts import composition_labels, PHYSICAL_CP_MIN_GPA, PHYSICAL_THETA_MIN_K, ATOMS_PER_CELL, DG_T_K, STONER_I_EV, E_SF_MEV, C_REF_CP_GPA, STONER_S_REF, STONER_MU_BASE, TC_CORR_THETA_BCC_K, TC_CORR_SF_ALPHA, TC_CORR_MU, TC_OMEGA2_VARIANTS
 from src.elements import ELEMENTS
 from src.utils import read_kkr_file
 
@@ -127,6 +128,30 @@ def _tc_mcmillan_safe(theta_D, lam, mu):
     if denom <= 0.0:
         return 0.0
     return theta_D / 1.45 * np.exp(-1.04 * (1.0 + lam) / denom)
+
+_TC_VARIANT_RE = re.compile(r'^Tc_f(\d*\.?\d+)_mu(\d*\.?\d+)$')
+_OMEGA2_FACTOR = 0.6   # <omega^2> = (3/5) omega_D^2 behind _C_THEORETICAL and 'lambda'
+
+
+def tc_variant_key(f, mu):
+    return f'Tc_f{f:g}_mu{mu:g}'
+
+
+def parse_tc_variant(key):
+    """(f, mu) for a key 'Tc_f<f>_mu<mu>', else None."""
+    m = _TC_VARIANT_RE.match(key or '')
+    return (float(m.group(1)), float(m.group(2))) if m else None
+
+
+def add_tc_variants(data, variants=None):
+    """data['Tc_f<f>_mu<mu>'] = McMillan(thetaDB, lambda * 0.6 / f, mu) for each (f, mu) (default consts.TC_OMEGA2_VARIANTS).
+    0 where lambda was zeroed (outside the physical range, no thetaDB), as for Tc_mu*."""
+    lam, theta = data.get('lambda') or 0.0, data.get('thetaDB') or 0.0
+    for f, mu in (TC_OMEGA2_VARIANTS if variants is None else variants):
+        ok = lam > 0 and theta > 0 and not data.get('outside_range')
+        data[tc_variant_key(f, mu)] = _tc_mcmillan_safe(theta, lam * _OMEGA2_FACTOR / f, mu) if ok else 0.0
+    return data
+
 
 def compute_stoner_correction(data, composition_dict, mu_star_coulomb=0.13):
     """
@@ -297,6 +322,7 @@ def derive_kkr(data, elements, allow_missing_theta=False):
     data['Tc_mu0.1_nocutoff'] = tc_from_data({**data, 'lambda': _lam_nc}, mu=0.1)
     data['Tc_mu0.2_nocutoff'] = tc_from_data({**data, 'lambda': _lam_nc}, mu=0.2)
     data['Tc_mu0.3_nocutoff'] = tc_from_data({**data, 'lambda': _lam_nc}, mu=0.3)
+    add_tc_variants(data)
     # Stoner spin-fluctuation correction (Option B)
     stoner = compute_stoner_correction(data, comp_dict)
     data.update(stoner)
@@ -328,6 +354,7 @@ def _process_missing_theta(data, comp_dict):
     for mu_tag in ['0.1', '0.2', '0.3']:
         data[f'Tc_mu{mu_tag}'] = 0.0
         data[f'Tc_mu{mu_tag}_nocutoff'] = 0.0
+    add_tc_variants(data)
     data.update(compute_stoner_correction({**data, 'thetaDB': 0.0}, comp_dict))
     data['Tc_sf'] = 0.0
     data.update(compute_tc_corrected(data, comp_dict))

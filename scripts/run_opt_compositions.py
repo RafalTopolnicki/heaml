@@ -7,7 +7,7 @@ import sys
 from concurrent.futures import ProcessPoolExecutor, as_completed
 import pandas as pd
 import math
-from src.process_kkr import process_kkr, compute_lambda, compute_lambda_nocutoff, tc_from_data, compute_stoner_correction, compute_tc_corrected
+from src.process_kkr import process_kkr, compute_lambda, compute_lambda_nocutoff, tc_from_data, compute_stoner_correction, compute_tc_corrected, add_tc_variants, parse_tc_variant
 from src.utils import generate_dirname, append_errorlog, save_dict_to_json, log_iteration_summary
 from src.ml import train_cb_model
 from src.consts import composition_labels as ALL_ELEMENTS, ACQUISITION_ALPHA, ACQUISITION_METRIC, TARGET, TARGET_DG, CANDIDATE_COMPOSITIONS_N, MIN_NOVELTY_DIST, FRESH_FRACTION, LOCAL_TOP_K, LOCAL_NOISE_SCALE, MODEL_SUBSAMPLE_FRACTION, DG_THRESHOLD_DEFAULT, STONER_I_EV, STONER_N_EF_APPROX, STONER_BETA, STONER_S_THRESHOLD, STONER_S_REF, PHYSICAL_CP_MIN_GPA, PHYSICAL_THETA_MIN_K, FOUND_ITERATION_KEY, EARLY_STOP_PATIENCE
@@ -366,6 +366,16 @@ def deduplicate_known_data(data, columns, ndigits=5):
             out.append(row)
     return out
 
+def add_target_variant(rows, target):
+    """For a target 'Tc_f<f>_mu<mu>' (consts.TC_OMEGA2_VARIANTS) compute it on every row from thetaDB and lambda,
+    whatever variants the rows were written with.  No-op for other targets."""
+    fm = parse_tc_variant(target)
+    if fm is not None:
+        for row in rows:
+            add_tc_variants(row, [fm])
+    return rows
+
+
 def recompute_debye_consistent(data_list, target_debye_mode, composition_labels):
     """
     Ensure all rows use the same debye_mode as the current run.
@@ -437,6 +447,7 @@ def recompute_debye_consistent(data_list, target_debye_mode, composition_labels)
         stoner = compute_stoner_correction(row, comp_dict)
         row.update(stoner)
         row.update(compute_tc_corrected(row, comp_dict))
+        add_tc_variants(row)
 
         n_recomputed += 1
 
@@ -534,6 +545,7 @@ if __name__ == "__main__":
     parser.add_argument(
         "--target", type=str, default=TARGET,
         help=f"Quantity being maximized, e.g. Tc_sf (Stoner-corrected) or Tc_mu0.2 (McMillan, mu*=0.2). "
+             f"Tc_f<f>_mu<mu> = McMillan with <omega^2> = f omega_D^2 (default 3/5) and mu*, e.g. Tc_f0.5_mu0.16. "
              f"Default: {TARGET} (from consts.py).",
     )
     args = vars(parser.parse_args())
@@ -614,6 +626,7 @@ if __name__ == "__main__":
           f"(>{args['min_components_ratio']}) (eligible as best / local-search centers) "
           f"({n_init_total - len(init_data)} excluded)")
     recompute_debye_consistent(init_data, args.get('debye_mode', 'kkr'), composition_labels)
+    add_target_variant(init_data, TARGET)
     write_init_tc_comparison(init_data, args["initdir"] or [], workdir, target=TARGET, stored_rows=init_db_rows)
     for d in init_data:
         d[FOUND_ITERATION_KEY] = 0  # 0 = init dataset
@@ -673,6 +686,7 @@ if __name__ == "__main__":
                 continue
             normalize_rows_to_elements(iter_data, composition_labels)
             recompute_debye_consistent(iter_data, args.get('debye_mode', 'kkr'), composition_labels)
+            add_target_variant(iter_data, TARGET)
             valid = [d for d in iter_data if d.get(TARGET) is not None and not pd.isna(d.get(TARGET))]
             for d in valid:
                 d[FOUND_ITERATION_KEY] = it
@@ -854,7 +868,7 @@ if __name__ == "__main__":
                 for future in as_completed(futures):
                     _ = future.result()
         # now merge all new KKR results with the intial one
-        new_data = [d for d in read_experiments_from_directory(computationdir) if
+        new_data = [d for d in add_target_variant(read_experiments_from_directory(computationdir), TARGET) if
                     d.get(TARGET) is not None and not pd.isna(d.get(TARGET))]
         normalize_rows_to_elements(new_data, composition_labels)
         for d in new_data:
