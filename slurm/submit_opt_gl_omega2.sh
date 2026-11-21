@@ -5,12 +5,14 @@
 # mu* 0.16 for sets A, B, C).  Key 'Tc_f<f>_mu<mu>' is computed by src.process_kkr.add_tc_variants (consts.TC_OMEGA2_VARIANTS)
 # and accepted by run_opt_compositions.py --target.  Everything else as in the production runs: GL eta, theta_D mix,
 # Stoner penalty off, max 70 %, required components >= 5 %, beta 2, early stop 15, seed 100, CHAIN 3.
-#   SET=C : set C (8 el.), Tc_f0.5_mu0.16 at mincomp 2 4 6 8; the Tc_mu0.1 reference runs exist (submit_opt_gl_TiNbZrHfTaMoWY.sh).
+#   SET=C : set C (8 el.), Tc_f0.5_mu0.16 at mincomp 2..8; the Tc_mu0.1 reference runs exist (submit_opt_gl_TiNbZrHfTaMoWY.sh).
+#           mincomp 2 4 6 8 were run on 2026-11-20 (all early-stopped); 3 5 7 added 2026-11-21, submit them with ONLY=...
 #   SET=D : set D (12 el.), both targets (Tc_mu0.1 reference and Tc_f0.5_mu0.16) at mincomp 2 4 6 8 10 12.
 # Output opt.ratios.gl/<db>.f0.5.mu0.16.acqbeta2.stonerbeta0.mixdebye.mincomp<m>.r0.05.max0.7.face0.1 (and .mu0.1. for
 # the D reference).  Run on the login node with bash, NOT with sbatch:
 #   env SET=C bash slurm/submit_opt_gl_omega2.sh
 #   env SET=D ONLY="D_f05_mc2 D_mu01_mc2" bash slurm/submit_opt_gl_omega2.sh
+#   env SET=C ONLY="C_f05_mc3 C_f05_mc5 C_f05_mc7" bash slurm/submit_opt_gl_omega2.sh
 #   env SET=C DRY=1 bash slurm/submit_opt_gl_omega2.sh
 [ -n "${SLURM_JOB_ID:-}" ] && { echo "run on the login node WITHOUT sbatch: env SET=C bash slurm/submit_opt_gl_omega2.sh"; exit 2; }
 cd "$(dirname "$0")/.." || exit 1
@@ -21,8 +23,11 @@ C)  DB=databases/sra.TiNbZrHfTaMoWY.kp10.ew0.6.gl.csv
     # tag        target           tag-in-dirname  mincomp
     RUNS="
 C_f05_mc2    Tc_f0.5_mu0.16   f0.5.mu0.16     2
+C_f05_mc3    Tc_f0.5_mu0.16   f0.5.mu0.16     3
 C_f05_mc4    Tc_f0.5_mu0.16   f0.5.mu0.16     4
+C_f05_mc5    Tc_f0.5_mu0.16   f0.5.mu0.16     5
 C_f05_mc6    Tc_f0.5_mu0.16   f0.5.mu0.16     6
+C_f05_mc7    Tc_f0.5_mu0.16   f0.5.mu0.16     7
 C_f05_mc8    Tc_f0.5_mu0.16   f0.5.mu0.16     8
 " ;;
 D)  DB=databases/sra.TiNbZrHfTaMoWYReRuVSc.kp10.ew0.6.gl.csv
