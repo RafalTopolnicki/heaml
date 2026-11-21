@@ -14,6 +14,8 @@
 #   env SET=D ONLY="D_f05_mc2 D_mu01_mc2" bash slurm/submit_opt_gl_omega2.sh
 #   env SET=C ONLY="C_f05_mc3 C_f05_mc5 C_f05_mc7" bash slurm/submit_opt_gl_omega2.sh
 #   env SET=C DRY=1 bash slurm/submit_opt_gl_omega2.sh
+# Acquisition-beta scan (2026-11-21): BETA=<b> overrides the default 2 and goes into the directory name (.acqbeta<b>.):
+#   for b in 1 5; do env SET=C BETA=$b ONLY="C_f05_mc3 C_f05_mc5 C_f05_mc7" bash slurm/submit_opt_gl_omega2.sh; done
 [ -n "${SLURM_JOB_ID:-}" ] && { echo "run on the login node WITHOUT sbatch: env SET=C bash slurm/submit_opt_gl_omega2.sh"; exit 2; }
 cd "$(dirname "$0")/.." || exit 1
 SET=${SET:?SET=C or SET=D}; CHAIN=${CHAIN:-3}; ONLY=${ONLY:-}; DRY=${DRY:-0}
@@ -50,7 +52,8 @@ D_f05_mc12   Tc_f0.5_mu0.16   f0.5.mu0.16     12
 esac
 [ -s "${DB}" ] || { echo "missing ${DB} (git pull?)"; exit 2; }
 mkdir -p slurm/logs
-BETA=2
+BETA=${BETA:-2}          # acquisition beta (mean + beta*std); 2 = production, scan with BETA=1 / BETA=5
+btag=""; [ "${BETA}" != 2 ] && btag="_b${BETA}"
 n=0
 while read -r tag target dtag mc; do
     [ -z "${tag}" ] && continue
@@ -61,11 +64,11 @@ while read -r tag target dtag mc; do
     for ((k = 1; k <= CHAIN; k++)); do
         dep=(); [ -n "${prev}" ] && dep=(--dependency=afterany:${prev})
         if [ "${DRY}" = 1 ]; then
-            echo "sbatch --job-name=opt_${tag} ${dep[*]} slurm/topola_opt.sbatch   NAME=${NAME} TARGET=${target} MINCOMP=${mc} ELEMENTS=${ELEMENTS}"
+            echo "sbatch --job-name=opt_${tag}${btag} ${dep[*]} slurm/topola_opt.sbatch   NAME=${NAME} TARGET=${target} MINCOMP=${mc} BETA=${BETA} ELEMENTS=${ELEMENTS}"
             prev="<${tag}_${k}>"
         else
-            prev=$(sbatch --parsable --export=ALL --job-name="opt_${tag}" "${dep[@]}" slurm/topola_opt.sbatch) || exit 3
-            echo "${tag}: job ${prev} (${k}/${CHAIN})  -> opt.ratios.gl/${NAME}"
+            prev=$(sbatch --parsable --export=ALL --job-name="opt_${tag}${btag}" "${dep[@]}" slurm/topola_opt.sbatch) || exit 3
+            echo "${tag}${btag}: job ${prev} (${k}/${CHAIN})  -> opt.ratios.gl/${NAME}"
         fi
     done
     n=$((n + 1))
